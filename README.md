@@ -2,7 +2,12 @@
 
 ## About this repository
 
-This is a template repository meant to act as a starting point for new NextJS projects. This template will help us to standardize our development process and make it easier to onboard new developers.
+Provides a UI for volunteer and volunteer session verification for Love's Kitchen.
+
+Volunteers will sign in by scanning their driver's license and can check out by visiting the site. Volunteers should
+be able to see their sessions and general statistics related to them. An admin can manually set the passwords for
+volunteers to sign in by using Auth0. Admins should also be able to add notes to users or even sessions (e.g. "this
+person is a no-show", "this volunteer is great"), and add, edit, or delete them.
 
 <!-- DELETE THIS SECTION AFTER USING TEMPLATE -->
 
