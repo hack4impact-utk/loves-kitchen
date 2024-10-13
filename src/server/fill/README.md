@@ -15,4 +15,15 @@ https://www.prisma.io/dataguide/mongodb/setting-up-a-local-mongodb-database#sett
 
 As for running the python script, you may have to install Anaconda. This is a package manager
 for python and makes importing packages super easy! If you are a computer science major, you'll
-likely need it in future computer science classes.
+likely need it in future computer science classes. Here's the download link:
+https://www.anaconda.com/download
+
+Once you install Anaconda, you can run the Anaconda Prompt and install a few packages, Anaconda
+might come with them by default:
+```
+pip install pandas numpy
+```
+
+> [!WARNING]
+> Make you sure enter `python fillDb.py` instead of `py fillDb.py` to run the program. Packages will not
+> be imported properly otherwise.
