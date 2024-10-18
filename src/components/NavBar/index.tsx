@@ -21,7 +21,8 @@ export default function ButtonAppBar() {
           }}
         >
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit">Link 1</Button>
+            <Button color="inherit">Home</Button>
+            <Button color="inherit">Stats</Button>
           </Box>
 
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
@@ -37,7 +38,8 @@ export default function ButtonAppBar() {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit">Link 2</Button>
+            <Button color="inherit">Volunteers</Button>
+            <Button color="inherit">Sessions</Button>
           </Box>
         </Toolbar>
       </AppBar>
