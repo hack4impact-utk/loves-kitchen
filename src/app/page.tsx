@@ -13,6 +13,10 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import Reset from '@/components/Reset';
 
+import CheckIcon from '@mui/icons-material/Check';
+import { Box, Typography, Alert, Button } from '@mui/material';
+import ErrorIcon from '@mui/icons-material/Error';
+
 const Main = () => {
   const firstLoad = useRef<boolean>(false);
   const [volInput, setInput] = useState<any>({
@@ -20,6 +24,12 @@ const Main = () => {
     age: '',
   });
   const [vols, setVols] = useState<Volunteer[]>([]);
+
+  const [isCheckedIn, setIsCheckedIn] = useState(false);
+
+  const toggleCheckIn = () => {
+    setIsCheckedIn((prev) => !prev);
+  };
 
   useEffect(() => {
     if (!firstLoad.current) {
@@ -39,6 +49,7 @@ const Main = () => {
   if (error) return <div>{error.message}</div>;
 
   function handleChange(e: React.FormEvent<HTMLInputElement>) {
+    toggleCheckIn();
     const target = e.target as HTMLInputElement;
     if (target.id === 'name') {
       setInput({
@@ -59,6 +70,49 @@ const Main = () => {
 
   return (
     <div className="flex flex-col items-center bg-slate-900 text-white">
+      <Button variant="contained" onClick={toggleCheckIn} sx={{ m: 2 }}>
+        {isCheckedIn ? 'Check Out' : 'Check In'}
+      </Button>
+      {user && (
+        <Box>
+          <Typography
+            variant="h2"
+            className="mt-20 md:mt-10 lg:mt-5 text-4xl md:text-3xl lg:text-2xl text-center"
+            gutterBottom
+          >
+            Hello, {user.name}!
+          </Typography>
+          <Box className="bg-slate-700 flex flex-col items-center px-3 py-5 rounded-xl">
+            <Image
+              src={user.picture ?? ''}
+              alt={user.name ?? ''}
+              width={100}
+              height={100}
+              priority
+              className="rounded-full m-5"
+            />
+            <Typography variant="h5" className="mt-2 text-2xl">
+              {user.name}
+            </Typography>
+            <Typography variant="body1" className="text-neutral-400">
+              {user.email}
+            </Typography>
+            <Alert
+              icon={
+                isCheckedIn ? (
+                  <CheckIcon fontSize="inherit" />
+                ) : (
+                  <ErrorIcon fontSize="inherit" />
+                )
+              }
+              className="my-3"
+              severity={isCheckedIn ? 'success' : 'warning'} // Change severity based on status
+            >
+              {isCheckedIn ? 'Checked in.' : 'Not checked in.'}
+            </Alert>
+          </Box>
+        </Box>
+      )}
       <div className="flex mt-5">
         <a
           href="/api/auth/login"
@@ -73,20 +127,6 @@ const Main = () => {
           Log Out
         </a>
       </div>
-      {user && (
-        <div className="bg-slate-700 flex flex-col items-center px-3 py-5 rounded-xl">
-          <Image
-            src={user.picture ?? ''}
-            alt={user.name ?? ''}
-            width={100}
-            height={100}
-            priority
-            className="rounded-full"
-          />
-          <p className="text-2xl">{user.name}</p>
-          <p className="text-neutral-400">{user.email}</p>
-        </div>
-      )}
       <div className="flex flex-row">
         <div className="m-auto w-[20vw] mx-[10vw]">
           <h1 className="text-3xl p-5 w-fit">
