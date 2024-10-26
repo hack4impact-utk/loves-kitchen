@@ -12,6 +12,7 @@ import { Volunteer } from '@/server/models/Vol';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import Reset from '@/components/Reset';
+import NavBar from '@/components/NavBar';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, Typography, Alert, Button } from '@mui/material';
@@ -23,7 +24,6 @@ const Main = () => {
     name: '',
     age: '',
   });
-  const [vols, setVols] = useState<Volunteer[]>([]);
 
   // Temporary check in state for developers
   const [isCheckedIn, setIsCheckedIn] = useState(false);
@@ -33,6 +33,7 @@ const Main = () => {
     setIsCheckedIn((prev) => !prev);
   };
 
+  const [vols, setVols] = useState<Volunteer[]>([]);
   useEffect(() => {
     if (!firstLoad.current) {
       const fetchData = async () => {
@@ -71,13 +72,14 @@ const Main = () => {
   }
 
   return (
-    <div className="flex flex-col items-center bg-slate-900 text-white">
-      <Button variant="contained" onClick={toggleCheckIn} sx={{ m: 2 }}>
-        {isCheckedIn ? 'Check Out' : 'Check In'}
-      </Button>
+    <>
+      <div className="flex flex-col items-center bg-slate-900 text-white">
+        <Button variant="contained" onClick={toggleCheckIn} sx={{ m: 2 }}>
+          {isCheckedIn ? 'Check Out' : 'Check In'}
+        </Button>
 
-      {/* If user is logged in. */}
-      {user && (
+        {/* If user is logged in. */}
+        {user && (
         <Box>
           {/* Display user's name */}
 
@@ -163,61 +165,86 @@ const Main = () => {
               );
             })}
           </div>
-        </div>
-        <div className="w-[50vw] h-[100vh] flex items-center justify-center">
-          <div className="flex flex-col items-center">
-            <h1 className="text-3xl p-5 w-fit">User Input</h1>
-            <div className="flex">
-              <input
-                id="name"
-                value={volInput.name}
-                onChange={handleChange}
-                placeholder="Name"
-                className="block m-5 p-2 rounded-md text-black"
-              ></input>
-              <input
-                id="age"
-                value={volInput.age}
-                onChange={handleChange}
-                placeholder="Age"
-                className="block m-5 p-2 rounded-md text-black"
-              ></input>
+        )}
+        <div className="flex flex-row">
+          <div className="m-auto w-[20vw] mx-[10vw]">
+            <h1 className="text-3xl p-5 w-fit">
+              Volunteers <span className="text-gray-400 text-lg">(scroll)</span>
+            </h1>
+            <div className="h-[80vh] overflow-scroll bg-black rounded-lg border-[2px] border-white scrollbar-none">
+              {vols.map((vol) => {
+                return (
+                  <div
+                    key={JSON.stringify(vol)}
+                    className="p-5 border-gray-700 border-[2px] m-5 rounded-xl hover:bg-neutral-900"
+                  >
+                    <p className="text-2xl">{vol.name}</p>
+                    <p className="text-gray-400">
+                      Age: {vol.age ? vol.age.toString() : ''}
+                    </p>
+                    <p className="text-gray-400">
+                      Date: {new Date(vol.createdAt).toLocaleString('en-US')}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
-            <div className="flex justify-around gap-5">
-              <button
-                onClick={() => {
-                  const temp = volInput;
-                  temp.age = parseFloat(temp.age);
-                  addVol(temp);
-                  const refresh = async () => {
-                    setVols([]);
-                    setVols(await findVol());
-                  };
-                  refresh();
-                }}
-                className="bg-green-600 hover:bg-green-400 text-white p-2 w-[75px] rounded-lg"
-              >
-                Add
-              </button>
-              <button
-                onClick={() => {
-                  delVol({ name: volInput.name });
-                  const refresh = async () => {
-                    setVols([]);
-                    setVols(await findVol());
-                  };
-                  refresh();
-                }}
-                className="bg-red-600 hover:bg-red-400 text-white p-2 w-[75px] rounded-lg"
-              >
-                Delete
-              </button>
-              <Reset setter={setVols} />
+          </div>
+          <div className="w-[50vw] h-[100vh] flex items-center justify-center">
+            <div className="flex flex-col items-center">
+              <h1 className="text-3xl p-5 w-fit">User Input</h1>
+              <div className="flex">
+                <input
+                  id="name"
+                  value={volInput.name}
+                  onChange={handleChange}
+                  placeholder="Name"
+                  className="block m-5 p-2 rounded-md text-black"
+                ></input>
+                <input
+                  id="age"
+                  value={volInput.age}
+                  onChange={handleChange}
+                  placeholder="Age"
+                  className="block m-5 p-2 rounded-md text-black"
+                ></input>
+              </div>
+              <div className="flex justify-around gap-5">
+                <button
+                  onClick={() => {
+                    const temp = volInput;
+                    temp.age = parseFloat(temp.age);
+                    addVol(temp);
+                    const refresh = async () => {
+                      setVols([]);
+                      setVols(await findVol());
+                    };
+                    refresh();
+                  }}
+                  className="bg-green-600 hover:bg-green-400 text-white p-2 w-[75px] rounded-lg"
+                >
+                  Add
+                </button>
+                <button
+                  onClick={() => {
+                    delVol({ name: volInput.name });
+                    const refresh = async () => {
+                      setVols([]);
+                      setVols(await findVol());
+                    };
+                    refresh();
+                  }}
+                  className="bg-red-600 hover:bg-red-400 text-white p-2 w-[75px] rounded-lg"
+                >
+                  Delete
+                </button>
+                <Reset setter={setVols} />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
