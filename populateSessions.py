@@ -23,6 +23,8 @@ startSession = []
 for i in names: #random start time, for testing
   startHour = random.randint(10, 12)
   startMinute = random.randint(0, 59)
+  if startMinute <= 9: 
+    startMinute = f"0{startMinute}"
   startTime = f"{startHour}:{startMinute}"
   startSession.append(startTime)
 
@@ -31,6 +33,11 @@ for i in names:  #random total time
   totalTime = random.randint(0,8)
   totalSession.append(totalTime)
 
+ages = []
+for i in names:
+  age = random.randint(16,75)
+  ages.append(age)
+
 
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["dummy_base"]
@@ -38,8 +45,8 @@ mycol = mydb["vols"]
 
 
 document = [
-    {"name": name, "Start Time": startTime, "Total Time": totalTime}
-    for name, startTime, totalTime in zip(names, startSession, totalSession) #binds each array at index i to each other
+    {"name": name, "age": age, "Start Time": startTime, "Total Time": totalTime}
+    for name, age, startTime, totalTime in zip(names, ages, startSession, totalSession) #binds each array at index i to each other
 ]
 
 if((mycol.find_one() == None) or (document[0]["name"] != mycol.find_one()["name"])): #runs if empty or if first index doesnt equal each other
