@@ -12,6 +12,7 @@ import { Volunteer } from '@/server/models/Vol';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import Reset from '@/components/Reset';
+import VolunteerModal from '@/components/VolunteerModal';
 
 const Main = () => {
   const firstLoad = useRef<boolean>(false);
@@ -59,6 +60,11 @@ const Main = () => {
 
   return (
     <div className="flex flex-col items-center bg-slate-900 text-white">
+      {/* Add the VolunteerModal component */}
+      <div className="mt-5">
+        <VolunteerModal />
+      </div>
+
       <div className="flex mt-5">
         <a
           href="/api/auth/login"
