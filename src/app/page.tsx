@@ -12,11 +12,13 @@ import { Volunteer } from '@/server/models/Vol';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import Reset from '@/components/Reset';
+import VolunteerModal from '@/components/VolunteerModal';
 import NavBar from '@/components/NavBar';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, Typography, Alert, Button } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
+
 
 const Main = () => {
   const firstLoad = useRef<boolean>(false);
@@ -74,6 +76,9 @@ const Main = () => {
   return (
     <>
       <NavBar />
+      <div className="mt-5">
+        <VolunteerModal />
+      </div>
       <div className="flex flex-col items-center bg-slate-900 text-white">
         {/* If user is logged in. */}
         {user && (
