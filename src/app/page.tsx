@@ -19,7 +19,6 @@ import CheckIcon from '@mui/icons-material/Check';
 import { Box, Typography, Alert, Button } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
 
-
 const Main = () => {
   const firstLoad = useRef<boolean>(false);
   const [volInput, setInput] = useState<any>({
@@ -76,10 +75,10 @@ const Main = () => {
   return (
     <>
       <NavBar />
-      <div className="mt-5">
-        <VolunteerModal />
-      </div>
       <div className="flex flex-col items-center bg-slate-900 text-white">
+        <div className="mt-5">
+          <VolunteerModal />
+        </div>
         {/* If user is logged in. */}
         {user && (
           <>
