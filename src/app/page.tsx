@@ -14,6 +14,7 @@ import Image from 'next/image';
 import Reset from '@/components/Reset';
 import VolunteerModal from '@/components/VolunteerModal';
 import NavBar from '@/components/NavBar';
+import DropDown from '@/components/DropDown';
 
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, Typography, Alert, Button } from '@mui/material';
@@ -80,8 +81,9 @@ const Main = () => {
           <VolunteerModal />
         </div>
         {/* If user is logged in. */}
-        {user && (
+        {user && user.email && user.name && (
           <>
+            <DropDown email={user.email} name={user.name} />
             <Button variant="contained" onClick={toggleCheckIn} sx={{ m: 2 }}>
               {isCheckedIn ? 'Check Out' : 'Check In'}
             </Button>
