@@ -12,7 +12,7 @@ import { Volunteer } from '@/server/models/Vol';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import Reset from '@/components/Reset';
-import VolunteersTable from '@/components/volunteer_table';
+import VolunteersTable from '@/components/VolunteerTable';
 import VolunteerModal from '@/components/VolunteerModal';
 import NavBar from '@/components/NavBar';
 import DropDown from '@/components/DropDown';
@@ -236,8 +236,8 @@ const Main = () => {
             </div>
           </div>
         </div>
+        <VolunteersTable volunteers={vols} />
       </div>
-      <VolunteersTable volunteers={vols} />
     </>
   );
 };
