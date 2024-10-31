@@ -1,13 +1,13 @@
 import React from 'react';
 import NavBar from '@/components/NavBar';
 
-const Main = () => {
+const User = () => {
   return (
     <>
       <NavBar />
-      <p className="text-white">Welcome to the sign-in page!</p>
+      <p className="text-white">Welcome to the staff page!</p>
     </>
   );
 };
 
-export default Main;
+export default User;

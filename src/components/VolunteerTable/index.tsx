@@ -66,7 +66,7 @@ export default function VolunteersTable(props: Props) {
         rows={rows}
         columns={columns}
         initialState={{
-          pagination: { paginationModel: { pageSize: 25 } },
+          pagination: { paginationModel: { pageSize: 10 } },
         }}
         slots={{ toolbar: GridToolbar }}
         slotProps={{
