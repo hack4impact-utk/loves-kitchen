@@ -17,6 +17,7 @@ import NavBar from '@/components/NavBar';
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, Typography, Alert, Button } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
+import UserPage from '@/components/UserPage';
 
 const Main = () => {
   const firstLoad = useRef<boolean>(false);
@@ -78,6 +79,8 @@ const Main = () => {
         {/* If user is logged in. */}
         {user && (
           <>
+            {/* Render UserPage when the user is logged in */}
+            <UserPage />
             <Button variant="contained" onClick={toggleCheckIn} sx={{ m: 2 }}>
               {isCheckedIn ? 'Check Out' : 'Check In'}
             </Button>
