@@ -4,14 +4,42 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-// import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import Button from '@mui/material/Button';
-// import { Link } from '@mui/material';
+import AccountMenu from '../AccountMenu';
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 
-export default function ButtonAppBar() {
+interface ButtonAppBarProps {
+  user: UserProfile | undefined;
+  error: Error | undefined;
+  isLoading: boolean;
+}
+
+export default function ButtonAppBar(props: ButtonAppBarProps) {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, position: 'relative' }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: '#fff',
+          padding: 2,
+          borderRadius: 4,
+          zIndex: 1,
+        }}
+        onClick={() => (window.location.href = '/')}
+      >
+        <Image
+          src="/lk-logo.jpg"
+          alt="Love Kitchen Logo"
+          width={200}
+          height={40}
+          layout="intrinsic"
+        />
+      </Box>
+
       <AppBar position="static" color="inherit">
         <Toolbar
           sx={{
@@ -21,25 +49,20 @@ export default function ButtonAppBar() {
           }}
         >
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit">Home</Button>
-            <Button color="inherit">Stats</Button>
-          </Box>
-
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-            {/* <Link href="/" passHref> */}
-            <Image
-              src="/lk-logo.jpg"
-              alt="Love Kitchen Logo"
-              width={100}
-              height={40}
-              layout="intrinsic"
-            />
-            {/* </Link> */}
+            <Button color="inherit" href="/user">
+              user
+            </Button>
+            <Button color="inherit" href="/staff">
+              staff
+            </Button>
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit">Volunteers</Button>
-            <Button color="inherit">Sessions</Button>
+            <AccountMenu
+              user={props.user}
+              error={props.error}
+              isLoading={props.isLoading}
+            />
           </Box>
         </Toolbar>
       </AppBar>
