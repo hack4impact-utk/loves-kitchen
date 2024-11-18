@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Image from 'next/image';
 import Button from '@mui/material/Button';
+import AccountMenu from '../AccountMenu';
 
 export default function ButtonAppBar() {
   return (
@@ -50,8 +51,7 @@ export default function ButtonAppBar() {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit">Volunteers</Button>
-            <Button color="inherit">Sessions</Button>
+            <AccountMenu />
           </Box>
         </Toolbar>
       </AppBar>
