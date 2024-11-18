@@ -55,6 +55,9 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
             <Button color="inherit" href="/staff">
               staff
             </Button>
+            <Button color="inherit" href="/">
+              home
+            </Button>
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
