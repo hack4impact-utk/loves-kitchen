@@ -1,16 +1,13 @@
-'use client';
+import React from 'react';
+import NavBar from '@/components/NavBar';
 
-// import React, { useState } from 'react';
-// import { Box, Button, Typography } from '@mui/material';
-import UserComp from '@/components/UserComp';
-
-const UserPage = () => {
+const User = () => {
   return (
     <>
-      <div>Itsa me</div>
-      <UserComp />
+      <NavBar />
+      <p className="text-white">Welcome to the user page!</p>
     </>
   );
 };
 
-export default UserPage;
+export default User;
