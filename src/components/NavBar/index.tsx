@@ -7,8 +7,15 @@ import Toolbar from '@mui/material/Toolbar';
 import Image from 'next/image';
 import Button from '@mui/material/Button';
 import AccountMenu from '../AccountMenu';
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 
-export default function ButtonAppBar() {
+interface ButtonAppBarProps {
+  user: UserProfile | undefined;
+  error: Error | undefined;
+  isLoading: boolean;
+}
+
+export default function ButtonAppBar(props: ButtonAppBarProps) {
   return (
     <Box sx={{ flexGrow: 1, position: 'relative' }}>
       <Box
@@ -51,7 +58,11 @@ export default function ButtonAppBar() {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <AccountMenu />
+            <AccountMenu
+              user={props.user}
+              error={props.error}
+              isLoading={props.isLoading}
+            />
           </Box>
         </Toolbar>
       </AppBar>
