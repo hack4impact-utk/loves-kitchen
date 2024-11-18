@@ -5,8 +5,10 @@ import NavBar from '@/components/NavBar';
 import UserInfo from '@/components/UserInfo';
 import SessionTable from '@/components/SessionTable';
 import { Session } from '@/server/models/Session';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const User = () => {
+  const { user, error, isLoading } = useUser();
   const currentTime = new Date(Date.now());
   const currentTimeStr =
     currentTime.toLocaleDateString() + ' ' + currentTime.toLocaleTimeString();
@@ -49,7 +51,7 @@ const User = () => {
           </a>
         </div>
 
-        <UserInfo />
+        <UserInfo user={user} error={error} isLoading={isLoading} />
 
         <div className="flex gap-5">
           <div className="w-[300px] h-[150px] rounded-xl p-5 bg-black bg-opacity-50 flex flex-col justify-around">
