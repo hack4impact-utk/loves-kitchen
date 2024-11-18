@@ -17,7 +17,7 @@ import NavBar from '@/components/NavBar';
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, Typography, Alert, Button } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
-import UserPage from '@/components/UserPage';
+import UserPage from '@/components/UserComp';
 
 const Main = () => {
   const firstLoad = useRef<boolean>(false);

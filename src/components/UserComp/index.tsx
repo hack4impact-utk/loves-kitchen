@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 
-const UserPage = () => {
+const UserComp = () => {
   const [isSignedIn, setIsSignedIn] = useState(true);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
 
@@ -77,4 +77,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default UserComp;
