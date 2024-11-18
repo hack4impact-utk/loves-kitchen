@@ -1,10 +1,15 @@
+'use client';
+
 import React from 'react';
 import NavBar from '@/components/NavBar';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const Main = () => {
+  const { user, error, isLoading } = useUser();
+
   return (
     <>
-      <NavBar />
+      <NavBar user={user} error={error} isLoading={isLoading} />
       <p className="text-white">Welcome to the sign-in page!</p>
     </>
   );
