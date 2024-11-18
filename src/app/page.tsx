@@ -1,8 +1,9 @@
 'use client';
+
 import React from 'react';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import NavBar from '@/components/NavBar';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 import { Box, Typography } from '@mui/material';
 import Link from 'next/link';
@@ -15,7 +16,7 @@ const Main = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar user={user} error={error} isLoading={isLoading} />
       <div className="flex flex-col items-center bg-slate-900 text-white min-h-screen">
         <Box
           sx={{

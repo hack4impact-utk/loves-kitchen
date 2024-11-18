@@ -9,21 +9,26 @@ import {
   createTheme,
   ThemeProvider,
 } from '@mui/material';
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckIcon from '@mui/icons-material/Check';
 import SearchIcon from '@mui/icons-material/Search';
 
-const UserInfo = () => {
-  const { user, error, isLoading } = useUser();
+interface UserInfoProps {
+  user: UserProfile | undefined;
+  error: Error | undefined;
+  isLoading: boolean;
+}
+
+const UserInfo = (props: UserInfoProps) => {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
 
   const toggleCheckIn = () => {
     setIsCheckedIn((prev) => !prev);
   };
 
-  if (error) {
+  if (props.error) {
     console.log('Error: failed to load user credentials.');
   }
 
@@ -37,24 +42,24 @@ const UserInfo = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      {typeof user != 'undefined' ? (
+      {typeof props.user != 'undefined' ? (
         <>
           <Box className="bg-slate-700 flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative">
             {' '}
             {/* LOGIN SUCCESSFULL */}
             <Image
-              src={user.picture ?? ''}
-              alt={user.name ?? ''}
+              src={props.user.picture ?? ''}
+              alt={props.user.name ?? ''}
               width={100}
               height={100}
               priority
               className="rounded-full m-5"
             />
             <Typography variant="h5" className="mt-2 text-2xl text-white">
-              {user.name}
+              {props.user.name}
             </Typography>
             <Typography variant="body1" className="text-[#a7a7a7]">
-              {user.email}
+              {props.user.email}
             </Typography>
             {/* Alert using MUI that displays if a user is checked in. */}
             <Alert
@@ -80,7 +85,7 @@ const UserInfo = () => {
             </Button>
           </Box>
         </>
-      ) : isLoading ? (
+      ) : props.isLoading ? (
         <>
           {' '}
           {/* LOGIN PENDING */}
