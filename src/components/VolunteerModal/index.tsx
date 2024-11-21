@@ -1,18 +1,16 @@
-import {useState} from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 import Modal from '@mui/material/Modal';
-import IconButton from '@mui/material/IconButton';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import Brightness1SharpIcon from '@mui/icons-material/Brightness1Sharp';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { Volunteer } from '@/server/models/Vol';
 
-type Flag = {
-  description: string;
-  color: string;
+type VolunteerModalProps = {
+  open: boolean;
+  handleClose: () => void;
+  volunteer: Volunteer;
 };
 
 const style = {
@@ -20,181 +18,162 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
+  maxHeight: '90vh',
+  overflowY: 'auto',
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
+  borderRadius: '12px',
   p: 4,
 };
 
-const colorMap = {
-  error: '#d32f2f',
-  success: '#388e3c',
-  warning: '#f57c00',
-  info: '#1976d2',
+const sessionStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  mt: 2,
+  p: 1,
+  bgcolor: 'rgba(0, 0, 0, 0.03)',
+  borderRadius: '8px',
 };
 
+const mockSessions = [
+  {
+    date: '2024-01-01T00:00:00.000Z',
+    length: 3,
+    note: 'Assisted with event setup.',
+  },
+  {
+    date: '2024-01-15T00:00:00.000Z',
+    length: 4.5,
+    note: 'Managed registration booth.',
+  },
+];
 
-export default function VolunteerModal() {
-  const [open, setOpen] = useState(false);
-  const [inputOpen, setInputOpen] = useState(false);
-  const [flags, setFlags] = useState<Flag[]>([]);
-  const [flag, setFlag] = useState<Flag>({ description: '', color: ''});
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+export default function VolunteerModal({
+  open,
+  handleClose,
+  volunteer,
+}: VolunteerModalProps) {
+  const [sessions, setSessions] = useState(mockSessions);
+  const [newNote, setNewNote] = useState('');
+  const [selectedSessionIndex, setSelectedSessionIndex] = useState<
+    number | null
+  >(null);
 
-  /* Hardcoded volunteer data */
-  const volunteer = {
-    name: 'Jane Harris',
-    age: 29,
-    accountCreated: '2023-05-01',
+  const handleAddNote = () => {
+    if (selectedSessionIndex !== null && newNote.trim() !== '') {
+      const updatedSessions = [...sessions];
+      updatedSessions[selectedSessionIndex].note = newNote;
+      setSessions(updatedSessions);
+      setNewNote('');
+      setSelectedSessionIndex(null);
+    }
   };
 
-  function handleInput(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    setFlag({ ...flag, description: event.target.value });
-  }
-
-  function addFlag(color: string) {
-    if (flag.description) {
-      console.log(color);
-      setFlags((prev) => {
-        return [...prev, {description: flag?.description, color: color}];
-      });
-
-      setFlag({ description: '', color: '' });
-    }
-  }
-
-  function deleteFlag(id: number) {
-    const filtered = flags.filter((_, index) => index !== id);
-    setFlags(filtered);
-  }
-
   return (
-    <div>
-      <Button
-        variant="contained"
-        onClick={handleOpen}
-        style={{ backgroundColor: 'white', color: 'green', zIndex: 1000 }}
-      >
-        Open Volunteer Info
-      </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Volunteer Information
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <strong>Name:</strong> {volunteer.name}
-          </Typography>
-          <Typography sx={{ mt: 1 }}>
-            <strong>Age:</strong> {volunteer.age}
-          </Typography>
-          <Typography sx={{ mt: 1 }}>
-            <strong>Account Created:</strong> {volunteer.accountCreated}
-          </Typography>
-          <Typography sx={{ mt: 1 }}>
-            <strong>Flags</strong>
-          </Typography>
-          {flags.map((flag, index) => (
-            <Box key={index} sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Typography
-                sx={{
-                  color: colorMap[flag.color as keyof typeof colorMap] || 'black', 
-                  border: `2px solid ${colorMap[flag.color as keyof typeof colorMap] || 'black'}`,
-                  width: '90%',
-                  padding: '3px',
-                  wordBreak: 'break-word',
-                  mt: 1, 
-                }}
-              >
-                {flag.description}
+    <Modal open={open} onClose={handleClose} aria-labelledby="modal-title">
+      <Box sx={style}>
+        <Typography id="modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
+          {`${volunteer.name}'s Information`}
+        </Typography>
+        <Divider />
+        <Typography sx={{ mt: 2, fontSize: '18px', fontWeight: 'bold' }}>
+          General Information
+        </Typography>
+        <Typography sx={{ mt: 1 }}>
+          <strong>Age:</strong> {volunteer.age}
+        </Typography>
+        <Typography sx={{ mt: 1 }}>
+          <strong>Account Created:</strong>{' '}
+          {new Date(volunteer.createdAt).toLocaleDateString('en-US')}
+        </Typography>
+        <Divider sx={{ mt: 2 }} />
+        <Typography sx={{ mt: 2, fontSize: '18px', fontWeight: 'bold' }}>
+          Sessions
+        </Typography>
+        {sessions.map((session, index) => (
+          <Box key={index} sx={sessionStyle}>
+            <Box>
+              <Typography>
+                <strong>Date:</strong>{' '}
+                {new Date(session.date).toLocaleDateString('en-US')}
               </Typography>
-              <IconButton
-                size="small"
-                onClick={() => deleteFlag(index)}
-              >
-                <DeleteIcon />
-              </IconButton>
+              <Typography>
+                <strong>Length:</strong> {session.length} hours
+              </Typography>
+              {session.note && (
+                <Typography sx={{ mt: 1 }}>
+                  <strong>Note:</strong> {session.note}
+                </Typography>
+              )}
             </Box>
-          ))}
-          {inputOpen && (
-            <Box
+            <Button
               sx={{
-                borderRadius: 2,
-                mt: 2,
+                color: '#478c8c',
+                borderColor: '#478c8c',
+                '&:hover': {
+                  backgroundColor: 'rgba(71, 140, 140, 0.1)',
+                  borderColor: '#478c8c',
+                },
               }}
+              variant="outlined"
+              size="small"
+              onClick={() => setSelectedSessionIndex(index)}
             >
-              <TextareaAutosize
-                placeholder="Add your comment here"
-                minRows={3}
-                maxRows={5}
-                style={{ width: '100%' }}
-                onChange={handleInput}
-                value={flag.description}
-              />
-              <div style={{display: 'flex', justifyContent: 'center'}}>
-                <IconButton
-                  color="success"
-                  onClick={() => {
-                    setFlag(prev => ({ ...prev, color: 'success' }));
-                    addFlag("success");
-                  }}
-                >
-                  <Brightness1SharpIcon/>
-                </IconButton>
-                <IconButton
-                  color="warning"
-                  onClick={() => {
-                    setFlag(prev => ({ ...prev, color: 'warning' }));
-                    addFlag("warning");
-                  }}
-                >
-                  <Brightness1SharpIcon/>
-                </IconButton>
-                <IconButton
-                  color="error"
-                  onClick={() => {
-                    setFlag(prev => ({ ...prev, color: 'error' }));
-                    addFlag("error");
-                  }}
-                >
-                  <Brightness1SharpIcon/>
-                </IconButton>  
-                <IconButton
-                  color="default"
-                  onClick={() => {
-                    setFlag(prev => ({ ...prev, color: 'default' }));
-                    addFlag("default");
-                  }}
-                >
-                  <Brightness1SharpIcon/>
-                </IconButton>
-              </div>
-            </Box>
-          )}
-          <IconButton
-            color="success"
-            onClick={() => setInputOpen(prev => !prev)}
-            sx={{display: 'block'}}
-          >
-            {inputOpen ? <RemoveCircleOutlineIcon fontSize='large'/> : <AddCircleOutlineIcon fontSize='large'/>}
-          </IconButton>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={handleClose}
-            sx={{ mt: 2 }}
-          >
-            Close
-          </Button>
-        </Box>
-      </Modal>
-    </div>
+              Add Note
+            </Button>
+          </Box>
+        ))}
+        {selectedSessionIndex !== null && (
+          <Box sx={{ mt: 2 }}>
+            <Typography sx={{ mb: 1 }}>Add a note for this session:</Typography>
+            <TextareaAutosize
+              minRows={3}
+              maxRows={5}
+              placeholder="Enter your note here"
+              style={{
+                width: '100%',
+                padding: '8px',
+                borderRadius: '8px',
+                border: '1px solid rgba(0, 0, 0, 0.3)',
+              }}
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+            />
+            <Button
+              variant="contained"
+              sx={{
+                mt: 2,
+                backgroundColor: '#62392b',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#502d24',
+                },
+              }}
+              onClick={handleAddNote}
+              disabled={!newNote.trim()}
+            >
+              Save Note
+            </Button>
+          </Box>
+        )}
+        <Button
+          variant="outlined"
+          onClick={handleClose}
+          sx={{
+            mt: 3,
+            color: '#478c8c',
+            borderColor: '#478c8c',
+            '&:hover': {
+              backgroundColor: 'rgba(71, 140, 140, 0.1)',
+              borderColor: '#478c8c',
+            },
+          }}
+        >
+          Close
+        </Button>
+      </Box>
+    </Modal>
   );
 }
