@@ -34,7 +34,7 @@ const User = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar user={user} error={error} isLoading={isLoading} />
       <div className="bg-slate-900 flex flex-col items-center p-5 gap-10">
         <div className="flex gap-5">
           <a

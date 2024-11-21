@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import VolunteersTable from '@/components/VolunteerTable';
 import VolunteerModal from '@/components/VolunteerModal';
@@ -6,6 +7,7 @@ import FlagModal from '@/components/FlagModal';
 import NavBar from '@/components/NavBar';
 import { Volunteer } from '@/server/models/Vol';
 import Divider from '@mui/material/Divider';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const Staff = () => {
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
@@ -14,6 +16,7 @@ const Staff = () => {
   );
   const [isVolunteerModalOpen, setVolunteerModalOpen] = useState(false);
   const [isFlagModalOpen, setFlagModalOpen] = useState(false);
+  const { user, error, isLoading } = useUser();
 
   // Fetch volunteers from the server
   useEffect(() => {
@@ -50,7 +53,7 @@ const Staff = () => {
 
   return (
     <div style={{ backgroundColor: '#f4f5f7', minHeight: '100vh' }}>
-      <NavBar />
+      <NavBar user={user} error={error} isLoading={isLoading} />
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
         <div
           style={{
