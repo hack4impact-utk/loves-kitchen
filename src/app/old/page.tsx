@@ -79,7 +79,18 @@ const Old = () => {
       <NavBar user={user} error={error} isLoading={isLoading} />
       <div className="flex flex-col items-center bg-slate-900 text-white">
         <div className="mt-5">
-          <VolunteerModal />
+          <VolunteerModal
+            open={false}
+            handleClose={() => {}}
+            volunteer={{
+              _id: 'placeholder-id',
+              name: 'Placeholder Name',
+              age: 0,
+              createdAt: new Date().toISOString(),
+              flags: [],
+              sessions: [],
+            }}
+          />
         </div>
         {/* If user is logged in. */}
         {user && user.email && user.name && (
@@ -157,7 +168,11 @@ const Old = () => {
         {/* Data display and management */}
         <div className="flex flex-row">
           {/* Data display */}
-          <VolunteersTable volunteers={vols} />
+          <VolunteersTable
+            volunteers={vols}
+            onView={() => {}}
+            onFlags={() => {}}
+          />
 
           {/* Data management */}
           <div className="w-[50vw] h-[100vh] flex items-center justify-center">

@@ -6,7 +6,7 @@ import {
   DataGrid,
   GridColDef,
   GridEventListener,
-  GridToolbar,
+  // GridToolbar,
   GridValidRowModel,
 } from '@mui/x-data-grid';
 import { Session } from '@/server/models/Session';
@@ -53,7 +53,11 @@ const SessionTable = (props: SessionTableProps) => {
   };
 
   return (
-    <div>
+    <div className="bg-white p-5 rounded-lg w-[50vw]">
+      <p className="text-2xl border-b border-b-neutral-300 pb-4 mb-4">
+        <b>Sessions</b>
+      </p>
+
       <ThemeProvider theme={theme}>
         <DataGrid
           onRowClick={handleRowClick}
@@ -62,20 +66,23 @@ const SessionTable = (props: SessionTableProps) => {
           initialState={{
             pagination: { paginationModel: { pageSize: 10 } },
           }}
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 500 },
-            },
-          }}
+          // slots={{ toolbar: GridToolbar }}
+          // slotProps={{
+          //   toolbar: {
+          //     showQuickFilter: true,
+          //     quickFilterProps: { debounceMs: 500 },
+          //   },
+          // }}
           disableRowSelectionOnClick
           sx={{
             '& .MuiDataGrid-cell': {
-              color: 'white', // White text for cells
+              color: 'black', // White text for cells
+            },
+            '& .MuiDataGrid-row:nth-of-type(odd)': {
+              backgroundColor: 'rgba(255, 255, 255, 1)', // Alternating row color
             },
             '& .MuiDataGrid-row:nth-of-type(even)': {
-              backgroundColor: 'rgba(0, 0, 50, 0.6)', // Alternating row color
+              backgroundColor: 'rgba(255, 255, 255, 1)', // Alternating row color
             },
             '& .MuiDataGrid-columnHeaders': {
               backgroundColor: 'white', // Column headers background
