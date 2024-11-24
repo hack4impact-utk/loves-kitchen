@@ -50,7 +50,7 @@ def main():
     print("Trying to connect to local MongoDB database...")
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = myclient["dummy_base"]
-    usercol = mydb["users"]
+    usercol = mydb["vols"]
     seshcol = mydb["sessions"]
     print("Successfully connected! Generating volunteers...")
 
