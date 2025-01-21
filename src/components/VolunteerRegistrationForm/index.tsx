@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 
 const VolunteerRegistrationForm = () => {
@@ -10,7 +11,7 @@ const VolunteerRegistrationForm = () => {
     email: '',
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,25 +63,59 @@ const VolunteerRegistrationForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: 'auto', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        maxWidth: '400px',
+        margin: 'auto',
+        padding: '20px',
+        backgroundColor: '#f9f9f9',
+        borderRadius: '8px',
+      }}
+    >
       <h2>Volunteer Registration</h2>
-      {['firstName', 'lastName', 'age', 'address', 'phone', 'email'].map((field) => (
-        <div key={field} style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'block', marginBottom: '8px' }}>
-            {field.charAt(0).toUpperCase() + field.slice(1)}
-          </label>
-          <input
-            type={field === 'age' ? 'number' : field === 'email' ? 'email' : 'text'}
-            name={field}
-            value={formData[field as keyof typeof formData]}
-            onChange={handleChange}
-            style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
-            required
-          />
-          {errors[field] && <span style={{ color: 'red' }}>{errors[field]}</span>}
-        </div>
-      ))}
-      <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#007BFF', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+      {['firstName', 'lastName', 'age', 'address', 'phone', 'email'].map(
+        (field) => (
+          <div key={field} style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', marginBottom: '8px' }}>
+              {field.charAt(0).toUpperCase() + field.slice(1)}
+            </label>
+            <input
+              type={
+                field === 'age'
+                  ? 'number'
+                  : field === 'email'
+                    ? 'email'
+                    : 'text'
+              }
+              name={field}
+              value={formData[field as keyof typeof formData]}
+              onChange={handleChange}
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+              }}
+              required
+            />
+            {errors[field] && (
+              <span style={{ color: 'red' }}>{errors[field]}</span>
+            )}
+          </div>
+        )
+      )}
+      <button
+        type="submit"
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#007BFF',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}
+      >
         Submit
       </button>
     </form>

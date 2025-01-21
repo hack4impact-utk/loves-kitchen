@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from 'mongoose';
+import { NextResponse } from 'next/server';
 
 /* Define the Volunteer schema */
 const volunteerSchema = new mongoose.Schema({
@@ -11,32 +11,42 @@ const volunteerSchema = new mongoose.Schema({
   email: { type: String, required: true },
 });
 
-const Volunteer = mongoose.models.Volunteer || mongoose.model('Volunteer', volunteerSchema);
+const Volunteer =
+  mongoose.models.Volunteer || mongoose.model('Volunteer', volunteerSchema);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    try {
-      const { firstName, lastName, age, address, phone, email } = req.body;
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { firstName, lastName, age, address, phone, email } = body;
 
-      /* Validate incoming data */
-      if (!firstName || !lastName || !age || !address || !phone || !email) {
-        return res.status(400).json({ message: 'All fields are required' });
-      }
-
-      /* Connect to MongoDB */
-      await mongoose.connect(process.env.MONGODB_URI);
-
-      /* Save the new volunteer to the database */
-      const volunteer = new Volunteer({ firstName, lastName, age, address, phone, email });
-      await volunteer.save();
-
-      res.status(201).json({ message: 'Volunteer registered successfully' });
-    } catch (error) {
-      console.error('Error saving volunteer:', error);
-      res.status(500).json({ message: 'Internal server error' });
+    if (!firstName || !lastName || !age || !address || !phone || !email) {
+      return NextResponse.json(
+        { message: 'All fields are required' },
+        { status: 400 }
+      );
     }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).json({ message: `Method ${req.method} not allowed` });
+
+    await mongoose.connect(process.env.MONGODB_URI!);
+
+    const volunteer = new Volunteer({
+      firstName,
+      lastName,
+      age,
+      address,
+      phone,
+      email,
+    });
+    await volunteer.save();
+
+    return NextResponse.json(
+      { message: 'Volunteer registered successfully' },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error saving volunteer:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
