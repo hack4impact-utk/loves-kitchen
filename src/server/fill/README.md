@@ -21,7 +21,7 @@ https://www.anaconda.com/download
 Once you install Anaconda, you can run the Anaconda Prompt and install a few packages, Anaconda
 might come with them by default:
 ```
-pip install pandas numpy
+pip install pymongo names
 ```
 
 > [!WARNING]
