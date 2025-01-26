@@ -68,7 +68,10 @@ export default function VolunteersTable({
             sx={{
               color: '#478c8c',
             }}
-            onClick={() => onView(params.row)}
+            onClick={() => {
+              console.log('View clicked:', params.row);
+              onView(params.row);
+            }}
           >
             <VisibilityIcon />
           </IconButton>
@@ -76,7 +79,10 @@ export default function VolunteersTable({
             sx={{
               color: '#62392b',
             }}
-            onClick={() => onFlags(params.row)}
+            onClick={() => {
+              console.log('Flags clicked:', params.row);
+              onFlags(params.row);
+            }}
           >
             <FlagIcon />
           </IconButton>
@@ -93,7 +99,14 @@ export default function VolunteersTable({
 
   return (
     <div style={{ height: 400, width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} />
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        onRowClick={(params) => {
+          console.log('Row clicked:', params.row);
+          onView(params.row);
+        }}
+      />
     </div>
   );
 }
