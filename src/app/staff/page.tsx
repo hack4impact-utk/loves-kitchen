@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import VolunteersTable from '@/components/VolunteerTable';
-import VolunteerModal from '@/components/VolunteerModal';
-import FlagModal from '@/components/FlagModal';
+import VolunteerDrawer from '@/components/VolunteerDrawer'; // Updated sidepage component
 import NavBar from '@/components/NavBar';
 import { Volunteer } from '@/server/models/Vol';
 import Divider from '@mui/material/Divider';
@@ -14,8 +13,7 @@ const Staff = () => {
   const [selectedVolunteer, setSelectedVolunteer] = useState<Volunteer | null>(
     null
   );
-  const [isVolunteerModalOpen, setVolunteerModalOpen] = useState(false);
-  const [isFlagModalOpen, setFlagModalOpen] = useState(false);
+  const [isDrawerOpen, setDrawerOpen] = useState(false); // Drawer state
   const { user, error, isLoading } = useUser();
 
   // Fetch volunteers from the server
@@ -33,22 +31,11 @@ const Staff = () => {
     fetchVolunteers();
   }, []);
 
-  const handleView = (volunteer: Volunteer) => {
-    setSelectedVolunteer(volunteer);
-    setVolunteerModalOpen(true);
-  };
-
-  const handleFlags = (volunteer: Volunteer) => {
-    setSelectedVolunteer(volunteer);
-    setFlagModalOpen(true);
-  };
-
-  const updateVolunteerFlags = (updatedVolunteer: Volunteer) => {
-    setVolunteers((prev) =>
-      prev.map((vol) =>
-        vol._id === updatedVolunteer._id ? updatedVolunteer : vol
-      )
-    );
+  // Open the drawer with the selected volunteer
+  const handleViewVolunteer = (volunteer: Volunteer) => {
+    console.log('Opening drawer for:', volunteer); // Debugging log
+    setSelectedVolunteer(volunteer); // Set the selected volunteer
+    setDrawerOpen(true); // Open the drawer
   };
 
   return (
@@ -76,24 +63,20 @@ const Staff = () => {
           <Divider sx={{ marginBottom: '1rem' }} />
           <VolunteersTable
             volunteers={volunteers}
-            onView={handleView}
-            onFlags={handleFlags}
+            onView={handleViewVolunteer} // Use the drawer open function
+            onFlags={() => {
+              console.log('Flags clicked');
+            }} // Placeholder for flags
           />
         </div>
+
+        {/* Sidepage (Drawer) for Viewing Volunteer Details */}
         {selectedVolunteer && (
-          <>
-            <VolunteerModal
-              open={isVolunteerModalOpen}
-              handleClose={() => setVolunteerModalOpen(false)}
-              volunteer={selectedVolunteer}
-            />
-            <FlagModal
-              open={isFlagModalOpen}
-              handleClose={() => setFlagModalOpen(false)}
-              volunteer={selectedVolunteer}
-              updateVolunteer={updateVolunteerFlags}
-            />
-          </>
+          <VolunteerDrawer
+            open={isDrawerOpen} // Controlled by state
+            onClose={() => setDrawerOpen(false)} // Close the drawer
+            volunteer={selectedVolunteer} // Pass the selected volunteer
+          />
         )}
       </div>
     </div>
