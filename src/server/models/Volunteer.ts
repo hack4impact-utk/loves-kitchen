@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { isConnected } from '@/utils/mymg';
 
 const volunteerSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
@@ -8,6 +9,8 @@ const volunteerSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   email: { type: String, required: true },
 });
+
+isConnected;
 
 const Volunteer =
   mongoose.models.Volunteer || mongoose.model('Volunteer', volunteerSchema);
