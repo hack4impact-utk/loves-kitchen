@@ -1,18 +1,5 @@
-import mongoose from 'mongoose';
+import { Volunteer } from '@/server/models/Volunteer';
 import { NextResponse } from 'next/server';
-
-/* Define the Volunteer schema */
-const volunteerSchema = new mongoose.Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  age: { type: Number, required: true },
-  address: { type: String, required: true },
-  phone: { type: String, required: true },
-  email: { type: String, required: true },
-});
-
-const Volunteer =
-  mongoose.models.Volunteer || mongoose.model('Volunteer', volunteerSchema);
 
 export async function POST(req: Request) {
   try {
@@ -25,8 +12,6 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-
-    await mongoose.connect(process.env.MONGODB_URI!);
 
     const volunteer = new Volunteer({
       firstName,
