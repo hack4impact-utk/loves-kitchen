@@ -15,6 +15,13 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   onClose,
   volunteer,
 }) => {
+  const colorMap: Record<'red' | 'green' | 'orange' | 'gray', string> = {
+    red: '#d32f2f',
+    green: '#388e3c',
+    orange: '#f57c00',
+    gray: '#858585',
+  };
+
   return (
     <Drawer anchor="left" open={open} onClose={onClose}>
       <div style={{ width: 500, padding: '2rem' }}>
@@ -24,9 +31,32 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
         <Divider sx={{ my: 2 }} />
 
         <Box>
-          <Typography variant="subtitle1" gutterBottom>
-            Flags
-          </Typography>
+          {volunteer.flags?.map((flag, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mt: 1,
+              }}
+            >
+              <Typography
+                sx={{
+                  color:
+                    colorMap[flag.color as keyof typeof colorMap] || 'black',
+                  border: `2px solid ${
+                    colorMap[flag.color as keyof typeof colorMap] || 'black'
+                  }`,
+                  width: '90%',
+                  padding: '3px',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {flag.description}
+              </Typography>
+            </Box>
+          ))}
         </Box>
         <Divider sx={{ my: 2 }} />
 

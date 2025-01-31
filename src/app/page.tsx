@@ -4,9 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import NavBar from '@/components/NavBar';
 import { useUser } from '@auth0/nextjs-auth0/client';
-
 import { Box, Typography } from '@mui/material';
-import Link from 'next/link';
 
 const Main = () => {
   // get auth0 server information and make basic loading screen
@@ -22,25 +20,24 @@ const Main = () => {
           sx={{
             mt: 20,
             mb: 2,
-            flexGrow: 1,
             display: 'flex',
             justifyContent: 'center',
-            borderRadius: '12px', // Rounded corners for the box container
-            overflow: 'hidden', // Ensure the image doesn't overflow the box with rounded corners
           }}
         >
           {/* Link component for better interactivity */}
-          <Link href="/" passHref>
+          <a
+            href="https://thelovekitchen.com"
+            className="rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-[105%] hover:shadow-xl"
+          >
             <Image
               src="/lk-logo.jpg"
               alt="Love Kitchen Logo"
-              width={500}
+              width={1000}
               height={200}
-              layout="intrinsic"
-              className="rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl"
+              style={{ width: 'auto', height: 'auto' }}
               // Adding rounded corners to the image and scaling effect on hover
             />
-          </Link>
+          </a>
         </Box>
 
         {/* If user is logged in. */}

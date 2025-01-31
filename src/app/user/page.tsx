@@ -10,24 +10,25 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 const User = () => {
   const { user, error, isLoading } = useUser();
   const currentTime = new Date(Date.now());
-  const currentTimeStr =
-    currentTime.toLocaleDateString() + ' ' + currentTime.toLocaleTimeString();
 
   // use the map function to fetch the data on the volunteers from server
   const sessions: Session[] = [
     {
+      _id: '',
       workedBy: 'John Smith',
-      startTime: currentTimeStr,
+      startTime: currentTime.toISOString(),
       length: 24,
     },
     {
+      _id: '',
       workedBy: 'John Smith',
-      startTime: currentTimeStr,
+      startTime: currentTime.toISOString(),
       length: 24,
     },
     {
+      _id: '',
       workedBy: 'John Smith',
-      startTime: currentTimeStr,
+      startTime: currentTime.toISOString(),
       length: 24,
     },
   ];
