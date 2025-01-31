@@ -7,7 +7,7 @@ export const GET = async function () {
 
   try {
     const volunteers = await volModel.find({});
-    console.log('Fetched volunteers from DB:', volunteers);
+    // console.log('Fetched volunteers from DB:', volunteers);
     return NextResponse.json({ success: true, volunteers }, { status: 200 });
   } catch (error) {
     console.error('Error fetching volunteers:', error);

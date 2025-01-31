@@ -10,6 +10,7 @@ import {
   GridValidRowModel,
 } from '@mui/x-data-grid';
 import { Session } from '@/server/models/Session';
+import { parseISOString } from '@/utils/isoParse';
 
 interface SessionTableProps {
   sessions: Session[];
@@ -20,7 +21,11 @@ const SessionTable = (props: SessionTableProps) => {
   const rows: GridValidRowModel[] = props.sessions.map((session, index) => ({
     id: index + 1, //since there is not unique id defined in Vols interface, create my own with index ++
     workedBy: session.workedBy,
-    startTime: session.startTime,
+    startTime: parseISOString(session.startTime).toLocaleTimeString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }),
     length: session.length,
   }));
 
@@ -66,6 +71,7 @@ const SessionTable = (props: SessionTableProps) => {
           initialState={{
             pagination: { paginationModel: { pageSize: 10 } },
           }}
+          pageSizeOptions={[10]}
           // slots={{ toolbar: GridToolbar }}
           // slotProps={{
           //   toolbar: {
