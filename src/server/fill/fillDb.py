@@ -47,6 +47,7 @@ def random_datetime(start, end, time_format, prop):
 
     return datetime.fromtimestamp(time.mktime(struct))
 
+
 def generate_flag():
     """Randomly generate flags for a volunteer."""
     flag_messages = {
@@ -73,6 +74,7 @@ def generate_flag():
         flags.extend([{"color": color1, "message": description1}, {"color": color2, "message": description2}])
 
     return flags
+
 
 def main():
     print("Trying to connect to local MongoDB database...")
