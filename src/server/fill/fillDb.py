@@ -15,6 +15,7 @@ def print_all(vols, seshs):
     """
     Prints all the volunteers and sessions for debugging purposes.
     """
+    
     for email in vols:
         print(f"\n\nName: {vols[email]["name"]}")
         print(f"Email: {vols[email]["email"]}")
@@ -131,7 +132,7 @@ def main():
             if i == 0:
                 seshs[email] = []
             seshs[email].append({
-                "email": email,
+                "workedBy": email,
                 "length": length,
                 "startTime": startWorkTime
             })
