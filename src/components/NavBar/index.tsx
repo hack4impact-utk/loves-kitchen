@@ -36,7 +36,8 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
           alt="Love Kitchen Logo"
           width={200}
           height={40}
-          layout="intrinsic"
+          priority
+          style={{ width: 'auto', height: 'auto' }}
         />
       </Box>
 
