@@ -11,11 +11,11 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Volunteer, Flag } from '@/server/models/Vol';
 
-const colorMap: Record<'error' | 'success' | 'warning' | 'info', string> = {
-  error: '#d32f2f',
-  success: '#388e3c',
-  warning: '#f57c00',
-  info: '#858585',
+const colorMap: Record<'red' | 'green' | 'orange' | 'gray', string> = {
+  red: '#d32f2f',
+  green: '#388e3c',
+  orange: '#f57c00',
+  gray: '#858585',
 };
 
 const style = {
