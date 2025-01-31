@@ -19,10 +19,10 @@ export default function VolunteersTable({
   onFlags,
 }: VolunteersTableProps) {
   const colorMap = {
-    error: '#d32f2f',
-    success: '#388e3c',
-    warning: '#f57c00',
-    info: '#858585',
+    red: '#d32f2f',
+    green: '#388e3c',
+    orange: '#f57c00',
+    gray: '#858585',
     default: '#000000',
   };
 
