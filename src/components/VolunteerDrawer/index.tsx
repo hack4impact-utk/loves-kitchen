@@ -1,20 +1,28 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import Drawer from '@mui/material/Drawer';
 import Typography from '@mui/material/Typography';
 import { Volunteer } from '@/server/models/Vol';
 import { Divider, Box } from '@mui/material';
+import FlagModal from '../FlagModal';
 
 interface VolunteerDrawerProps {
   open: boolean;
   onClose: () => void;
   volunteer: Volunteer;
+  setSelectedVol: React.Dispatch<React.SetStateAction<Volunteer | null>>;
+  setVolunteers: React.Dispatch<React.SetStateAction<Volunteer[]>>;
 }
 
 const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   open,
   onClose,
   volunteer,
+  setSelectedVol,
+  setVolunteers,
 }) => {
+  const [isFlagModalOpen, setFlagModalOpen] = useState(false);
+
   const colorMap: Record<'red' | 'green' | 'orange' | 'gray', string> = {
     red: '#d32f2f',
     green: '#388e3c',
@@ -22,85 +30,110 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     gray: '#858585',
   };
 
-  return (
-    <Drawer anchor="left" open={open} onClose={onClose}>
-      <div style={{ width: 500, padding: '2rem' }}>
-        <Typography align="center" variant="h5" gutterBottom>
-          {volunteer.name}
-        </Typography>
-        <Divider sx={{ my: 2 }} />
+  const updateVolunteerFlags = (updatedVolunteer: Volunteer) => {
+    setVolunteers((prev) =>
+      prev.map((vol) =>
+        vol._id === updatedVolunteer._id ? updatedVolunteer : vol
+      )
+    );
+    setSelectedVol(updatedVolunteer);
+  };
 
-        <Box>
-          {volunteer.flags?.map((flag, index) => (
-            <Box
-              key={index}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mt: 1,
-              }}
-            >
-              <Typography
+  return (
+    <>
+      <FlagModal
+        open={isFlagModalOpen}
+        handleClose={() => setFlagModalOpen(false)}
+        volunteer={volunteer}
+        updateVolunteer={updateVolunteerFlags}
+      />
+
+      <Drawer anchor="left" open={open} onClose={onClose}>
+        <div style={{ width: 500, padding: '2rem' }}>
+          <Typography align="center" variant="h5" gutterBottom>
+            {volunteer.name}
+          </Typography>
+          <Divider sx={{ my: 2 }} />
+
+          <Box>
+            {volunteer.flags?.map((flag, index) => (
+              <Box
+                key={index}
                 sx={{
-                  color:
-                    colorMap[flag.color as keyof typeof colorMap] || 'black',
-                  border: `2px solid ${
-                    colorMap[flag.color as keyof typeof colorMap] || 'black'
-                  }`,
-                  width: '90%',
-                  padding: '3px',
-                  wordBreak: 'break-word',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mt: 1,
                 }}
               >
-                {flag.description}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-        <Divider sx={{ my: 2 }} />
+                <Typography
+                  sx={{
+                    color:
+                      colorMap[flag.color as keyof typeof colorMap] || 'black',
+                    border: `2px solid ${
+                      colorMap[flag.color as keyof typeof colorMap] || 'black'
+                    }`,
+                    width: '90%',
+                    padding: '3px',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {flag.description}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+          <button
+            onClick={() => setFlagModalOpen(true)}
+            className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg"
+          >
+            Modify
+          </button>
 
-        <div className="flex gap-5">
-          <div className="w-[300px] h-[150px] rounded-xl p-5 bg-black bg-opacity-50 flex flex-col justify-around">
-            <p className="text-neutral-300">Total Hours</p>
-            <p className="text-white text-[40px]">10.5</p>
-          </div>
+          <Divider sx={{ my: 2 }} />
 
-          <div className="w-[300px] h-[150px] rounded-xl p-5 bg-black bg-opacity-50 flex flex-col justify-around">
-            <p className="text-neutral-300">Average Session</p>
-            <p className="text-white text-[40px]">2 Hours</p>
+          <div className="flex gap-5">
+            <div className="w-[300px] h-[150px] rounded-xl p-5 bg-black bg-opacity-50 flex flex-col justify-around">
+              <p className="text-neutral-300">Total Hours</p>
+              <p className="text-white text-[40px]">10.5</p>
+            </div>
+
+            <div className="w-[300px] h-[150px] rounded-xl p-5 bg-black bg-opacity-50 flex flex-col justify-around">
+              <p className="text-neutral-300">Average Session</p>
+              <p className="text-white text-[40px]">2 Hours</p>
+            </div>
           </div>
+          <Divider sx={{ my: 2 }} />
+
+          <Typography variant="subtitle1" gutterBottom>
+            Sessions
+          </Typography>
+          {volunteer.sessions && volunteer.sessions.length > 0 ? (
+            volunteer.sessions.map((session, index) => (
+              <Box
+                key={index}
+                sx={{
+                  bgcolor: 'rgba(0, 0, 0, 0.03)',
+                  p: 1,
+                  borderRadius: '8px',
+                  mb: 1,
+                }}
+              >
+                <Typography>
+                  <strong>Date:</strong>{' '}
+                  {new Date(session.date).toLocaleDateString('en-US')}
+                </Typography>
+                <Typography>
+                  <strong>Length:</strong> {session.length} hours
+                </Typography>
+              </Box>
+            ))
+          ) : (
+            <Typography>No sessions available.</Typography>
+          )}
         </div>
-        <Divider sx={{ my: 2 }} />
-
-        <Typography variant="subtitle1" gutterBottom>
-          Sessions
-        </Typography>
-        {volunteer.sessions && volunteer.sessions.length > 0 ? (
-          volunteer.sessions.map((session, index) => (
-            <Box
-              key={index}
-              sx={{
-                bgcolor: 'rgba(0, 0, 0, 0.03)',
-                p: 1,
-                borderRadius: '8px',
-                mb: 1,
-              }}
-            >
-              <Typography>
-                <strong>Date:</strong>{' '}
-                {new Date(session.date).toLocaleDateString('en-US')}
-              </Typography>
-              <Typography>
-                <strong>Length:</strong> {session.length} hours
-              </Typography>
-            </Box>
-          ))
-        ) : (
-          <Typography>No sessions available.</Typography>
-        )}
-      </div>
-    </Drawer>
+      </Drawer>
+    </>
   );
 };
 

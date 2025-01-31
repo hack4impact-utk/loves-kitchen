@@ -64,7 +64,7 @@ def generate_flag():
     if RANDOM_FLOAT < PROBABILITIES[0]:
         color = random.choice(["gray", "red", "orange", "green"])
         description = random.choice(flag_messages[color])
-        return {"color": color, "description": description}
+        return [{"color": color, "description": description}]
 
     # chance for 2 flags
     elif RANDOM_FLOAT < (PROBABILITIES[0] + PROBABILITIES[1]):

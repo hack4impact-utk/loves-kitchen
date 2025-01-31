@@ -78,9 +78,6 @@ const Staff = () => {
           <VolunteersTable
             volunteers={volunteers}
             onView={handleViewVolunteer} // Use the drawer open function
-            onFlags={() => {
-              console.log('Flags clicked');
-            }} // Placeholder for flags
           />
         </div>
 
@@ -90,6 +87,8 @@ const Staff = () => {
             open={isDrawerOpen} // Controlled by state
             onClose={() => setDrawerOpen(false)} // Close the drawer
             volunteer={selectedVolunteer} // Pass the selected volunteer
+            setSelectedVol={setSelectedVolunteer}
+            setVolunteers={setVolunteers}
           />
         )}
 
