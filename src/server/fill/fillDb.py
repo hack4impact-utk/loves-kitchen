@@ -17,18 +17,18 @@ def print_all(vols, seshs):
     """
     
     for email in vols:
-        print(f"\n\nName: {vols[email]["name"]}")
-        print(f"Email: {vols[email]["email"]}")
-        print(f"Age: {vols[email]["age"]}")
-        print(f"Created At: {vols[email]["createdAt"].strftime('%m/%d/%Y %I:%M %p')}")
+        print(f"\n\nName: {vols[email]['name']}")
+        print(f"Email: {vols[email]['email']}")
+        print(f"Age: {vols[email]['age']}")
+        print(f"Created At: {vols[email]['createdAt'].strftime('%m/%d/%Y %I:%M %p')}")
         if vols[email]["flags"]:
             print(f"Flags: {vols[email]['flags']}")
 
 
     for email in seshs:
-        print(f"\n\nEmail: {vols[email]["email"]}")
+        print(f"\n\nEmail: {vols[email]['email']}")
         for i in range(len(seshs[email])):
-            print(f"[{i}]: {seshs[email][i]["length"]} hours at {seshs[email][i]["startTime"].strftime('%m/%d/%Y %I:%M %p')}")
+            print(f"[{i}]: {seshs[email][i]['length']} hours at {seshs[email][i]['startTime'].strftime('%m/%d/%Y %I:%M %p')}")
 
 
 def random_datetime(start, end, time_format, prop):
