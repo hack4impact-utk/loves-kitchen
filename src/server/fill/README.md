@@ -4,6 +4,7 @@ This short python script will quickly add 50 different volunteers to your databa
 as we expand on the definition of a user in this project, this script will likely change.
 
 If you do use this script, make sure your env has this variable:
+
 ```
 MONGODB_URI="mongodb://127.0.0.1:27017/database_name"
 ```
@@ -20,8 +21,9 @@ https://www.anaconda.com/download
 
 Once you install Anaconda, you can run the Anaconda Prompt and install a few packages, Anaconda
 might come with them by default:
+
 ```
-pip install pandas numpy
+pip install pymongo names
 ```
 
 > [!WARNING]
