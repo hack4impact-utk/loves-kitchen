@@ -49,10 +49,10 @@ def random_datetime(start, end, time_format, prop):
     return datetime.fromtimestamp(time.mktime(struct))
 
 
-def generate_flag():
+def generate_flags():
     """Randomly generate flags for a volunteer."""
     PROBABILITIES = [.3, .1] # 30% chance for 1 flag, 10% chance for 2 flags
-    flag_messages = {
+    FLAG_MSGS = {
         "gray": ["No flags yet.", "Just chilling.", "Everything is fine."],
         "red": ["Too many unpaid hours.", "Volunteered too much, needs a break.", "Late for the third time this week!"],
         "orange": ["Great volunteer, but could be more punctual.", "Has been doing well, but needs improvement."],
@@ -60,21 +60,26 @@ def generate_flag():
     }
     RANDOM_FLOAT = random.random()
 
-    # chance for 1 flag
+    # Check for 1 flag
     if RANDOM_FLOAT < PROBABILITIES[0]:
         color = random.choice(["gray", "red", "orange", "green"])
-        description = random.choice(flag_messages[color])
-        return [{"color": color, "description": description}]
+        description = random.choice(FLAG_MSGS[color])
+        return [
+            {"color": color, "description": description}
+        ]
 
-    # chance for 2 flags
+    # Check for 2 flags
     elif RANDOM_FLOAT < (PROBABILITIES[0] + PROBABILITIES[1]):
         color1 = random.choice(["gray", "red", "orange", "green"])
         color2 = random.choice([c for c in ["gray", "red", "orange", "green"] if c != color1])
-        description1 = random.choice(flag_messages[color1])
-        description2 = random.choice(flag_messages[color2])
-        return [{"color": color1, "description": description1}, {"color": color2, "description": description2}]
+        description1 = random.choice(FLAG_MSGS[color1])
+        description2 = random.choice(FLAG_MSGS[color2])
+        return [
+            {"color": color1, "description": description1},
+            {"color": color2, "description": description2}
+        ]
 
-    # chance for no flags
+    # If no flags, return empty list
     else:
         return []
 
@@ -106,7 +111,7 @@ def main():
         createdAt = random_datetime("4/16/2004 1:30 PM", "10/13/2024 4:50 AM", '%m/%d/%Y %I:%M %p', random.random())
 
         # Add the flag array to the volunteer
-        flags = generate_flag()
+        flags = generate_flags()
         vols[email] = {
             "name": name,
             "age": age,
