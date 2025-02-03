@@ -24,7 +24,7 @@ async function dbConnect() {
 
   try {
     cached.conn = await cached.promise;
-    console.log('Connected to database:', cached.conn.db.databaseName);
+    // console.log('Connected to database:', cached.conn.db.databaseName);
   } catch (error) {
     cached.promise = null;
     throw error;

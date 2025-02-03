@@ -11,11 +11,11 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Volunteer, Flag } from '@/server/models/Vol';
 
-const colorMap: Record<'error' | 'success' | 'warning' | 'info', string> = {
-  error: '#d32f2f',
-  success: '#388e3c',
-  warning: '#f57c00',
-  info: '#858585',
+const colorMap: Record<'red' | 'green' | 'orange' | 'gray', string> = {
+  red: '#d32f2f',
+  green: '#388e3c',
+  orange: '#f57c00',
+  gray: '#858585',
 };
 
 const style = {
@@ -58,16 +58,18 @@ const FlagModal: React.FC<FlagModalProps> = ({
   };
 
   const addFlag = async (
-    color: 'error' | 'success' | 'warning' | 'info'
+    color: 'red' | 'green' | 'orange' | 'gray'
   ): Promise<void> => {
     if (!flag.description) return;
 
-    const response = await fetch('/api/volunteers', {
+    const response = await fetch(`/api/volunteers/${volunteer._id}/flags`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        volunteerId: volunteer._id,
-        flag: { description: flag.description, color },
+        flag: {
+          description: flag.description,
+          color,
+        },
       }),
     });
 
@@ -82,13 +84,10 @@ const FlagModal: React.FC<FlagModalProps> = ({
   };
 
   const deleteFlag = async (index: number): Promise<void> => {
-    const response = await fetch('/api/volunteers', {
+    const response = await fetch(`/api/volunteers/${volunteer._id}/flags`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        volunteerId: volunteer._id,
-        flagIndex: index,
-      }),
+      body: JSON.stringify({ flagIndex: index }),
     });
 
     if (response.ok) {
@@ -183,7 +182,7 @@ const FlagModal: React.FC<FlagModalProps> = ({
                 <IconButton
                   key={color}
                   onClick={() =>
-                    addFlag(color as 'error' | 'success' | 'warning' | 'info')
+                    addFlag(color as 'red' | 'green' | 'orange' | 'gray')
                   }
                 >
                   <Brightness1SharpIcon

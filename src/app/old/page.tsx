@@ -168,11 +168,7 @@ const Old = () => {
         {/* Data display and management */}
         <div className="flex flex-row">
           {/* Data display */}
-          <VolunteersTable
-            volunteers={vols}
-            onView={() => {}}
-            onFlags={() => {}}
-          />
+          <VolunteersTable volunteers={vols} onView={() => {}} />
 
           {/* Data management */}
           <div className="w-[50vw] h-[100vh] flex items-center justify-center">
