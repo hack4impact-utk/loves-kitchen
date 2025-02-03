@@ -15,7 +15,7 @@ export default function TestPage() {
       someString: 'example',
     };
 
-    // Mock encryption function
+    //  encryption function
     function encrypt(data: string): string {
       return Buffer.from(data).toString('base64');
     }
