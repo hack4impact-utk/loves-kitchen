@@ -14,7 +14,7 @@ const Main = () => {
 
   return (
     <>
-      <NavBar user={user} error={error} isLoading={isLoading} />
+      <NavBar />
       <div className="flex flex-col items-center bg-slate-900 text-white min-h-screen">
         <Box
           sx={{
@@ -90,22 +90,6 @@ const Main = () => {
             given their time and services over the last three decades.
           </Typography>
         </Box>
-
-        {/* login logout buttons */}
-        <div className="flex mt-5">
-          <a
-            href="/api/auth/login"
-            className="py-2 px-7 m-2 bg-green-500 hover:bg-green-600 block rounded-xl"
-          >
-            Log In
-          </a>
-          <a
-            href="/api/auth/logout"
-            className="py-2 px-7 m-2 bg-red-500 hover:bg-red-600 block rounded-xl"
-          >
-            Log Out
-          </a>
-        </div>
       </div>
     </>
   );

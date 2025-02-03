@@ -8,7 +8,6 @@ import NavBar from '@/components/NavBar';
 import { Volunteer } from '@/server/models/Vol';
 import { Session } from '@/server/models/Session';
 import Divider from '@mui/material/Divider';
-import { useUser } from '@auth0/nextjs-auth0/client';
 
 const Staff = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -17,7 +16,6 @@ const Staff = () => {
     null
   );
   const [isDrawerOpen, setDrawerOpen] = useState(false); // Drawer state
-  const { user, error, isLoading } = useUser();
 
   // Fetch volunteers from the server
   useEffect(() => {
@@ -54,7 +52,7 @@ const Staff = () => {
 
   return (
     <div style={{ backgroundColor: '#f4f5f7', minHeight: '100vh' }}>
-      <NavBar user={user} error={error} isLoading={isLoading} />
+      <NavBar />
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
         <div
           style={{
