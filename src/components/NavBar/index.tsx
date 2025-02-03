@@ -37,7 +37,7 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
           width={200}
           height={40}
           style={{ width: 'auto', height: 'auto' }}
-          // priority
+          priority
         />
       </Box>
 

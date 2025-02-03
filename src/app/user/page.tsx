@@ -6,6 +6,7 @@ import UserInfo from '@/components/UserInfo';
 import SessionTable from '@/components/SessionTable';
 import { Session } from '@/server/models/Session';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import EncryptButton from '@/components/EncryptButton';
 
 const User = () => {
   const { user, error, isLoading } = useUser();
@@ -67,6 +68,8 @@ const User = () => {
         </div>
 
         <SessionTable sessions={sessions} />
+
+        <EncryptButton />
       </div>
     </>
   );
