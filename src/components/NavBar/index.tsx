@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Button from '@mui/material/Button';
 import AccountMenu from '../AccountMenu';
 import { UserProfile } from '@auth0/nextjs-auth0/client';
+import theme from '@/types/colors';
 
 interface ButtonAppBarProps {
   user: UserProfile | undefined;
@@ -24,7 +25,7 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
           top: 0,
           left: '50%',
           transform: 'translateX(-50%)',
-          backgroundColor: '#fff',
+          backgroundColor: theme.offWhite, //random color from colors.ts
           padding: 2,
           borderRadius: 4,
           zIndex: 1,
