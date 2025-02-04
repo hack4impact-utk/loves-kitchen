@@ -1,12 +1,10 @@
-// Hey so i like 99% copied this from Shiv's code -- thanks Shiv!
-
+'use client';
 import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
   GridEventListener,
-  // GridToolbar,
   GridValidRowModel,
 } from '@mui/x-data-grid';
 import { Session } from '@/server/models/Session';
@@ -76,13 +74,6 @@ const SessionTable = (props: SessionTableProps) => {
             pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[10]}
-          // slots={{ toolbar: GridToolbar }}
-          // slotProps={{
-          //   toolbar: {
-          //     showQuickFilter: true,
-          //     quickFilterProps: { debounceMs: 500 },
-          //   },
-          // }}
           disableRowSelectionOnClick
           sx={cyantable}
         />

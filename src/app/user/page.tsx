@@ -1,16 +1,12 @@
-'use client';
-
 import React from 'react';
 import NavBar from '@/components/NavBar';
 import UserInfo from '@/components/UserInfo';
 import SessionTable from '@/components/SessionTable';
 import { Session } from '@/server/models/Session';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import theme from '@/types/colors';
 import lktheme from '@/types/colors';
+import EncryptButton from '@/components/EncryptButton';
 
 const User = () => {
-  const { user, error, isLoading } = useUser();
   const currentTime = new Date(Date.now());
 
   // use the map function to fetch the data on the volunteers from server
@@ -37,12 +33,12 @@ const User = () => {
 
   return (
     <>
-      <NavBar user={user} error={error} isLoading={isLoading} />
+      <NavBar />
       <div
         className="flex flex-col items-center p-5 gap-10 pt-[100px]"
-        style={{ backgroundColor: theme.offWhiteRGBA(1) }}
+        style={{ backgroundColor: lktheme.offWhiteRGBA(1) }}
       >
-        <UserInfo user={user} error={error} isLoading={isLoading} />
+        <UserInfo />
 
         <div className="flex gap-5">
           <div
@@ -63,6 +59,8 @@ const User = () => {
         </div>
 
         <SessionTable sessions={sessions} />
+
+        <EncryptButton />
       </div>
     </>
   );

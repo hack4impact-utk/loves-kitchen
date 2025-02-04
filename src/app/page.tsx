@@ -5,6 +5,7 @@ import Image from 'next/image';
 import NavBar from '@/components/NavBar';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Box, Typography } from '@mui/material';
+import lktheme from '@/types/colors';
 
 const Main = () => {
   // get auth0 server information and make basic loading screen
@@ -14,8 +15,11 @@ const Main = () => {
 
   return (
     <>
-      <NavBar user={user} error={error} isLoading={isLoading} />
-      <div className="flex flex-col items-center bg-slate-900 text-white min-h-screen">
+      <NavBar />
+      <div
+        className="flex flex-col items-center text-white min-h-screen"
+        style={{ backgroundColor: lktheme.offWhite }}
+      >
         <Box
           sx={{
             mt: 20,
@@ -44,7 +48,11 @@ const Main = () => {
         {user && user.email && user.name ? (
           <>
             <Box className="text-center p-5">
-              <Typography variant="h5" className="text-2xl">
+              <Typography
+                variant="h5"
+                className="text-2xl"
+                sx={{ color: lktheme.brown }}
+              >
                 Hello, {user.name}!
               </Typography>
             </Box>
@@ -52,7 +60,11 @@ const Main = () => {
         ) : (
           // Render an else statement, e.g., a message to log in
           <Box className="text-center p-5">
-            <Typography variant="h5" className="text-2xl">
+            <Typography
+              variant="h5"
+              className="text-2xl"
+              sx={{ color: lktheme.brown }}
+            >
               Please{' '}
               <a
                 href="/api/auth/login"
@@ -66,9 +78,10 @@ const Main = () => {
         )}
 
         <Box
-          className="bg-slate-700 flex flex-col px-6 py-5 rounded-xl"
+          className="flex flex-col px-6 py-5 rounded-xl"
           sx={{
             width: '50%', // Set the width to 50% of the page
+            backgroundColor: lktheme.darkCyan,
           }}
         >
           <Typography variant="h5" className="mt-2 text-2xl text-left">
@@ -76,7 +89,7 @@ const Main = () => {
           </Typography>
           <Typography
             variant="body1"
-            className="text-neutral-400 items-center"
+            className="text-neutral-300 items-center"
             sx={{ lineHeight: '2', letterSpacing: '0.5px' }}
           >
             The Love Kitchen provides meals and emergency food packages to
@@ -90,22 +103,6 @@ const Main = () => {
             given their time and services over the last three decades.
           </Typography>
         </Box>
-
-        {/* login logout buttons */}
-        <div className="flex mt-5">
-          <a
-            href="/api/auth/login"
-            className="py-2 px-7 m-2 bg-green-500 hover:bg-green-600 block rounded-xl"
-          >
-            Log In
-          </a>
-          <a
-            href="/api/auth/logout"
-            className="py-2 px-7 m-2 bg-red-500 hover:bg-red-600 block rounded-xl"
-          >
-            Log Out
-          </a>
-        </div>
       </div>
     </>
   );

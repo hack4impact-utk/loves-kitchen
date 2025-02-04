@@ -76,7 +76,7 @@ const Old = () => {
 
   return (
     <>
-      <NavBar user={user} error={error} isLoading={isLoading} />
+      <NavBar />
       <div className="flex flex-col items-center bg-slate-900 text-white">
         <div className="mt-5">
           <VolunteerModal
