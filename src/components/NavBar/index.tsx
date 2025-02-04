@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Button from '@mui/material/Button';
 import AccountMenu from '../AccountMenu';
 import { UserProfile } from '@auth0/nextjs-auth0/client';
-import theme from '@/types/colors';
+import lktheme from '@/types/colors';
 
 interface ButtonAppBarProps {
   user: UserProfile | undefined;
@@ -25,7 +25,7 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
           top: 0,
           left: '50%',
           transform: 'translateX(-50%)',
-          backgroundColor: theme.offWhite, //random color from colors.ts
+          backgroundColor: lktheme.darkCyan, //random color from colors.ts
           padding: 2,
           borderRadius: 4,
           zIndex: 1,
@@ -33,7 +33,7 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
         onClick={() => (window.location.href = '/')}
       >
         <Image
-          src="/lk-logo.jpg"
+          src="/lk-logo-transparent.png"
           alt="Love Kitchen Logo"
           width={200}
           height={40}
@@ -48,16 +48,17 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            backgroundColor: lktheme.brown,
           }}
         >
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit" href="/user">
+            <Button color="inherit" href="/user" className="text-white">
               user
             </Button>
-            <Button color="inherit" href="/staff">
+            <Button color="inherit" href="/staff" className="text-white">
               staff
             </Button>
-            <Button color="inherit" href="/">
+            <Button color="inherit" href="/" className="text-white">
               home
             </Button>
           </Box>

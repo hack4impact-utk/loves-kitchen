@@ -14,6 +14,7 @@ import Image from 'next/image';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckIcon from '@mui/icons-material/Check';
 import SearchIcon from '@mui/icons-material/Search';
+import lktheme from '@/types/colors';
 
 interface UserInfoProps {
   user: UserProfile | undefined;
@@ -44,8 +45,14 @@ const UserInfo = (props: UserInfoProps) => {
     <ThemeProvider theme={theme}>
       {typeof props.user != 'undefined' ? (
         <>
-          <Box className="bg-slate-700 flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative">
-            {' '}
+          <Box
+            className={
+              'flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative'
+            }
+            sx={{
+              backgroundColor: lktheme.brown,
+            }}
+          >
             {/* LOGIN SUCCESSFULL */}
             <Image
               src={props.user.picture ?? ''}
@@ -80,6 +87,9 @@ const UserInfo = (props: UserInfoProps) => {
               variant="contained"
               onClick={toggleCheckIn}
               className="absolute bottom-5 left-5"
+              sx={{
+                backgroundColor: lktheme.darkCyan,
+              }}
             >
               {isCheckedIn ? 'Check Out' : 'Check In'}
             </Button>
@@ -89,13 +99,19 @@ const UserInfo = (props: UserInfoProps) => {
         <>
           {' '}
           {/* LOGIN PENDING */}
-          <Box className="bg-slate-700 flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]" />
+          <Box
+            className="flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]"
+            sx={{ backgroundColor: lktheme.brown }}
+          />
         </>
       ) : (
         <>
           {' '}
           {/* ERROR OR LOGGED OUT */}
-          <Box className="bg-slate-700 flex flex-col items-center justify-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]">
+          <Box
+            className="flex flex-col items-center justify-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]"
+            sx={{ backgroundColor: lktheme.brown }}
+          >
             <SearchIcon fontSize="large" color="primary" />
             <Typography className="text-2xl text-white">
               Hmm, can&apos;t tell who you are.

@@ -9,6 +9,8 @@ import { Volunteer } from '@/server/models/Vol';
 import { Session } from '@/server/models/Session';
 import Divider from '@mui/material/Divider';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import theme from '@/types/colors';
+import lktheme from '@/types/colors';
 
 const Staff = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -53,12 +55,19 @@ const Staff = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#f4f5f7', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: theme.offWhite, minHeight: '100vh' }}>
       <NavBar user={user} error={error} isLoading={isLoading} />
-      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <div
+        style={{
+          padding: '2rem',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          marginTop: '100px',
+        }}
+      >
         <div
           style={{
-            backgroundColor: '#fff',
+            backgroundColor: lktheme.brownRGBA(1),
             borderRadius: '8px',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             padding: '1.5rem',
@@ -69,12 +78,12 @@ const Staff = () => {
               fontSize: '24px',
               fontWeight: 'bold',
               marginBottom: '1rem',
-              color: '#333',
+              color: '#fff',
             }}
           >
             Volunteers
           </h1>
-          <Divider sx={{ marginBottom: '1rem' }} />
+          <Divider sx={{ marginBottom: '1rem', backgroundColor: 'white' }} />
           <VolunteersTable
             volunteers={volunteers}
             onView={handleViewVolunteer} // Use the drawer open function
