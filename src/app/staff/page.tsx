@@ -52,6 +52,21 @@ const Staff = () => {
     setDrawerOpen(true); // Open the drawer
   };
 
+  const deleteSession = async (sessionId: string) => {
+    const response = await fetch('api/volunteers/all/sessions', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({sessionId}), 
+    });
+    const data = await response.json();
+
+    if (data.success) {
+      setSessions(sessions.filter(session => session._id != sessionId));
+    } else {
+      console.error(data.error);
+    }
+  };
+
   return (
     <div style={{ backgroundColor: theme.offWhite, minHeight: '100vh' }}>
       <NavBar />
@@ -100,7 +115,7 @@ const Staff = () => {
         )}
 
         <Divider sx={{ marginBottom: '1rem' }} />
-        <SessionTable sessions={sessions} />
+        <SessionTable sessions={sessions} onDeleteSession={deleteSession}/>
       </div>
     </div>
   );
