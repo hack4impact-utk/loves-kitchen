@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { isConnected } from '@/utils/mymg';
 
-const volunteerSchema = new mongoose.Schema({
+export const volunteerSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   age: { type: Number, required: true },
