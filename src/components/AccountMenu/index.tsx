@@ -68,7 +68,11 @@ export default function AccountMenu(props: AccountMenuProps) {
           <>
             {' '}
             {/* NOT SIGNED IN OR ERROR */}
-            <Button color="inherit" href="/api/auth/login">
+            <Button
+              color="inherit"
+              href="/api/auth/login"
+              sx={{ color: 'white' }}
+            >
               Log In
             </Button>
           </>
