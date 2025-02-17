@@ -15,7 +15,7 @@ const StaffQR = () => {
   // const [checkInLate, setCheckInLate] = useState('');
   const [qrData, setQrData] = useState(
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-  ); // do this later
+  );
 
   async function generateQR() {
     const qrSesh: Session = {
