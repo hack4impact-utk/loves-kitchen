@@ -2,29 +2,40 @@
 
 import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
-//maybe ?? import { QrCode } from '@mui/icons-material';
+import lktheme from '@/types/colors';
+import QRDisplay from '@/components/QRDisplay';
+import { Session } from '@/server/models/Session';
+import { getQRCode } from '@/server/actions/qrurl';
 
 const StaffQR = () => {
   const [sessionLength, setSessionLength] = useState('');
   const [sessionDateTime, setSessionDateTime] = useState('');
-  const [checkInEarly, setCheckInEarly] = useState('');
-  const [checkInLate, setCheckInLate] = useState('');
-  // const [qrData, setQrData] = useState('placeholder'); // do this later
+  // Evan here, beginning to second guess whether we should have the earliness and lateness stuff?
+  // const [checkInEarly, setCheckInEarly] = useState('');
+  // const [checkInLate, setCheckInLate] = useState('');
+  const [qrData, setQrData] = useState(
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+  ); // do this later
 
-  const generateQR = () => {
-    // const qrPayload = JSON.stringify({
-    //   sessionLength,
-    //   sessionDateTime,
-    //   checkInEarly,
-    //   checkInLate,
-    // });
-    // setQrData(qrPayload); // do this later
-  };
+  async function generateQR() {
+    const qrSesh: Session = {
+      _id: '',
+      workedBy: '',
+      startTime: sessionDateTime,
+      length: parseFloat(sessionLength),
+    };
+
+    const qrCode = await getQRCode(qrSesh);
+    setQrData(qrCode);
+  }
 
   return (
     <>
       <NavBar />
-      <div className="min-h-screen bg-[#F4E1C1] flex flex-col items-center p-5 gap-10 pt-[100px]">
+      <div
+        className="min-h-screen flex flex-col items-center p-5 gap-10 pt-[100px]"
+        style={{ backgroundColor: lktheme.offWhite }}
+      >
         <div className="flex flex-row gap-10">
           {/* Form Section */}
           <div className="bg-white p-6 rounded-lg shadow-md w-[400px] h-[400px]">
@@ -48,7 +59,8 @@ const StaffQR = () => {
               className="border p-2 w-full rounded mb-3"
             />
 
-            <label className="block text-sm font-medium text-gray-700">
+            {/* Evan here, I'm beginning to second guess whether we should have the earliness and lateness stuff? */}
+            {/* <label className="block text-sm font-medium text-gray-700">
               Check-in Opens (minutes before)
             </label>
             <input
@@ -66,7 +78,7 @@ const StaffQR = () => {
               value={checkInLate}
               onChange={(e) => setCheckInLate(e.target.value)}
               className="border p-2 w-full rounded mb-3"
-            />
+            /> */}
 
             <button
               onClick={generateQR}
@@ -77,7 +89,7 @@ const StaffQR = () => {
           </div>
 
           <div className="w-[400px] h-[400px] bg-gray-300 flex items-center justify-center text-white">
-            QR Code Placeholder
+            <QRDisplay url={qrData} width={400} />
           </div>
         </div>
       </div>
