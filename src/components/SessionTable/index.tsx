@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material';
 import {
   DataGrid,
@@ -7,18 +7,24 @@ import {
   GridEventListener,
   GridValidRowModel,
 } from '@mui/x-data-grid';
+import SessionModal from '@/components/SessionModal';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Session } from '@/server/models/Session';
 import { parseISOString } from '@/utils/isoParse';
 import lktheme, { cyantable } from '@/types/colors';
 
 interface SessionTableProps {
   sessions: Session[];
-  onDeleteSession: (sessionId: string) => void;
+  staff: boolean;
+  onDeleteSession?: (sessionId: string) => Promise<void>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onAddSession?: (data: any) => Promise<void>;
 }
 
 const SessionTable = (props: SessionTableProps) => {
+  const [modalOpen, setModalOpen] = useState(false);
   // use the map function to fetch the data on the sessions from server
   const rows: GridValidRowModel[] = props.sessions.map((session) => ({
     id: session._id, 
@@ -50,14 +56,16 @@ const SessionTable = (props: SessionTableProps) => {
     { 
       field: 'id', 
       headerName: 'Actions', 
-      width: 200,
+      width: 150,
       renderCell: (params) => (
-        <IconButton onClick={() => props.onDeleteSession(params.row.id)}>
+        <IconButton onClick={() => props.onDeleteSession && props.onDeleteSession(params.row.id)}>
           <DeleteIcon color='error'/>
         </IconButton>
       )
     }
   ];
+
+  if (!props.staff) columns.pop();
 
   // Modified handleRowClick function to log row data. logs data to console, which can be accessed with dev tools
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
@@ -71,12 +79,17 @@ const SessionTable = (props: SessionTableProps) => {
 
   return (
     <div
-      className="p-5 rounded-lg w-[50vw]"
+      className="p-5 rounded-lg w-[55vw]"
       style={{ backgroundColor: lktheme.darkCyanRGBA(1) }}
     >
-      <p className="text-2xl border-b border-b-neutral-300 pb-4 mb-4 text-white">
-        <b>Sessions</b>
-      </p>
+      <div className="text-2xl border-b border-b-neutral-300 pb-4 mb-4 w-full flex items-center justify-between">
+        <p className="text-white"><b>Sessions</b></p>
+        {props.staff &&
+          <IconButton onClick={() => setModalOpen(true)}>
+            <AddCircleOutlineIcon fontSize="large" className="text-white"/>
+          </IconButton>
+        }
+      </div>
 
       <ThemeProvider theme={theme}>
         <DataGrid
@@ -91,6 +104,13 @@ const SessionTable = (props: SessionTableProps) => {
           sx={cyantable}
         />
       </ThemeProvider>
+      {modalOpen && 
+        <SessionModal 
+          open={modalOpen} 
+          onClose={() => setModalOpen(false)}
+          createSession={props.onAddSession || (() => Promise.resolve())}
+        />
+      }
     </div>
   );
 };

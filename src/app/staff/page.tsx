@@ -37,7 +37,7 @@ const Staff = () => {
       if (data.success) {
         setSessions(data.sessions);
       } else {
-        console.error('Failed to fetch volunteers:', data.error);
+        console.error('Failed to fetch sessions:', data.error);
       }
     };
 
@@ -52,7 +52,8 @@ const Staff = () => {
     setDrawerOpen(true); // Open the drawer
   };
 
-  const deleteSession = async (sessionId: string) => {
+  // Delete a session and actively update session list
+  const deleteSession = async (sessionId: string): Promise<void> => {
     const response = await fetch('api/volunteers/all/sessions', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -63,6 +64,29 @@ const Staff = () => {
     if (data.success) {
       setSessions(sessions.filter(session => session._id != sessionId));
     } else {
+      alert('Failed to delete session');
+      console.error(data.error);
+    }
+  };
+
+  // Add a session and actively update session list
+  const addSession = async (data: any): Promise<void> => {
+    const {workedBy, startTime, length} = data;
+    const response = await fetch('api/volunteers/all/sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        workedBy,
+        length,
+        startTime
+      }) 
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      setSessions([...sessions, result.session]);
+    } else {
+      alert('Failed to add session');
       console.error(data.error);
     }
   };
@@ -115,7 +139,12 @@ const Staff = () => {
         )}
 
         <Divider sx={{ marginBottom: '1rem' }} />
-        <SessionTable sessions={sessions} onDeleteSession={deleteSession}/>
+        <SessionTable 
+          sessions={sessions} 
+          staff={true}
+          onDeleteSession={deleteSession}
+          onAddSession={addSession}
+        />
       </div>
     </div>
   );

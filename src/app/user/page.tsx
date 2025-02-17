@@ -57,9 +57,10 @@ const User = () => {
             <p className="text-white text-[40px]">2 Hours</p>
           </div>
         </div>
-
-        <SessionTable sessions={sessions} />
-
+        <SessionTable 
+          sessions={sessions}
+          staff={false}
+        />
         <EncryptButton />
       </div>
     </>

@@ -11,32 +11,61 @@ export const POST = async function (
   await dbConnect();
 
   try {
-    const { length, startTime } = await req.json();
     const { volunteerId } = params;
 
-    if (!length || !startTime) {
-      return NextResponse.json(
-        { success: false, error: 'Session data is missing' },
-        { status: 400 }
-      );
+    if (volunteerId !== 'all') {
+      const { length, startTime } = await req.json();
+
+      if (!length || !startTime) {
+        return NextResponse.json(
+          { success: false, error: 'Session data is missing' },
+          { status: 400 }
+        );
+      }
+
+      const volunteer = await volModel.findById(volunteerId);
+
+      if (!volunteer) {
+        return NextResponse.json(
+          { success: false, error: 'Volunteer not found' },
+          { status: 404 }
+        );
+      }
+
+      const session = await sessionModel.create({
+        workedBy: volunteer.name,
+        startTime: startTime,
+        length: length,
+      });
+
+      return NextResponse.json({ success: true, session }, { status: 200 });
+    } else {
+      const { workedBy, length, startTime } = await req.json();
+
+      if (!length || !startTime || !workedBy) {
+        return NextResponse.json(
+          { success: false, error: 'Session data is missing' },
+          { status: 400 }
+        );
+      }
+
+      /*const volunteer = await volModel.
+
+      if (!volunteer) {
+        return NextResponse.json(
+          { success: false, error: 'Volunteer not found' },
+          { status: 404 }
+        );
+      }*/
+
+      const session = await sessionModel.create({
+        workedBy: workedBy,
+        startTime: startTime,
+        length: length,
+      });
+
+      return NextResponse.json({ success: true, session }, { status: 200 });
     }
-
-    const volunteer = await volModel.findById(volunteerId);
-
-    if (!volunteer) {
-      return NextResponse.json(
-        { success: false, error: 'Volunteer not found' },
-        { status: 404 }
-      );
-    }
-
-    const session = await sessionModel.create({
-      workedBy: volunteer.name,
-      startTime: startTime,
-      length: length,
-    });
-
-    return NextResponse.json({ success: true, session }, { status: 200 });
   } catch (error) {
     console.error('Error adding session:', error);
     return NextResponse.json(
