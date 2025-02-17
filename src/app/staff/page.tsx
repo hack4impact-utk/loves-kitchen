@@ -10,6 +10,7 @@ import { Session } from '@/server/models/Session';
 import Divider from '@mui/material/Divider';
 import theme from '@/types/colors';
 import lktheme from '@/types/colors';
+import { Button } from '@mui/material';
 
 const Staff = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -71,6 +72,12 @@ const Staff = () => {
             padding: '1.5rem',
           }}
         >
+          <Button
+            href="/staff/qr"
+            sx={{ color: 'white', textDecoration: 'underline' }}
+          >
+            Generate QR Code
+          </Button>
           <h1
             style={{
               fontSize: '24px',
