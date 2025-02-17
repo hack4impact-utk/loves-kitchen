@@ -3,6 +3,7 @@ import React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Volunteer } from '@/server/models/Vol';
 import FlagIcon from '@mui/icons-material/Flag';
+import { browntable } from '@/types/colors';
 
 interface VolunteersTableProps {
   volunteers: Volunteer[];
@@ -17,7 +18,7 @@ export default function VolunteersTable({
     red: '#d32f2f',
     green: '#388e3c',
     orange: '#f57c00',
-    gray: '#858585',
+    gray: '#ffffff',
     default: '#000000',
   };
 
@@ -95,6 +96,7 @@ export default function VolunteersTable({
           console.log('Row clicked:', params.row);
           onView(params.row);
         }}
+        sx={browntable}
       />
     </div>
   );

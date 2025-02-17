@@ -9,26 +9,22 @@ import {
   createTheme,
   ThemeProvider,
 } from '@mui/material';
-import { UserProfile } from '@auth0/nextjs-auth0/client';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckIcon from '@mui/icons-material/Check';
 import SearchIcon from '@mui/icons-material/Search';
+import lktheme from '@/types/colors';
 
-interface UserInfoProps {
-  user: UserProfile | undefined;
-  error: Error | undefined;
-  isLoading: boolean;
-}
-
-const UserInfo = (props: UserInfoProps) => {
+const UserInfo = () => {
+  const { user, error, isLoading } = useUser();
   const [isCheckedIn, setIsCheckedIn] = useState(false);
 
   const toggleCheckIn = () => {
     setIsCheckedIn((prev) => !prev);
   };
 
-  if (props.error) {
+  if (error) {
     console.log('Error: failed to load user credentials.');
   }
 
@@ -42,24 +38,30 @@ const UserInfo = (props: UserInfoProps) => {
 
   return (
     <ThemeProvider theme={theme}>
-      {typeof props.user != 'undefined' ? (
+      {typeof user != 'undefined' ? (
         <>
-          <Box className="bg-slate-700 flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative">
-            {' '}
+          <Box
+            className={
+              'flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative'
+            }
+            sx={{
+              backgroundColor: lktheme.brown,
+            }}
+          >
             {/* LOGIN SUCCESSFULL */}
             <Image
-              src={props.user.picture ?? ''}
-              alt={props.user.name ?? ''}
+              src={user.picture ?? ''}
+              alt={user.name ?? ''}
               width={100}
               height={100}
               priority
               className="rounded-full m-5"
             />
             <Typography variant="h5" className="mt-2 text-2xl text-white">
-              {props.user.name}
+              {user.name}
             </Typography>
             <Typography variant="body1" className="text-[#a7a7a7]">
-              {props.user.email}
+              {user.email}
             </Typography>
             {/* Alert using MUI that displays if a user is checked in. */}
             <Alert
@@ -80,22 +82,31 @@ const UserInfo = (props: UserInfoProps) => {
               variant="contained"
               onClick={toggleCheckIn}
               className="absolute bottom-5 left-5"
+              sx={{
+                backgroundColor: lktheme.darkCyan,
+              }}
             >
               {isCheckedIn ? 'Check Out' : 'Check In'}
             </Button>
           </Box>
         </>
-      ) : props.isLoading ? (
+      ) : isLoading ? (
         <>
           {' '}
           {/* LOGIN PENDING */}
-          <Box className="bg-slate-700 flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]" />
+          <Box
+            className="flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]"
+            sx={{ backgroundColor: lktheme.brown }}
+          />
         </>
       ) : (
         <>
           {' '}
           {/* ERROR OR LOGGED OUT */}
-          <Box className="bg-slate-700 flex flex-col items-center justify-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]">
+          <Box
+            className="flex flex-col items-center justify-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]"
+            sx={{ backgroundColor: lktheme.brown }}
+          >
             <SearchIcon fontSize="large" color="primary" />
             <Typography className="text-2xl text-white">
               Hmm, can&apos;t tell who you are.

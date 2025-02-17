@@ -1,16 +1,15 @@
-// Hey so i like 99% copied this from Shiv's code -- thanks Shiv!
-
+'use client';
 import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
   GridEventListener,
-  // GridToolbar,
   GridValidRowModel,
 } from '@mui/x-data-grid';
 import { Session } from '@/server/models/Session';
 import { parseISOString } from '@/utils/isoParse';
+import lktheme, { cyantable } from '@/types/colors';
 
 interface SessionTableProps {
   sessions: Session[];
@@ -58,8 +57,11 @@ const SessionTable = (props: SessionTableProps) => {
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg w-[50vw]">
-      <p className="text-2xl border-b border-b-neutral-300 pb-4 mb-4">
+    <div
+      className="p-5 rounded-lg w-[50vw]"
+      style={{ backgroundColor: lktheme.darkCyanRGBA(1) }}
+    >
+      <p className="text-2xl border-b border-b-neutral-300 pb-4 mb-4 text-white">
         <b>Sessions</b>
       </p>
 
@@ -72,41 +74,8 @@ const SessionTable = (props: SessionTableProps) => {
             pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[10]}
-          // slots={{ toolbar: GridToolbar }}
-          // slotProps={{
-          //   toolbar: {
-          //     showQuickFilter: true,
-          //     quickFilterProps: { debounceMs: 500 },
-          //   },
-          // }}
           disableRowSelectionOnClick
-          sx={{
-            '& .MuiDataGrid-cell': {
-              color: 'black', // White text for cells
-            },
-            '& .MuiDataGrid-row:nth-of-type(odd)': {
-              backgroundColor: 'rgba(255, 255, 255, 1)', // Alternating row color
-            },
-            '& .MuiDataGrid-row:nth-of-type(even)': {
-              backgroundColor: 'rgba(255, 255, 255, 1)', // Alternating row color
-            },
-            '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: 'white', // Column headers background
-            },
-            '& .MuiDataGrid-columnHeader': {
-              color: 'black', // Header text color
-            },
-            '& .MuiDataGrid-toolbarContainer': {
-              backgroundColor: 'white', // Toolbar background
-              color: 'black', // Toolbar text color
-            },
-            '& .MuiToolbar-root': {
-              backgroundColor: 'white', // Ensuring the toolbar has a white background
-            },
-            '& .MuiDataGrid-toolbarButton': {
-              color: 'black', // Toolbar button text color
-            },
-          }}
+          sx={cyantable}
         />
       </ThemeProvider>
     </div>
