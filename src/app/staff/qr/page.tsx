@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
+//maybe ?? import { QrCode } from '@mui/icons-material';
 
 const StaffQR = () => {
   const [sessionLength, setSessionLength] = useState('');
