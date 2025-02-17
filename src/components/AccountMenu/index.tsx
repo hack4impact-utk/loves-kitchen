@@ -129,16 +129,15 @@ export default function AccountMenu(props: AccountMenuProps) {
         >
           {typeof props.user != 'undefined' ? props.user.email : 'Email'}
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleClose('api/auth/logout');
-          }}
-        >
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+
+        <a href="/api/auth/logout">
+          <MenuItem>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
+        </a>
       </Menu>
     </React.Fragment>
   );
