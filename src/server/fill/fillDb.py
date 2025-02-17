@@ -82,7 +82,7 @@ def main():
         createdAt = random_datetime("4/16/2004 1:30 PM", "10/13/2024 4:50 AM", '%m/%d/%Y %I:%M %p', random.random())
 
         # Use Faker to generate phone number and address
-        phone = fake.phone_number()
+        phone = str(random.randint(1000000000, 9999999999))
         address = fake.address()
 
         # Store volunteer data in the dictionary
