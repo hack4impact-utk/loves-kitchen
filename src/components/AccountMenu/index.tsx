@@ -68,7 +68,11 @@ export default function AccountMenu(props: AccountMenuProps) {
           <>
             {' '}
             {/* NOT SIGNED IN OR ERROR */}
-            <Button color="inherit" href="/api/auth/login">
+            <Button
+              color="inherit"
+              href="/api/auth/login"
+              sx={{ color: 'white' }}
+            >
               Log In
             </Button>
           </>
@@ -129,16 +133,15 @@ export default function AccountMenu(props: AccountMenuProps) {
         >
           {typeof props.user != 'undefined' ? props.user.email : 'Email'}
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleClose('api/auth/logout');
-          }}
-        >
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+
+        <a href="/api/auth/logout">
+          <MenuItem>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
+        </a>
       </Menu>
     </React.Fragment>
   );

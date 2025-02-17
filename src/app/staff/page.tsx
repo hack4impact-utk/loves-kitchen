@@ -72,7 +72,12 @@ const Staff = () => {
             padding: '1.5rem',
           }}
         >
-          <Button href="/staff/qr">Generate QR Code</Button>
+          <Button
+            href="/staff/qr"
+            sx={{ color: 'white', textDecoration: 'underline' }}
+          >
+            Generate QR Code
+          </Button>
           <h1
             style={{
               fontSize: '24px',

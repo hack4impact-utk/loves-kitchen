@@ -18,15 +18,17 @@ const StaffQR = () => {
   );
 
   async function generateQR() {
-    const qrSesh: Session = {
-      _id: '',
-      workedBy: '',
-      startTime: sessionDateTime,
-      length: parseFloat(sessionLength),
-    };
+    if (sessionDateTime != '' && sessionLength != '') {
+      const qrSesh: Session = {
+        _id: '',
+        workedBy: '',
+        startTime: sessionDateTime,
+        length: parseFloat(sessionLength),
+      };
 
-    const qrCode = await getQRCode(qrSesh);
-    setQrData(qrCode);
+      const qrCode = await getQRCode(qrSesh);
+      setQrData(qrCode);
+    }
   }
 
   return (
