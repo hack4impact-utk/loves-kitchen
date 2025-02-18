@@ -13,13 +13,11 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckIcon from '@mui/icons-material/Check';
-import SearchIcon from '@mui/icons-material/Search';
 import lktheme from '@/types/colors';
 
 const UserInfo = () => {
   const { user, error, isLoading } = useUser();
   const [isCheckedIn, setIsCheckedIn] = useState(false);
-
   const toggleCheckIn = () => {
     setIsCheckedIn((prev) => !prev);
   };
@@ -104,15 +102,15 @@ const UserInfo = () => {
           {' '}
           {/* ERROR OR LOGGED OUT */}
           <Box
-            className="flex flex-col items-center justify-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]"
+            className="flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative min-h-[316px]"
             sx={{ backgroundColor: lktheme.brown }}
           >
-            <SearchIcon fontSize="large" color="primary" />
-            <Typography className="text-2xl text-white">
-              Hmm, can&apos;t tell who you are.
+            <Typography variant="h5" className="text-2xl text-white">
+              Loading...
             </Typography>
-            <Typography className="text-lg text-neutral-300 mb-5">
-              Try logging in!
+            {/* Add any loading spinner or animation */}
+            <Typography variant="body1" className="text-[#a7a7a7]">
+              Please wait, we are loading your information.
             </Typography>
           </Box>
         </>

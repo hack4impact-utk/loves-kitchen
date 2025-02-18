@@ -10,6 +10,7 @@ import { Session } from '@/server/models/Session';
 import Divider from '@mui/material/Divider';
 import theme from '@/types/colors';
 import lktheme from '@/types/colors';
+import { Button } from '@mui/material';
 
 const Staff = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -57,12 +58,12 @@ const Staff = () => {
     const response = await fetch('api/volunteers/all/sessions', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({sessionId}), 
+      body: JSON.stringify({ sessionId }),
     });
     const data = await response.json();
 
     if (data.success) {
-      setSessions(sessions.filter(session => session._id != sessionId));
+      setSessions(sessions.filter((session) => session._id != sessionId));
     } else {
       alert('Failed to delete session');
       console.error(data.error);
@@ -71,15 +72,15 @@ const Staff = () => {
 
   // Add a session and actively update session list
   const addSession = async (data: any): Promise<void> => {
-    const {workedBy, startTime, length} = data;
+    const { workedBy, startTime, length } = data;
     const response = await fetch('api/volunteers/all/sessions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         workedBy,
         length,
-        startTime
-      }) 
+        startTime,
+      }),
     });
     const result = await response.json();
 
@@ -110,6 +111,12 @@ const Staff = () => {
             padding: '1.5rem',
           }}
         >
+          <Button
+            href="/staff/qr"
+            sx={{ color: 'white', textDecoration: 'underline' }}
+          >
+            Generate QR Code
+          </Button>
           <h1
             style={{
               fontSize: '24px',
@@ -139,8 +146,8 @@ const Staff = () => {
         )}
 
         <Divider sx={{ marginBottom: '1rem' }} />
-        <SessionTable 
-          sessions={sessions} 
+        <SessionTable
+          sessions={sessions}
           staff={true}
           onDeleteSession={deleteSession}
           onAddSession={addSession}
