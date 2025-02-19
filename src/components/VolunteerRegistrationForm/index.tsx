@@ -1,7 +1,9 @@
 'use client';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import React, { useState } from 'react';
 
 const VolunteerRegistrationForm = () => {
+  const { user } = useUser();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -18,6 +20,8 @@ const VolunteerRegistrationForm = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    if (!user) return;
+
     e.preventDefault();
 
     const newErrors: Record<string, string> = {};
@@ -41,7 +45,7 @@ const VolunteerRegistrationForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, authID: user.sub }),
       });
 
       if (response.ok) {

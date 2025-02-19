@@ -1,26 +1,11 @@
-import { Volunteer } from '@/server/models/Volunteer';
+import { IVolunteer, Volunteer } from '@/server/models/Volunteer';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { firstName, lastName, age, address, phone, email } = body;
+    const toAdd: IVolunteer = await req.json();
 
-    if (!firstName || !lastName || !age || !address || !phone || !email) {
-      return NextResponse.json(
-        { message: 'All fields are required' },
-        { status: 400 }
-      );
-    }
-
-    const volunteer = new Volunteer({
-      firstName,
-      lastName,
-      age,
-      address,
-      phone,
-      email,
-    });
+    const volunteer = new Volunteer(toAdd);
     await volunteer.save();
 
     return NextResponse.json(

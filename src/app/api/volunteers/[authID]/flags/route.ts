@@ -1,17 +1,17 @@
 import { NextResponse } from 'next/server';
-import { volModel } from '@/server/models/Vol';
 import dbConnect from '@/utils/dbconnect';
+import { IVolunteer, Volunteer } from '@/server/models/Volunteer';
 
 // Add a flag to a specific volunteer
 export const POST = async function (
   req: Request,
-  { params }: { params: { volunteerId: string } }
+  { params }: { params: { authID: string } }
 ) {
   await dbConnect();
 
   try {
     const { flag } = await req.json();
-    const { volunteerId } = params;
+    const { authID } = params;
 
     if (!flag) {
       return NextResponse.json(
@@ -20,21 +20,27 @@ export const POST = async function (
       );
     }
 
-    const updatedVolunteer = await volModel.findByIdAndUpdate(
-      volunteerId,
-      { $push: { flags: flag } },
-      { new: true }
-    );
+    const toUpdate: IVolunteer | null | undefined = await Volunteer.findOne({
+      authID: authID,
+    });
 
-    if (!updatedVolunteer) {
+    if (!toUpdate) {
       return NextResponse.json(
         { success: false, error: 'Volunteer not found' },
         { status: 404 }
       );
     }
 
+    toUpdate.flags?.push(flag);
+    await Volunteer.updateOne(
+      { authID: authID },
+      {
+        flags: toUpdate.flags,
+      }
+    );
+
     return NextResponse.json(
-      { success: true, volunteer: updatedVolunteer },
+      { success: true, volunteer: toUpdate },
       { status: 200 }
     );
   } catch (error) {
@@ -49,13 +55,13 @@ export const POST = async function (
 // Remove a flag from a specific volunteer
 export const DELETE = async function (
   req: Request,
-  { params }: { params: { volunteerId: string } }
+  { params }: { params: { authID: string } }
 ) {
   await dbConnect();
 
   try {
     const { flagIndex } = await req.json();
-    const { volunteerId } = params;
+    const { authID } = params;
 
     if (flagIndex === undefined) {
       return NextResponse.json(
@@ -64,7 +70,9 @@ export const DELETE = async function (
       );
     }
 
-    const volunteer = await volModel.findById(volunteerId);
+    const volunteer = await Volunteer.findOne({
+      authID: authID,
+    });
 
     if (!volunteer) {
       return NextResponse.json(

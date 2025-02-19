@@ -10,19 +10,17 @@ const UserSeshInfo = () => {
   const [sessions, setSessions] = useState<ISession[]>([]);
   const { user } = useUser();
 
-  async function refreshSessions() {
-    if (user != undefined) {
-      const seshRes = await fetch(`/api/volunteers/${user.sub}/sessions`, {
-        method: 'GET',
-      });
-      const seshData = (await seshRes.json()).sessions;
-      setSessions(seshData);
-    }
-  }
-
   useEffect(() => {
-    refreshSessions();
-  }, [user, refreshSessions]);
+    (async () => {
+      if (user != undefined) {
+        const seshRes = await fetch(`/api/volunteers/${user.sub}/sessions`, {
+          method: 'GET',
+        });
+        const seshData = (await seshRes.json()).sessions;
+        setSessions(seshData);
+      }
+    })();
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center">

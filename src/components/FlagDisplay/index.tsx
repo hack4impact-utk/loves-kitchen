@@ -1,5 +1,6 @@
 import { IFlag } from '@/server/models/Volunteer';
-import { Box } from '@mui/material';
+import { flagColorMap } from '@/types/colors';
+// import { Box } from '@mui/material';
 import React from 'react';
 
 interface FlagDisplayProps {
@@ -8,35 +9,46 @@ interface FlagDisplayProps {
 
 const FlagDisplay = (props: FlagDisplayProps) => {
   return (
-    <div>
+    <div className="flex gap-10">
       {props.flags?.map((flag, index) => (
-        <Box
+        <div
           key={index}
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mt: 1,
+          className="px-3 rounded-full text-white py-1"
+          style={{
+            backgroundColor:
+              flagColorMap[flag.color as keyof typeof flagColorMap],
           }}
         >
-          {/* <Typography
-                sx={{
-                color:
-                    colorMap[flag.color as keyof typeof colorMap] || 'black',
-                border: `2px solid ${
-                    colorMap[flag.color as keyof typeof colorMap] || 'black'
-                }`,
-                width: '90%',
-                padding: '3px',
-                wordBreak: 'break-word',
-                }}
-            >
-                {flag.description}
-            </Typography> */}
-        </Box>
+          <p>{flag.description}</p>
+        </div>
       ))}
     </div>
   );
 };
 
 export default FlagDisplay;
+
+// <Box
+//   key={index}
+//   sx={{
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     mt: 1,
+//   }}
+// >
+//   <Typography
+//         sx={{
+//         color:
+//             colorMap[flag.color as keyof typeof colorMap] || 'black',
+//         border: `2px solid ${
+//             colorMap[flag.color as keyof typeof colorMap] || 'black'
+//         }`,
+//         width: '90%',
+//         padding: '3px',
+//         wordBreak: 'break-word',
+//         }}
+//     >
+//         {flag.description}
+//     </Typography>
+// </Box>

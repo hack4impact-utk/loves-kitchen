@@ -62,7 +62,7 @@ const FlagModal: React.FC<FlagModalProps> = ({
   ): Promise<void> => {
     if (!flag.description) return;
 
-    const response = await fetch(`/api/volunteers/${volunteer._id}/flags`, {
+    const response = await fetch(`/api/volunteers/${volunteer.authID}/flags`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -84,7 +84,7 @@ const FlagModal: React.FC<FlagModalProps> = ({
   };
 
   const deleteFlag = async (index: number): Promise<void> => {
-    const response = await fetch(`/api/volunteers/${volunteer._id}/flags`, {
+    const response = await fetch(`/api/volunteers/${volunteer.authID}/flags`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ flagIndex: index }),

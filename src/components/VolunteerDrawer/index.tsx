@@ -29,22 +29,56 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   const [isFlagModalOpen, setFlagModalOpen] = useState(false);
   const [sessions, setSessions] = useState<ISession[]>([]);
 
-  // const colorMap: Record<'red' | 'green' | 'orange' | 'gray', string> = {
-  //   red: '#d32f2f',
-  //   green: '#388e3c',
-  //   orange: '#f57c00',
-  //   gray: '#858585',
-  // };
+  // Delete a session and actively update session list
+  const deleteSession = async (sessionId: string): Promise<void> => {
+    const response = await fetch('api/volunteers/all/sessions', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId }),
+    });
+    const data = await response.json();
 
-  async function refreshSessions() {
-    const seshRes = await fetch(`/api/volunteers/${volunteer.authID}/sessions`);
-    const seshData = await seshRes.json();
-    setSessions(seshData.sessions);
-  }
+    if (data.success) {
+      setSessions(sessions.filter((session) => session._id != sessionId));
+    } else {
+      alert('Failed to delete session');
+      console.error(data.error);
+    }
+  };
+
+  // Add a session and actively update session list
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const addSession = async (data: any): Promise<void> => {
+    const { workedBy, startTime, length } = data;
+    const response = await fetch('api/volunteers/all/sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        workedBy,
+        length,
+        startTime,
+      }),
+    });
+    const result = await response.json();
+    console.log(result);
+
+    if (result.success) {
+      setSessions([...sessions, result.session]);
+    } else {
+      alert('Failed to add session');
+      console.error(data.error);
+    }
+  };
 
   useEffect(() => {
-    refreshSessions();
-  }, [volunteer, refreshSessions]);
+    (async () => {
+      const seshRes = await fetch(
+        `/api/volunteers/${volunteer.authID}/sessions`
+      );
+      const seshData = await seshRes.json();
+      setSessions(seshData.sessions);
+    })();
+  }, [volunteer]);
 
   const updateVolunteerFlags = (updatedVolunteer: IVolunteer) => {
     setVolunteers((prev) =>
@@ -79,12 +113,15 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
           <Box>
             <FlagDisplay flags={volunteer.flags!} />
           </Box>
-          <button
-            onClick={() => setFlagModalOpen(true)}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg"
-          >
-            Modify
-          </button>
+
+          <div className="w-full flex justify-center mt-10">
+            <button
+              onClick={() => setFlagModalOpen(true)}
+              className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg"
+            >
+              Edit Flags
+            </button>
+          </div>
 
           <Divider sx={{ my: 2 }} />
 
@@ -92,7 +129,12 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
 
           <Divider sx={{ my: 2 }} />
 
-          <SessionTable sessions={sessions} staff />
+          <SessionTable
+            sessions={sessions}
+            staff
+            onAddSession={addSession}
+            onDeleteSession={deleteSession}
+          />
         </div>
       </Drawer>
     </>

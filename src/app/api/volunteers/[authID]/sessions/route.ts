@@ -66,7 +66,6 @@ export const POST = async function (
         startTime: startTime,
         length: length,
       });
-      console.log(session);
 
       return NextResponse.json({ success: true, session }, { status: 200 });
     }

@@ -1,3 +1,11 @@
+export const flagColorMap: Record<'red' | 'green' | 'orange' | 'gray', string> =
+  {
+    red: '#d32f2f',
+    green: '#388e3c',
+    orange: '#f57c00',
+    gray: '#858585',
+  };
+
 const lktheme = {
   offWhite: '#fcf4e4',
   offWhiteRGBA: (percent: number) =>
