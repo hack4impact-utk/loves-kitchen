@@ -1,13 +1,13 @@
 'use client';
 import React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Volunteer } from '@/server/models/Vol';
+import { IVolunteer } from '@/server/models/Volunteer';
 import FlagIcon from '@mui/icons-material/Flag';
 import { browntable } from '@/types/colors';
 
 interface VolunteersTableProps {
-  volunteers: Volunteer[];
-  onView: (volunteer: Volunteer) => void;
+  volunteers: IVolunteer[];
+  onView: (volunteer: IVolunteer) => void;
 }
 
 export default function VolunteersTable({
@@ -23,8 +23,11 @@ export default function VolunteersTable({
   };
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 200 },
+    { field: 'firstName', headerName: 'First', width: 100 },
+    { field: 'lastName', headerName: 'Last', width: 100 },
     { field: 'age', headerName: 'Age', width: 150 },
+    { field: 'phone', headerName: 'Phone', width: 150 },
+    { field: 'address', headerName: 'Address', width: 150 },
     { field: 'createdAt', headerName: 'Date Created', width: 200 },
     {
       field: 'flags',
@@ -88,7 +91,7 @@ export default function VolunteersTable({
   }));
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -97,6 +100,10 @@ export default function VolunteersTable({
           onView(params.row);
         }}
         sx={browntable}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 5 } },
+        }}
+        pageSizeOptions={[5]}
       />
     </div>
   );

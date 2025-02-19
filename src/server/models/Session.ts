@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-export interface Session {
+
+export interface ISession {
   _id: string;
   workedBy: string;
   startTime: string;

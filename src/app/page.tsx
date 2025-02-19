@@ -9,6 +9,7 @@ import lktheme from '@/types/colors';
 
 const Main = () => {
   // get auth0 server information and make basic loading screen
+
   const { user, error, isLoading } = useUser();
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;

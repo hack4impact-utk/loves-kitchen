@@ -1,17 +1,22 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Drawer from '@mui/material/Drawer';
-import Typography from '@mui/material/Typography';
-import { Volunteer } from '@/server/models/Vol';
+import { IVolunteer } from '@/server/models/Volunteer';
 import { Divider, Box } from '@mui/material';
 import FlagModal from '../FlagModal';
+import { ISession } from '@/server/models/Session';
+import SessionTable from '../SessionTable';
+import lktheme from '@/types/colors';
+import UserSeshStats from '../UserSeshStats';
+import VolDisplay from '../VolDisplay';
+import FlagDisplay from '../FlagDisplay';
 
 interface VolunteerDrawerProps {
   open: boolean;
   onClose: () => void;
-  volunteer: Volunteer;
-  setSelectedVol: React.Dispatch<React.SetStateAction<Volunteer | null>>;
-  setVolunteers: React.Dispatch<React.SetStateAction<Volunteer[]>>;
+  volunteer: IVolunteer;
+  setSelectedVol: React.Dispatch<React.SetStateAction<IVolunteer | null>>;
+  setVolunteers: React.Dispatch<React.SetStateAction<IVolunteer[]>>;
 }
 
 const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
@@ -22,15 +27,26 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   setVolunteers,
 }) => {
   const [isFlagModalOpen, setFlagModalOpen] = useState(false);
+  const [sessions, setSessions] = useState<ISession[]>([]);
 
-  const colorMap: Record<'red' | 'green' | 'orange' | 'gray', string> = {
-    red: '#d32f2f',
-    green: '#388e3c',
-    orange: '#f57c00',
-    gray: '#858585',
-  };
+  // const colorMap: Record<'red' | 'green' | 'orange' | 'gray', string> = {
+  //   red: '#d32f2f',
+  //   green: '#388e3c',
+  //   orange: '#f57c00',
+  //   gray: '#858585',
+  // };
 
-  const updateVolunteerFlags = (updatedVolunteer: Volunteer) => {
+  async function refreshSessions() {
+    const seshRes = await fetch(`/api/volunteers/${volunteer.authID}/sessions`);
+    const seshData = await seshRes.json();
+    setSessions(seshData.sessions);
+  }
+
+  useEffect(() => {
+    refreshSessions();
+  }, [volunteer, refreshSessions]);
+
+  const updateVolunteerFlags = (updatedVolunteer: IVolunteer) => {
     setVolunteers((prev) =>
       prev.map((vol) =>
         vol._id === updatedVolunteer._id ? updatedVolunteer : vol
@@ -49,39 +65,19 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
       />
 
       <Drawer anchor="left" open={open} onClose={onClose}>
-        <div style={{ width: 500, padding: '2rem' }}>
-          <Typography align="center" variant="h5" gutterBottom>
-            {volunteer.name}
-          </Typography>
+        <div
+          style={{
+            width: 900,
+            padding: '2rem',
+            backgroundColor: lktheme.offWhite,
+          }}
+        >
+          <VolDisplay volunteer={volunteer} />
+
           <Divider sx={{ my: 2 }} />
 
           <Box>
-            {volunteer.flags?.map((flag, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  mt: 1,
-                }}
-              >
-                <Typography
-                  sx={{
-                    color:
-                      colorMap[flag.color as keyof typeof colorMap] || 'black',
-                    border: `2px solid ${
-                      colorMap[flag.color as keyof typeof colorMap] || 'black'
-                    }`,
-                    width: '90%',
-                    padding: '3px',
-                    wordBreak: 'break-word',
-                  }}
-                >
-                  {flag.description}
-                </Typography>
-              </Box>
-            ))}
+            <FlagDisplay flags={volunteer.flags!} />
           </Box>
           <button
             onClick={() => setFlagModalOpen(true)}
@@ -92,45 +88,11 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
 
           <Divider sx={{ my: 2 }} />
 
-          <div className="flex gap-5">
-            <div className="w-[300px] h-[150px] rounded-xl p-5 bg-black bg-opacity-50 flex flex-col justify-around">
-              <p className="text-neutral-300">Total Hours</p>
-              <p className="text-white text-[40px]">10.5</p>
-            </div>
+          <UserSeshStats sessions={sessions} />
 
-            <div className="w-[300px] h-[150px] rounded-xl p-5 bg-black bg-opacity-50 flex flex-col justify-around">
-              <p className="text-neutral-300">Average Session</p>
-              <p className="text-white text-[40px]">2 Hours</p>
-            </div>
-          </div>
           <Divider sx={{ my: 2 }} />
 
-          <Typography variant="subtitle1" gutterBottom>
-            Sessions
-          </Typography>
-          {volunteer.sessions && volunteer.sessions.length > 0 ? (
-            volunteer.sessions.map((session, index) => (
-              <Box
-                key={index}
-                sx={{
-                  bgcolor: 'rgba(0, 0, 0, 0.03)',
-                  p: 1,
-                  borderRadius: '8px',
-                  mb: 1,
-                }}
-              >
-                <Typography>
-                  <strong>Date:</strong>{' '}
-                  {new Date(session.date).toLocaleDateString('en-US')}
-                </Typography>
-                <Typography>
-                  <strong>Length:</strong> {session.length} hours
-                </Typography>
-              </Box>
-            ))
-          ) : (
-            <Typography>No sessions available.</Typography>
-          )}
+          <SessionTable sessions={sessions} staff />
         </div>
       </Drawer>
     </>

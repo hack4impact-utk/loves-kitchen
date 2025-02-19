@@ -77,7 +77,8 @@ def main():
             email = f"{first_name.lower()}{last_name.lower()}{ctr}@example.com"
             ctr += 1
 
-        # Generate age, creation date, and flags
+        # Generate authid, age, creation date, and flags
+        authID = f"{email.split('@')[0]}.id"
         age = random.randint(16, 75)
         createdAt = random_datetime("4/16/2004 1:30 PM", "10/13/2024 4:50 AM", '%m/%d/%Y %I:%M %p', random.random())
 
@@ -86,7 +87,8 @@ def main():
         address = fake.address()
 
         # Store volunteer data in the dictionary
-        volunteers[email] = {
+        volunteers[authID] = {
+            "authID": authID,
             "firstName": first_name,
             "lastName": last_name,
             "age": age,
@@ -100,9 +102,9 @@ def main():
     print("Volunteers generated, creating sessions...")
 
     # Create 1-3 sessions per volunteer
-    for email in volunteers:
+    for authID in volunteers:
         num_sessions = random.randint(1, 3)
-        createdAtStr = volunteers[email]["createdAt"].strftime('%m/%d/%Y %I:%M %p')
+        createdAtStr = volunteers[authID]["createdAt"].strftime('%m/%d/%Y %I:%M %p')
 
         for i in range(num_sessions):
             length = random.randint(1, 16) / 2  # Half-hour intervals
@@ -111,10 +113,10 @@ def main():
             startWorkTime = random_datetime(f"{satDate} 07:00 AM", f"{satDate} 05:00 PM", '%m/%d/%Y %I:%M %p', random.random())
 
             if i == 0:
-                sessions[email] = []
+                sessions[authID] = []
             
-            sessions[email].append({
-                "workedBy": email,
+            sessions[authID].append({
+                "workedBy": authID,
                 "length": length,
                 "startTime": startWorkTime
             })

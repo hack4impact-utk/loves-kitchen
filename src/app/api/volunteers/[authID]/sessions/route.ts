@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
-import { volModel } from '@/server/models/Vol';
 import { sessionModel } from '@/server/models/Session';
 import dbConnect from '@/utils/dbconnect';
+import { Volunteer } from '@/server/models/Volunteer';
 
 // Create a new session, keyed by volunteer
 export const POST = async function (
   req: Request,
-  { params }: { params: { volunteerId: string } }
+  { params }: { params: { authID: string } }
 ) {
   await dbConnect();
 
   try {
-    const { volunteerId } = params;
+    const { authID } = params;
 
-    if (volunteerId !== 'all') {
+    if (authID !== 'all') {
       const { length, startTime } = await req.json();
 
       if (!length || !startTime) {
@@ -23,7 +23,7 @@ export const POST = async function (
         );
       }
 
-      const volunteer = await volModel.findById(volunteerId);
+      const volunteer = await Volunteer.findOne({ authID: authID });
 
       if (!volunteer) {
         return NextResponse.json(
@@ -33,13 +33,16 @@ export const POST = async function (
       }
 
       const session = await sessionModel.create({
-        workedBy: volunteer.name,
+        workedBy: volunteer.authID,
         startTime: startTime,
         length: length,
       });
 
       return NextResponse.json({ success: true, session }, { status: 200 });
-    } else {
+    }
+
+    // general add session
+    else {
       const { workedBy, length, startTime } = await req.json();
 
       if (!length || !startTime || !workedBy) {
@@ -49,20 +52,21 @@ export const POST = async function (
         );
       }
 
-      /*const volunteer = await volModel.
+      const volunteer = await Volunteer.findOne({ authID: workedBy });
 
       if (!volunteer) {
         return NextResponse.json(
           { success: false, error: 'Volunteer not found' },
           { status: 404 }
         );
-      }*/
+      }
 
       const session = await sessionModel.create({
         workedBy: workedBy,
         startTime: startTime,
         length: length,
       });
+      console.log(session);
 
       return NextResponse.json({ success: true, session }, { status: 200 });
     }
@@ -101,12 +105,30 @@ export const DELETE = async function (req: Request) {
   }
 };
 
-// Return all sessions
-export const GET = async function () {
+// Getting sessions of one or all volunteers
+export const GET = async function (
+  req: Request,
+  { params }: { params: { authID: string } }
+) {
   await dbConnect();
 
+  // all volunteers?
+  if (params.authID == 'all') {
+    try {
+      const sessions = await sessionModel.find({});
+      return NextResponse.json({ success: true, sessions }, { status: 200 });
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+      return NextResponse.json(
+        { success: false, error: 'Failed to fetch sessions' },
+        { status: 500 }
+      );
+    }
+  }
+
+  // one volunteer
   try {
-    const sessions = await sessionModel.find({});
+    const sessions = await sessionModel.find({ workedBy: params.authID });
     return NextResponse.json({ success: true, sessions }, { status: 200 });
   } catch (error) {
     console.error('Error fetching sessions:', error);

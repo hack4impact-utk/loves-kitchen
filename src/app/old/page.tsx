@@ -8,12 +8,12 @@ import {
   addVol,
   delVol,
 } from '@/server/actions/actions';
-import { Volunteer } from '@/server/models/Vol';
+import { IVolunteer } from '@/server/models/Volunteer';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Image from 'next/image';
 import Reset from '@/components/Reset';
 import VolunteersTable from '@/components/VolunteerTable';
-import VolunteerModal from '@/components/VolunteerModal';
+// import VolunteerModal from '@/components/VolunteerModal';
 import NavBar from '@/components/NavBar';
 import DropDown from '@/components/DropDown';
 
@@ -36,7 +36,7 @@ const Old = () => {
     setIsCheckedIn((prev) => !prev);
   };
 
-  const [vols, setVols] = useState<Volunteer[]>([]);
+  const [vols, setVols] = useState<IVolunteer[]>([]);
   useEffect(() => {
     if (!firstLoad.current) {
       const fetchData = async () => {
@@ -79,18 +79,17 @@ const Old = () => {
       <NavBar />
       <div className="flex flex-col items-center bg-slate-900 text-white">
         <div className="mt-5">
-          <VolunteerModal
+          {/* <VolunteerModal
             open={false}
             handleClose={() => {}}
             volunteer={{
               _id: 'placeholder-id',
-              name: 'Placeholder Name',
+              firstName: 'Placeholder Name',
               age: 0,
               createdAt: new Date().toISOString(),
               flags: [],
-              sessions: [],
             }}
-          />
+          /> */}
         </div>
         {/* If user is logged in. */}
         {user && user.email && user.name && (

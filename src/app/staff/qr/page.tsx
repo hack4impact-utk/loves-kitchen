@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
 import lktheme from '@/types/colors';
 import QRDisplay from '@/components/QRDisplay';
-import { Session } from '@/server/models/Session';
+import { ISession } from '@/server/models/Session';
 import { getQRCode } from '@/server/actions/qrurl';
 
 const StaffQR = () => {
@@ -19,7 +19,7 @@ const StaffQR = () => {
 
   async function generateQR() {
     if (sessionDateTime != '' && sessionLength != '') {
-      const qrSesh: Session = {
+      const qrSesh: ISession = {
         _id: '',
         workedBy: '',
         startTime: sessionDateTime,

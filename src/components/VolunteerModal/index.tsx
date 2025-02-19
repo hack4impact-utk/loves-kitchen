@@ -5,12 +5,12 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Modal from '@mui/material/Modal';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { Volunteer } from '@/server/models/Vol';
+import { IVolunteer } from '@/server/models/Volunteer';
 
 type VolunteerModalProps = {
   open: boolean;
   handleClose: () => void;
-  volunteer: Volunteer;
+  volunteer: IVolunteer;
 };
 
 const style = {
@@ -75,7 +75,7 @@ export default function VolunteerModal({
     <Modal open={open} onClose={handleClose} aria-labelledby="modal-title">
       <Box sx={style}>
         <Typography id="modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
-          {`${volunteer.name}'s Information`}
+          {`${volunteer.firstName} ${volunteer.lastName}'s Information`}
         </Typography>
         <Divider />
         <Typography sx={{ mt: 2, fontSize: '18px', fontWeight: 'bold' }}>

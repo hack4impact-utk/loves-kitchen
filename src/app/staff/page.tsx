@@ -5,17 +5,17 @@ import SessionTable from '@/components/SessionTable';
 import VolunteersTable from '@/components/VolunteerTable';
 import VolunteerDrawer from '@/components/VolunteerDrawer'; // Updated sidepage component
 import NavBar from '@/components/NavBar';
-import { Volunteer } from '@/server/models/Vol';
-import { Session } from '@/server/models/Session';
+import { IVolunteer } from '@/server/models/Volunteer';
+import { ISession } from '@/server/models/Session';
 import Divider from '@mui/material/Divider';
 import theme from '@/types/colors';
 import lktheme from '@/types/colors';
 import { Button } from '@mui/material';
 
 const Staff = () => {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
-  const [selectedVolunteer, setSelectedVolunteer] = useState<Volunteer | null>(
+  const [sessions, setSessions] = useState<ISession[]>([]);
+  const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
+  const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
     null
   );
   const [isDrawerOpen, setDrawerOpen] = useState(false); // Drawer state
@@ -47,8 +47,8 @@ const Staff = () => {
   }, []);
 
   // Open the drawer with the selected volunteer
-  const handleViewVolunteer = (volunteer: Volunteer) => {
-    console.log('Opening drawer for:', volunteer); // Debugging log
+  const handleViewVolunteer = (volunteer: IVolunteer) => {
+    // console.log('Opening drawer for:', volunteer); // Debugging log
     setSelectedVolunteer(volunteer); // Set the selected volunteer
     setDrawerOpen(true); // Open the drawer
   };
@@ -71,6 +71,7 @@ const Staff = () => {
   };
 
   // Add a session and actively update session list
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addSession = async (data: any): Promise<void> => {
     const { workedBy, startTime, length } = data;
     const response = await fetch('api/volunteers/all/sessions', {
@@ -83,6 +84,7 @@ const Staff = () => {
       }),
     });
     const result = await response.json();
+    console.log(result);
 
     if (result.success) {
       setSessions([...sessions, result.session]);
@@ -100,7 +102,7 @@ const Staff = () => {
           padding: '2rem',
           maxWidth: '1200px',
           margin: '0 auto',
-          marginTop: '100px',
+          marginTop: '50px',
         }}
       >
         <div

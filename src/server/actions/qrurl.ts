@@ -1,9 +1,9 @@
 'use server';
 
-import { Session } from '../models/Session';
+import { ISession } from '../models/Session';
 import { encrypt } from './secret';
 
-export async function getQRCode(qrSesh: Session): Promise<string> {
+export async function getQRCode(qrSesh: ISession): Promise<string> {
   const seshEncrypted = await encrypt(JSON.stringify(qrSesh));
   const baseURL = process.env.AUTH0_BASE_URL;
 

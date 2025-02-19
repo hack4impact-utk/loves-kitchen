@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { Volunteer, Flag } from '@/server/models/Vol';
+import { IVolunteer, IFlag } from '@/server/models/Volunteer';
 
 const colorMap: Record<'red' | 'green' | 'orange' | 'gray', string> = {
   red: '#d32f2f',
@@ -33,8 +33,8 @@ const style = {
 type FlagModalProps = {
   open: boolean;
   handleClose: () => void;
-  volunteer: Volunteer;
-  updateVolunteer: (updatedVolunteer: Volunteer) => void;
+  volunteer: IVolunteer;
+  updateVolunteer: (updatedVolunteer: IVolunteer) => void;
 };
 
 const FlagModal: React.FC<FlagModalProps> = ({
@@ -43,8 +43,8 @@ const FlagModal: React.FC<FlagModalProps> = ({
   volunteer,
   updateVolunteer,
 }) => {
-  const [flags, setFlags] = useState<Flag[]>(volunteer.flags || []);
-  const [flag, setFlag] = useState<Flag>({ description: '', color: '' });
+  const [flags, setFlags] = useState<IFlag[]>(volunteer.flags || []);
+  const [flag, setFlag] = useState<IFlag>({ description: '', color: '' });
   const [inputOpen, setInputOpen] = useState(false);
 
   // Sync local flags state with the volunteer's flags when the modal opens
@@ -108,7 +108,7 @@ const FlagModal: React.FC<FlagModalProps> = ({
     >
       <Box sx={style}>
         <Typography id="modal-title" variant="h6" component="h2">
-          Flags for {volunteer.name}
+          Flags for {`${volunteer.firstName} ${volunteer.lastName}`}
         </Typography>
 
         <Typography id="modal-description" sx={{ mt: 2 }}>

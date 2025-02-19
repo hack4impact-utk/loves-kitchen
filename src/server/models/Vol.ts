@@ -1,23 +1,24 @@
 import mongoose from 'mongoose';
 
-export interface Flag {
-  description: string;
-  color: string;
-}
+// export interface Flag {
+//   description: string;
+//   color: string;
+// }
 
-export interface Session {
-  date: string;
-  length: number;
-}
+// export interface Session {
+//   date: string;
+//   length: number;
+// }
 
-export interface Volunteer {
-  _id: string;
-  name: string;
-  age: number;
-  createdAt: string;
-  flags?: Flag[];
-  sessions?: Session[];
-}
+// export interface Volunteer {
+//   _id: string;
+//   authID: string;
+//   name: string;
+//   age: number;
+//   createdAt: string;
+//   flags?: Flag[];
+//   sessions?: Session[];
+// }
 
 const volSchema = new mongoose.Schema(
   {

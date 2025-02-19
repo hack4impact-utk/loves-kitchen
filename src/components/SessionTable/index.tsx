@@ -11,12 +11,12 @@ import SessionModal from '@/components/SessionModal';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Session } from '@/server/models/Session';
+import { ISession } from '@/server/models/Session';
 import { parseISOString } from '@/utils/isoParse';
 import lktheme, { cyantable } from '@/types/colors';
 
 interface SessionTableProps {
-  sessions: Session[];
+  sessions: ISession[];
   staff: boolean;
   onDeleteSession?: (sessionId: string) => Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +27,7 @@ const SessionTable = (props: SessionTableProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   // use the map function to fetch the data on the sessions from server
   const rows: GridValidRowModel[] = props.sessions.map((session) => ({
-    id: session._id, 
+    id: session._id,
     workedBy: session.workedBy,
     startTime: parseISOString(session.startTime).toLocaleTimeString('en-US', {
       year: 'numeric',
@@ -53,16 +53,20 @@ const SessionTable = (props: SessionTableProps) => {
     { field: 'workedBy', headerName: 'Worked By', width: 200 },
     { field: 'startTime', headerName: 'Start Time', width: 250 },
     { field: 'length', headerName: 'Length', width: 150 },
-    { 
-      field: 'id', 
-      headerName: 'Actions', 
+    {
+      field: 'id',
+      headerName: 'Actions',
       width: 150,
       renderCell: (params) => (
-        <IconButton onClick={() => props.onDeleteSession && props.onDeleteSession(params.row.id)}>
-          <DeleteIcon color='error'/>
+        <IconButton
+          onClick={() =>
+            props.onDeleteSession && props.onDeleteSession(params.row.id)
+          }
+        >
+          <DeleteIcon color="error" />
         </IconButton>
-      )
-    }
+      ),
+    },
   ];
 
   if (!props.staff) columns.pop();
@@ -79,16 +83,18 @@ const SessionTable = (props: SessionTableProps) => {
 
   return (
     <div
-      className="p-5 rounded-lg w-[55vw]"
+      className="p-5 rounded-lg w-full"
       style={{ backgroundColor: lktheme.darkCyanRGBA(1) }}
     >
       <div className="text-2xl border-b border-b-neutral-300 pb-4 mb-4 w-full flex items-center justify-between">
-        <p className="text-white"><b>Sessions</b></p>
-        {props.staff &&
+        <p className="text-white">
+          <b>Sessions</b>
+        </p>
+        {props.staff && (
           <IconButton onClick={() => setModalOpen(true)}>
-            <AddCircleOutlineIcon fontSize="large" className="text-white"/>
+            <AddCircleOutlineIcon fontSize="large" className="text-white" />
           </IconButton>
-        }
+        )}
       </div>
 
       <ThemeProvider theme={theme}>
@@ -97,20 +103,20 @@ const SessionTable = (props: SessionTableProps) => {
           rows={rows}
           columns={columns}
           initialState={{
-            pagination: { paginationModel: { pageSize: 10 } },
+            pagination: { paginationModel: { pageSize: 5 } },
           }}
-          pageSizeOptions={[10]}
+          pageSizeOptions={[5]}
           disableRowSelectionOnClick
           sx={cyantable}
         />
       </ThemeProvider>
-      {modalOpen && 
-        <SessionModal 
-          open={modalOpen} 
+      {modalOpen && (
+        <SessionModal
+          open={modalOpen}
           onClose={() => setModalOpen(false)}
           createSession={props.onAddSession || (() => Promise.resolve())}
         />
-      }
+      )}
     </div>
   );
 };
