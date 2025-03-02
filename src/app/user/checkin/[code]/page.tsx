@@ -1,8 +1,7 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams} from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { decrypt } from '@/server/actions/secret';
 import NavBar from '@/components/NavBar';
 import { Box, Button, Typography } from '@mui/material';
@@ -10,8 +9,9 @@ import lktheme from '@/types/colors';
 
 export default function CheckInPage() {
   const { code } = useParams<{ code: string }>();
+  const url_decoded = decodeURIComponent(code);
   /* Ensuring this is a string as this was throwing a lot of errors. */
-  const codeString = Array.isArray(code) ? code[0] : code;
+  const codeString = Array.isArray(url_decoded) ? url_decoded[0] : url_decoded;
   /* Commented this out. Uncomment if needed. */
   // const router = useRouter();
 
@@ -54,7 +54,7 @@ export default function CheckInPage() {
     <>
       <NavBar />
       <div
-        className="flex flex-col items-center text-white min-h-screen"
+        className="flex flex-col items-center justify-center text-neutral-800 h-[100vh]"
         style={{ backgroundColor: lktheme.offWhite }}
       >
         <Box className="text-center p-5">
