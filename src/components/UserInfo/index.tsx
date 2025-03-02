@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
   Alert,
-  Button,
   createTheme,
   ThemeProvider,
 } from '@mui/material';
@@ -15,12 +14,40 @@ import ErrorIcon from '@mui/icons-material/Error';
 import CheckIcon from '@mui/icons-material/Check';
 import lktheme from '@/types/colors';
 
+const withinTime = (time: string, hours: number) => {
+  const startTime = new Date(time);
+  const endTime = new Date(startTime.getTime() + hours * 60 * 60 * 1000);
+  const currentTime = new Date();
+
+  return currentTime >= startTime && currentTime <= endTime;
+};
+
 const UserInfo = () => {
   const { user, error, isLoading } = useUser();
   const [isCheckedIn, setIsCheckedIn] = useState(false);
-  const toggleCheckIn = () => {
-    setIsCheckedIn((prev) => !prev);
-  };
+  
+  useEffect(() => {
+    const checkSignedIn = async () => {
+      if (user != undefined) {
+        const response = await fetch(`api/volunteers/${user.sub}/sessions`);
+        const data = await response.json();
+
+        if (!data.success) {
+            alert('Failed to get sessions');
+            return;
+        }
+
+        if (data.sessions.length != 0) {
+          const session = data.sessions[0];
+          withinTime(session.startTime, session.length)
+            ? setIsCheckedIn(true)
+            : setIsCheckedIn(false);
+        }
+      }
+    };
+    
+    checkSignedIn();
+  }, [user]);
 
   if (error) {
     console.log('Error: failed to load user credentials.');
@@ -76,16 +103,6 @@ const UserInfo = () => {
               {isCheckedIn ? 'Checked in.' : 'Not checked in.'}{' '}
               {/* Change display message */}
             </Alert>
-            <Button
-              variant="contained"
-              onClick={toggleCheckIn}
-              className="absolute bottom-5 left-5"
-              sx={{
-                backgroundColor: lktheme.darkCyan,
-              }}
-            >
-              {isCheckedIn ? 'Check Out' : 'Check In'}
-            </Button>
           </Box>
         </>
       ) : isLoading ? (

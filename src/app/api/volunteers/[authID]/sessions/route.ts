@@ -104,7 +104,7 @@ export const DELETE = async function (req: Request) {
   }
 };
 
-// Getting sessions of one or all volunteers
+// Getting sessions of one or all volunteers from most recent to least recent
 export const GET = async function (
   req: Request,
   { params }: { params: { authID: string } }
@@ -114,7 +114,7 @@ export const GET = async function (
   // all volunteers?
   if (params.authID == 'all') {
     try {
-      const sessions = await sessionModel.find({});
+      const sessions = await sessionModel.find({}).sort({ startTime: -1 });
       return NextResponse.json({ success: true, sessions }, { status: 200 });
     } catch (error) {
       console.error('Error fetching sessions:', error);
@@ -127,7 +127,7 @@ export const GET = async function (
 
   // one volunteer
   try {
-    const sessions = await sessionModel.find({ workedBy: params.authID });
+    const sessions = await sessionModel.find({ workedBy: params.authID }).sort({ startTime: -1 });
     return NextResponse.json({ success: true, sessions }, { status: 200 });
   } catch (error) {
     console.error('Error fetching sessions:', error);
