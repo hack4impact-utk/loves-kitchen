@@ -14,6 +14,7 @@ import Image from 'next/image';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckIcon from '@mui/icons-material/Check';
 import lktheme from '@/types/colors';
+import VolunteerUpdate from '../VolunteerUpdate';
 
 const UserInfo = () => {
   const { user, error, isLoading } = useUser();
@@ -47,6 +48,9 @@ const UserInfo = () => {
             }}
           >
             {/* LOGIN SUCCESSFULL */}
+            {/* <VolunteerUpdate authID = {user.sub!} /> */}
+            <VolunteerUpdate authID={user.sub ?? ''} />
+
             <Image
               src={user.picture ?? ''}
               alt={user.name ?? ''}
