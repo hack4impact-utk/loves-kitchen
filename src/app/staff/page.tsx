@@ -11,8 +11,28 @@ import Divider from '@mui/material/Divider';
 import theme from '@/types/colors';
 import lktheme from '@/types/colors';
 import { Button } from '@mui/material';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { getRoles } from '@/server/actions/roles';
 
 const Staff = () => {
+  const { user } = useUser();
+
+  useEffect(() => {
+    const checkRoles = async () => {
+      if (user?.sub) {
+        const roles = await getRoles(user.sub!);
+        if (!roles.includes('Staff')) {
+          /* Add redirect code here*/
+          console.log("You're not staff");
+        }
+      }
+    };
+
+    if (user) {
+      checkRoles();
+    }
+  }, [user]);
+
   const [sessions, setSessions] = useState<ISession[]>([]);
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
