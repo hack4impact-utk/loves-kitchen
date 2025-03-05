@@ -1,31 +1,35 @@
 'use client';
-import { TestSessionObject } from '@/types/qrobject';
-import { encrypt } from '@/server/actions/secret';
+
 import React, { useState } from 'react';
+import { ISession } from '@/server/models/Session';
+import { encrypt } from '@/server/actions/secret';
 
 const EncryptButton = () => {
   const [response, setResponse] = useState<string>('');
 
   async function getResponse() {
     // encrypt the thingy on the server-side
-    const TO_ENCRYPT: TestSessionObject = {
+    const TO_ENCRYPT: ISession = {
+      _id: '',
       startTime: new Date().toISOString(),
-      someDecimal: 1.3,
-      someString: 'test str',
+      workedBy: 'put our authID here to add to your own sessions list',
+      length: 2,
     };
+    // const TO_ENCRYPT: ISession = {
+    //   _id: "",
+    //   startTime: '2001-09-11T18:00',
+    //   workedBy: "put our authID here to add to your own sessions list",
+    //   length: 2
+    // };
     const src = JSON.stringify(TO_ENCRYPT);
     const encrypted = await encrypt(src);
+    // console.log(src);
+    // console.log(encrypted);
 
     // get response from server
-    const res = await fetch(
-      '/api/checkin?' +
-        new URLSearchParams({
-          code: encrypted,
-        }),
-      {
-        method: 'GET',
-      }
-    );
+    const res = await fetch(`/api/checkin/${encodeURIComponent(encrypted)}`, {
+      method: 'POST',
+    });
     const obj = await res.json();
 
     // set the state variable with the response
