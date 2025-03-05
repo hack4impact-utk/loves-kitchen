@@ -1,49 +1,66 @@
 import { decrypt } from '@/server/actions/secret';
-import { NextResponse } from 'next/server'; // Next.js utility for handling responses
-import { TestSessionObject } from '@/types/qrobject';
+import { NextResponse } from 'next/server';
+import { sessionModel } from '@/server/models/Session';
 
-export async function GET(req: Request) {
+const MONGODB_URI = process.env.MONGODB_URI;
+
+export async function POST(req: Request) {
   try {
-    // Extract the encoded object from the URL query parameters
-    const url = new URL(req.url);
-    const code = url.searchParams.get('code'); // Get the 'code' parameter from the URL
+    if (!MONGODB_URI) {
+      throw new Error('Missing MONGODB_URI environment variable');
+    }
 
+    // Read encrypted code from request
+    const { code } = await req.json();
     if (!code) {
-      // If no code is provided, return an error
       return NextResponse.json(
-        { success: false, error: 'No code provided in the URL' },
+        { success: false, error: 'No code provided' },
         { status: 400 }
       );
     }
 
-    // Decode the encrypted string
-    const session: TestSessionObject = JSON.parse(await decrypt(code));
+    // Decrypt the QR code data
+    const sessionData = JSON.parse(await decrypt(code));
 
-    // Validate the session object
-    const currentDate = new Date();
-    const sessionDate = new Date(session.startTime);
+    // Validate session timing
+    const sessionEndTime = new Date(sessionData.startTime);
+    sessionEndTime.setHours(sessionEndTime.getHours() + sessionData.length);
 
-    if (sessionDate.toDateString() !== currentDate.toDateString()) {
-      // If the session start time is not within the current day, return an error
+    if (new Date() > sessionEndTime) {
       return NextResponse.json(
-        {
-          success: false,
-          error:
-            'Invalid QR code: Session start time is not within the current day.',
-        },
+        { success: false, error: 'Session has expired' },
         { status: 400 }
       );
     }
 
-    // If validation passes, return the decoded session object
+    // Check if session already exists
+    // const existingSession = await sessionModel.findOne({
+    //   _id: sessionData._id,
+    // });
+    // if (existingSession) {
+    //   return NextResponse.json(
+    //     { success: false, error: 'Session already exists' },
+    //     { status: 400 }
+    //   );
+    // }
+
+    // Save new session
+    const newSession = new sessionModel({
+      //_id: sessionData._id,
+      workedBy: sessionData.authID,
+      startTime: sessionData.startTime,
+      length: sessionData.length,
+    });
+    await newSession.save();
+
     return NextResponse.json(
-      { success: true, session: session },
-      { status: 200 }
+      { success: true, session: newSession },
+      { status: 201 }
     );
   } catch (error) {
-    console.error('Error processing QR code:', error);
+    console.error('Error processing session:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to process QR code' },
+      { success: false, error: 'Internal Server Error' },
       { status: 500 }
     );
   }
