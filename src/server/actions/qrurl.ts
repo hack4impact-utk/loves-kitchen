@@ -11,7 +11,8 @@ export async function getQRCode(qrSesh: ISession): Promise<string> {
     throw new Error('Invalid base URL for QR code generation.');
   }
 
-  const output = baseURL + '/user/checkin/' + seshEncrypted;
+  console.log('encrypted session:', seshEncrypted);
+  const output = baseURL + '/user/checkin/' + encodeURIComponent(seshEncrypted);
 
   return output;
 }
