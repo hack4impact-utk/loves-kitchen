@@ -31,10 +31,20 @@ export async function POST(
       );
     }
 
+    let authID: string;
+    try {
+      const body = await req.json();
+      authID = body.authID;
+    } catch {
+      return NextResponse.json(
+        { success: false, error: 'Failed to get authID from body' },
+        { status: 400 }
+      );
+    }
+
     // Decrypt the QR code data
     const session: ISession = JSON.parse(await decrypt(code));
-    // console.log(sessionData);
-    // console.log(beforeSessionEnd(sessionData));
+    session.workedBy = authID;
 
     // Validate session timing
     const validTime = beforeSessionEnd(session);
@@ -52,6 +62,7 @@ export async function POST(
       startTime: session.startTime,
       length: session.length,
     });
+
     if (existingSession) {
       return NextResponse.json(
         { success: false, error: 'Session already exists' },

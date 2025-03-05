@@ -1,16 +1,17 @@
 'use client';
 
-import EncryptButton from '@/components/EncryptButton';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { decrypt } from '@/server/actions/secret';
 import NavBar from '@/components/NavBar';
 import { Box, Button, Typography } from '@mui/material';
 import lktheme from '@/types/colors';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function CheckInPage() {
   const { code } = useParams<{ code: string }>();
   const url_decoded = decodeURIComponent(code);
+  const { user } = useUser();
   /* Ensuring this is a string as this was throwing a lot of errors. */
   const codeString = Array.isArray(url_decoded) ? url_decoded[0] : url_decoded;
   /* Commented this out. Uncomment if needed. */
@@ -43,8 +44,22 @@ export default function CheckInPage() {
   }, [codeString]);
 
   const handleCheckIn = async () => {
-    console.log('Checked in with session code:', code);
-    /* I could not find an API. If it exists, then send the code here. */
+    if (user != undefined) {
+      const res = await fetch(`/api/checkin/${code}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          authID: user.sub,
+        }),
+      });
+      const obj = await res.json();
+      // console.log(obj);
+
+      if (obj.success) {
+        alert('Checked in successfully.');
+      } else {
+        alert('Failed to check in :(');
+      }
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -65,7 +80,7 @@ export default function CheckInPage() {
           <Typography variant="h6">
             Start Time: {new Date(session.startTime).toLocaleString()}
           </Typography>
-          <Typography variant="h6">Length: {session.length} minutes</Typography>
+          <Typography variant="h6">Length: {session.length} hours</Typography>
           <Button
             variant="contained"
             sx={{ mt: 2, backgroundColor: lktheme.darkCyan }}
@@ -74,8 +89,6 @@ export default function CheckInPage() {
             Confirm Check-In
           </Button>
         </Box>
-
-        <EncryptButton />
       </div>
     </>
   );
