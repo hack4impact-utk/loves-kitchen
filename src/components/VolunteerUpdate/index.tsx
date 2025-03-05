@@ -1,6 +1,8 @@
+import { IVolunteer } from '@/server/models/Volunteer';
 import React, { useState, useEffect } from 'react';
 
 interface VolunteerUpdateProps {
+  vol: IVolunteer | undefined;
   authID: string;
 }
 
@@ -12,7 +14,11 @@ const VolunteerUpdate = (props: VolunteerUpdateProps) => {
   useEffect(() => {
     // You could fetch current address/phone here if needed
     // Example: Fetch volunteer details by authID (optional)
-  }, [props.authID]);
+    if (props.vol != undefined) {
+      setAddress(props.vol.address);
+      setPhone(props.vol.phone);
+    }
+  }, [props.vol]);
 
   const handleSubmit = async () => {
     try {
@@ -40,33 +46,41 @@ const VolunteerUpdate = (props: VolunteerUpdateProps) => {
   };
 
   return (
-    <div>
-      <h3>Update Your Information</h3>
-      <form onSubmit={handleSubmit}>
+    <>
+      {/* <h3 className='text-2xl'>Update Your Information</h3> */}
+      <div className="flex flex-col items-center text-white gap-5 mt-5">
         <label>
-          Address:
+          {/* Address: */}
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Enter new address"
+            className="bg-transparent border-b-2 border-b-neutral-400 focus:border-b-white outline-none"
           />
         </label>
-        <br />
+
         <label>
-          Phone:
+          {/* Phone: */}
           <input
             type="text"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="Enter new phone number"
+            className="bg-transparent border-b-2 border-b-neutral-400 focus:border-b-white outline-none"
           />
         </label>
-        <br />
-        <button type="submit">Update</button>
-      </form>
-      <p>{message}</p>
-    </div>
+
+        <button
+          onClick={handleSubmit}
+          className="px-3 py-2 hover:bg-green-500 bg-green-600 rounded-lg"
+        >
+          Update
+        </button>
+      </div>
+
+      <p className="text-white">{message}</p>
+    </>
   );
 };
 
