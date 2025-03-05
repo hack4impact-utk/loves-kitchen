@@ -13,17 +13,18 @@ import lktheme from '@/types/colors';
 import { Button } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { getRoles } from '@/server/actions/roles';
+import { useRouter } from 'next/navigation';
 
 const Staff = () => {
   const { user } = useUser();
+  const router = useRouter();
 
   useEffect(() => {
     const checkRoles = async () => {
-      if (user?.sub) {
+      if (user?.sub && router) {
         const roles = await getRoles(user.sub!);
         if (!roles.includes('Staff')) {
-          /* Add redirect code here*/
-          console.log("You're not staff");
+          router.push('/');
         }
       }
     };
@@ -31,7 +32,7 @@ const Staff = () => {
     if (user) {
       checkRoles();
     }
-  }, [user]);
+  }, [user, router]);
 
   const [sessions, setSessions] = useState<ISession[]>([]);
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);

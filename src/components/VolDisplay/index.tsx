@@ -16,6 +16,8 @@ const VolDisplay = (props: VolDisplayProps) => {
     >
       <p className="text-3xl text-center">{`${vol.firstName} ${vol.lastName}`}</p>
       <p className="text-lg text-center text-neutral-400">
+        {vol.authID}
+        <br />
         {vol.email} | {vol.phone}
         <br />
         <i>{vol.address}</i>
