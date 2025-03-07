@@ -12,7 +12,7 @@ import theme from '@/types/colors';
 import lktheme from '@/types/colors';
 import { Button } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { getRoles } from '@/server/actions/roles';
+import { getRoles } from '@/server/actions/auth0m';
 import { useRouter } from 'next/navigation';
 
 const Staff = () => {

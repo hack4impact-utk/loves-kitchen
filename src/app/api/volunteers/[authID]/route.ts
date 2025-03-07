@@ -28,6 +28,31 @@ export const GET = async function (
   }
 };
 
+export const DELETE = async function (
+  req: Request,
+  { params }: { params: { authID: string } }
+) {
+  await dbConnect();
+
+  try {
+    const volunteer = await Volunteer.deleteOne({ authID: params.authID });
+    // console.log('Fetched volunteers from DB:', volunteers);
+    return NextResponse.json({ success: true, volunteer }, { status: 200 });
+  } catch (error) {
+    console.error(
+      `Failed to delete volunteer with authID ${params.authID}`,
+      error
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Failed to delete volunteer with authID ${params.authID}`,
+      },
+      { status: 500 }
+    );
+  }
+};
+
 export const PUT = async function (
   req: Request,
   { params }: { params: { authID: string } }

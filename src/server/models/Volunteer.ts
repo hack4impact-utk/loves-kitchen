@@ -6,6 +6,16 @@ export interface IFlag {
   color: string;
 }
 
+export interface IVolunteerCreate {
+  firstName: string;
+  lastName: string;
+  age: number;
+  email: string;
+  phone: string;
+  address: string;
+  password: string;
+}
+
 export interface IVolunteer {
   _id: string;
   authID: string;

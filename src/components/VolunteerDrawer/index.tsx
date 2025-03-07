@@ -104,6 +104,7 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
             width: 900,
             padding: '2rem',
             backgroundColor: lktheme.offWhite,
+            minHeight: '100vh',
           }}
         >
           <VolDisplay volunteer={volunteer} />
