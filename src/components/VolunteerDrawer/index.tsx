@@ -58,6 +58,38 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     setSelectedVol(null);
   };
 
+  const promoteVolunteer = async (volunteer: IVolunteer): Promise<void> => {
+    const putData: IVolunteer = volunteer;
+    putData.is_staff = true;
+
+    await fetch(`/api/volunteers/${volunteer.authID}`, {
+      method: 'PUT',
+      body: JSON.stringify(putData),
+    });
+
+    setSelectedVol(putData);
+    setVolunteers((prev) => [
+      ...prev.filter((oldVolunteer) => oldVolunteer.authID != volunteer.authID),
+      putData,
+    ]);
+  };
+
+  const demoteVolunteer = async (volunteer: IVolunteer): Promise<void> => {
+    const putData: IVolunteer = volunteer;
+    putData.is_staff = false;
+
+    await fetch(`/api/volunteers/${volunteer.authID}`, {
+      method: 'PUT',
+      body: JSON.stringify(putData),
+    });
+
+    setSelectedVol(putData);
+    setVolunteers((prev) => [
+      ...prev.filter((oldVolunteer) => oldVolunteer.authID != volunteer.authID),
+      putData,
+    ]);
+  };
+
   // Add a session and actively update session list
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addSession = async (data: any): Promise<void> => {
@@ -114,55 +146,80 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
         <div
           style={{
             width: 900,
-            padding: '2rem',
-            backgroundColor: lktheme.offWhite,
             minHeight: '100vh',
           }}
         >
-          <VolDisplay volunteer={volunteer} />
+          <div
+            style={{
+              padding: '2rem',
+              backgroundColor: lktheme.offWhite,
+            }}
+          >
+            <VolDisplay volunteer={volunteer} />
 
-          <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 2 }} />
 
-          <Box>
-            <FlagDisplay flags={volunteer.flags!} />
-          </Box>
+            <Box>
+              <FlagDisplay flags={volunteer.flags!} />
+            </Box>
 
-          <div className="w-full flex justify-center mt-10">
-            <button
-              onClick={() => setFlagModalOpen(true)}
-              className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg"
-            >
-              Edit Flags
-            </button>
+            <div className="w-full flex justify-center mt-10">
+              <button
+                onClick={() => setFlagModalOpen(true)}
+                className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg"
+              >
+                Edit Flags
+              </button>
+            </div>
+
+            <Divider sx={{ my: 2 }} />
+
+            <UserSeshStats sessions={sessions} />
+
+            <Divider sx={{ my: 2 }} />
+
+            <SessionTable
+              sessions={sessions}
+              staff
+              onAddSession={addSession}
+              onDeleteSession={deleteSession}
+            />
+
+            {admin && (
+              <>
+                <Divider sx={{ my: 2 }} />
+
+                <div className="w-full flex justify-center gap-10 pb-20">
+                  {volunteer.is_staff ? (
+                    <>
+                      <button
+                        onClick={() => demoteVolunteer(volunteer)}
+                        className="bg-orange-500 hover:bg-orange-600 px-3 py-2 rounded-lg text-white"
+                      >
+                        Demote
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => promoteVolunteer(volunteer)}
+                        className="bg-green-500 hover:bg-green-600 px-3 py-2 rounded-lg text-white"
+                      >
+                        Promote
+                      </button>
+                    </>
+                  )}
+
+                  <button
+                    onClick={() => deleteVolunteer(volunteer)}
+                    className="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg text-white"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
           </div>
-
-          <Divider sx={{ my: 2 }} />
-
-          <UserSeshStats sessions={sessions} />
-
-          <Divider sx={{ my: 2 }} />
-
-          <SessionTable
-            sessions={sessions}
-            staff
-            onAddSession={addSession}
-            onDeleteSession={deleteSession}
-          />
-
-          {admin && (
-            <>
-              <Divider sx={{ my: 2 }} />
-
-              <div className="w-full flex justify-center">
-                <button
-                  onClick={() => deleteVolunteer(volunteer)}
-                  className="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg text-white"
-                >
-                  Delete
-                </button>
-              </div>
-            </>
-          )}
         </div>
       </Drawer>
     </>

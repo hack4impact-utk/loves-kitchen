@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { IVolunteerCreate, Volunteer } from '@/server/models/Volunteer';
 import dbConnect from '@/utils/dbconnect';
 import { IAuth0User, IAuth0UserCreate } from '@/types/authTypes';
-import { addAuth0User } from '@/server/actions/auth0m';
+import { addAuth0User, setRoles } from '@/server/actions/auth0m';
 
 export const GET = async function () {
   await dbConnect();
@@ -70,6 +70,8 @@ export const POST = async function (req: NextRequest) {
       { status: 500 }
     );
   }
+
+  setRoles(addedUser.user_id, body.is_staff ? ['Staff'] : []);
 
   // added to auth0 database, add to volunteer database
   const jsonVol = {

@@ -2,7 +2,8 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { IVolunteer, Volunteer } from '@/server/models/Volunteer';
 import dbConnect from '@/utils/dbconnect';
-import { delAuth0User } from '@/server/actions/auth0m';
+import { delAuth0User, putAuth0User, setRoles } from '@/server/actions/auth0m';
+import { IAuth0UserUpdate } from '@/types/authTypes';
 
 export const GET = async function (
   req: Request,
@@ -75,17 +76,41 @@ export const PUT = async function (
       throw new Error('User does not exist.');
     }
 
-    const body = await req.json();
+    const body: IVolunteer = await req.json();
+    // console.log(body);
 
+    // update mongo database
     await Volunteer.updateOne(
       { authID: authID },
 
       {
-        address: body.address,
+        is_staff: body.is_staff,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        age: body.age,
+        email: body.email,
         phone: body.phone,
+        address: body.address,
       }
     );
-    // console.log('Fetched volunteers from DB:', volunteers);
+
+    const rolesArr = [];
+    if (body.is_staff) {
+      rolesArr.push('Staff');
+    }
+    setRoles(authID, rolesArr);
+
+    // update auth0 database
+    const patchData: IAuth0UserUpdate = {
+      email: body.email,
+      given_name: body.firstName,
+      family_name: body.lastName,
+      name: `${body.firstName} ${body.lastName}`,
+      nickname: body.email.split('@')[0],
+    };
+
+    await putAuth0User(patchData, body.authID);
+
     return NextResponse.json({ success: true, toUpdate }, { status: 200 });
   } catch (error) {
     console.error('the number 1', error);

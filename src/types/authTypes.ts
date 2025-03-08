@@ -36,3 +36,17 @@ export interface IAuth0User {
   user_metadata: object;
   username: string;
 }
+
+export interface IAuth0UserUpdate {
+  email: string;
+  given_name: string;
+  family_name: string;
+  name: string;
+  nickname: string;
+}
+
+export interface IAuth0Role {
+  id: string;
+  name: string;
+  description: string;
+}
