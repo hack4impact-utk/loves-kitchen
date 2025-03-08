@@ -60,42 +60,33 @@ const Staff = () => {
   return (
     <div style={{ backgroundColor: theme.offWhite, minHeight: '100vh' }}>
       <NavBar />
-      <div
-        style={{
-          padding: '2rem',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          marginTop: '50px',
-        }}
-      >
-        <div className="flex flex-col items-center justify-center pt-[100px] pb-20 gap-10">
-          <UserTable
-            is_admin={false}
-            shows_staff={false}
-            volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
-            onView={handleViewVolunteer} // Use the drawer open function
-          />
+      <div className="flex flex-col items-center justify-center pt-[100px] pb-20 gap-10">
+        <UserTable
+          is_admin={false}
+          shows_staff={false}
+          volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
+          onView={handleViewVolunteer} // Use the drawer open function
+        />
 
-          <UserTable
-            is_admin={false}
-            shows_staff={true}
-            volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
-            onView={handleViewVolunteer} // Use the drawer open function
-          />
-        </div>
-
-        {/* Sidepage (Drawer) for Viewing Volunteer Details */}
-        {selectedVolunteer && (
-          <VolunteerDrawer
-            admin={false}
-            open={isDrawerOpen} // Controlled by state
-            onClose={() => setDrawerOpen(false)} // Close the drawer
-            volunteer={selectedVolunteer} // Pass the selected volunteer
-            setSelectedVol={setSelectedVolunteer}
-            setVolunteers={setVolunteers}
-          />
-        )}
+        <UserTable
+          is_admin={false}
+          shows_staff={true}
+          volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
+          onView={handleViewVolunteer} // Use the drawer open function
+        />
       </div>
+
+      {/* Sidepage (Drawer) for Viewing Volunteer Details */}
+      {selectedVolunteer && (
+        <VolunteerDrawer
+          admin={false}
+          open={isDrawerOpen} // Controlled by state
+          onClose={() => setDrawerOpen(false)} // Close the drawer
+          volunteer={selectedVolunteer} // Pass the selected volunteer
+          setSelectedVol={setSelectedVolunteer}
+          setVolunteers={setVolunteers}
+        />
+      )}
     </div>
   );
 };
