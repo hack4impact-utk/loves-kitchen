@@ -155,7 +155,11 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
               backgroundColor: lktheme.offWhite,
             }}
           >
-            <VolDisplay volunteer={volunteer} />
+            <VolDisplay
+              volunteer={volunteer}
+              admin={admin}
+              setVolunteer={setSelectedVol}
+            />
 
             <Divider sx={{ my: 2 }} />
 

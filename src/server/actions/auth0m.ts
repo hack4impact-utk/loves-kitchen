@@ -62,20 +62,31 @@ export async function addAuth0User(
   );
   const data = await res.json();
   if (data.error) {
+    console.log(data);
     return undefined;
   }
+  console.log('Successfully added Auth0 user.');
   return data;
 }
 
 export async function delAuth0User(authID: string): Promise<void> {
   const token = await getAuth0AccessToken();
-  await fetch(`${process.env.AUTH0_ISSUER_BASE_URL!}/api/v2/users/${authID}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
+  const res = await fetch(
+    `${process.env.AUTH0_ISSUER_BASE_URL!}/api/v2/users/${authID}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  try {
+    const data = await res.json();
+    console.log(data);
+  } catch {
+    console.log('Successfully deleted Auth0 user.');
+  }
 }
 
 export async function putAuth0User(
@@ -83,14 +94,39 @@ export async function putAuth0User(
   authID: string
 ): Promise<void> {
   const token = await getAuth0AccessToken();
+
+  // first update everything BUT password
   await fetch(`${process.env.AUTH0_ISSUER_BASE_URL!}/api/v2/users/${authID}`, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(volunteer),
+    body: JSON.stringify({
+      email: volunteer.email,
+      given_name: volunteer.given_name,
+      family_name: volunteer.family_name,
+      name: volunteer.name,
+      nickname: volunteer.nickname,
+    }),
   });
+
+  // then update password
+  if (volunteer.password) {
+    await fetch(
+      `${process.env.AUTH0_ISSUER_BASE_URL!}/api/v2/users/${authID}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: volunteer.password,
+        }),
+      }
+    );
+  }
 }
 
 export async function getRoles(userid: string): Promise<string[]> {

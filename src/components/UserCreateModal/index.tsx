@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Box, TextField, Button } from '@mui/material';
-import { IVolunteerCreate } from '@/server/models/Volunteer';
+import { IVolunteer, IVolunteerCreate } from '@/server/models/Volunteer';
 
 const modalStyle = {
   position: 'absolute',
@@ -16,23 +16,38 @@ const modalStyle = {
 
 interface UserCreateModalProps {
   open: boolean;
+  is_updater: boolean;
   is_staff: boolean;
   onClose: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createVolunteer: (data: any) => Promise<void>;
+  volunteer?: IVolunteer;
 }
 
 const UserCreateModal = (props: UserCreateModalProps) => {
-  const [data, setData] = useState<IVolunteerCreate>({
-    is_staff: props.is_staff,
-    firstName: 'Tanguy',
-    lastName: 'Abbott',
-    age: 66,
-    email: 'tabbott@gmail.com',
-    phone: '1112223333',
-    address: '111 Drive Dr',
-    password: 'fakeH4Iuser!',
-  });
+  const [data, setData] = useState<IVolunteerCreate>(
+    props.volunteer
+      ? {
+          is_staff: props.is_staff,
+          firstName: props.volunteer.firstName,
+          lastName: props.volunteer.lastName,
+          age: props.volunteer.age,
+          email: props.volunteer.email,
+          phone: props.volunteer.phone,
+          address: props.volunteer.address,
+          password: '',
+        }
+      : {
+          is_staff: props.is_staff,
+          firstName: 'Tanguy',
+          lastName: 'Abbott',
+          age: 66,
+          email: 'tabbott@gmail.com',
+          phone: '1112223333',
+          address: '111 Drive Dr',
+          password: 'fakeH4Iuser!',
+        }
+  );
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,23 +62,26 @@ const UserCreateModal = (props: UserCreateModalProps) => {
     e.preventDefault();
     let t: keyof IVolunteerCreate;
     for (t in data) {
-      if (typeof data[t] == 'string' && data[t] === '') return;
+      if (typeof data[t] == 'string' && data[t] === '' && t != 'password')
+        return;
       if (typeof data[t] == 'number' && Number(data[t]) <= 0) return;
     }
 
     setLoading((prev) => !prev);
     data.age = Number(data.age);
     await props.createVolunteer(data);
-    setData({
-      is_staff: props.is_staff,
-      firstName: 'Tanguy',
-      lastName: 'Abbott',
-      age: 66,
-      email: 'tabbott@gmail.com',
-      phone: '1112223333',
-      address: '111 Drive Dr',
-      password: 'fakeH4Iuser!',
-    });
+    if (!props.volunteer) {
+      setData({
+        is_staff: props.is_staff,
+        firstName: 'Tanguy',
+        lastName: 'Abbott',
+        age: 66,
+        email: 'tabbott@gmail.com',
+        phone: '1112223333',
+        address: '111 Drive Dr',
+        password: 'fakeH4Iuser!',
+      });
+    }
     setLoading((prev) => !prev);
   };
 
@@ -71,7 +89,8 @@ const UserCreateModal = (props: UserCreateModalProps) => {
     <Modal open={props.open} onClose={props.onClose}>
       <Box sx={modalStyle}>
         <h2 className="text-xl font-bold mb-4">
-          Create a New {props.is_staff ? 'Staff' : 'Volunteer'}
+          {props.is_updater ? 'Update' : 'Create a New'}{' '}
+          {props.is_staff ? 'Staff' : 'Volunteer'}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-5">

@@ -43,6 +43,7 @@ export interface IAuth0UserUpdate {
   family_name: string;
   name: string;
   nickname: string;
+  password?: string;
 }
 
 export interface IAuth0Role {

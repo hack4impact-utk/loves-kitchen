@@ -133,6 +133,7 @@ export default function AdminVolTable({
       </div>
 
       <UserCreateModal
+        is_updater={false}
         is_staff={true}
         open={modalOpen}
         onClose={() => setModalOpen(false)}

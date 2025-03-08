@@ -4,6 +4,7 @@ import { IVolunteer, Volunteer } from '@/server/models/Volunteer';
 import dbConnect from '@/utils/dbconnect';
 import { delAuth0User, putAuth0User, setRoles } from '@/server/actions/auth0m';
 import { IAuth0UserUpdate } from '@/types/authTypes';
+import { sessionModel } from '@/server/models/Session';
 
 export const GET = async function (
   req: Request,
@@ -41,6 +42,8 @@ export const DELETE = async function (
 
     await delAuth0User(params.authID);
 
+    await sessionModel.deleteMany({ workedBy: params.authID });
+
     return NextResponse.json(
       { success: true, message: 'Deleted volunteer successfully.' },
       { status: 200 }
@@ -76,7 +79,7 @@ export const PUT = async function (
       throw new Error('User does not exist.');
     }
 
-    const body: IVolunteer = await req.json();
+    const body = await req.json();
     // console.log(body);
 
     // update mongo database
@@ -101,13 +104,25 @@ export const PUT = async function (
     setRoles(authID, rolesArr);
 
     // update auth0 database
-    const patchData: IAuth0UserUpdate = {
-      email: body.email,
-      given_name: body.firstName,
-      family_name: body.lastName,
-      name: `${body.firstName} ${body.lastName}`,
-      nickname: body.email.split('@')[0],
-    };
+    let patchData: IAuth0UserUpdate;
+    if (body.password == undefined || body.password == '') {
+      patchData = {
+        email: body.email,
+        given_name: body.firstName,
+        family_name: body.lastName,
+        name: `${body.firstName} ${body.lastName}`,
+        nickname: body.email.split('@')[0],
+      };
+    } else {
+      patchData = {
+        email: body.email,
+        given_name: body.firstName,
+        family_name: body.lastName,
+        name: `${body.firstName} ${body.lastName}`,
+        nickname: body.email.split('@')[0],
+        password: body.password,
+      };
+    }
 
     await putAuth0User(patchData, body.authID);
 
