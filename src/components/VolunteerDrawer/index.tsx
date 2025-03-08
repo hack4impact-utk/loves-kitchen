@@ -153,6 +153,7 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
             style={{
               padding: '2rem',
               backgroundColor: lktheme.offWhite,
+              minHeight: '100%',
             }}
           >
             <VolDisplay

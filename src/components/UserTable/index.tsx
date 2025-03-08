@@ -2,13 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { IFlag, IVolunteer } from '@/server/models/Volunteer';
-import lktheme, { cyantable } from '@/types/colors';
+import lktheme, { browntable, cyantable } from '@/types/colors';
 import { Divider, IconButton } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import UserCreateModal from '../UserCreateModal';
 import FlagIcon from '@mui/icons-material/Flag';
 
-interface VolunteersTableProps {
+interface UserTableProps {
+  is_admin: boolean;
+  shows_staff: boolean;
   volunteers: IVolunteer[];
   onView: (volunteer: IVolunteer) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,11 +32,13 @@ interface UserRow {
   flags?: IFlag[];
 }
 
-export default function AdminVolTable({
+export default function UserTable({
+  is_admin,
+  shows_staff,
   volunteers,
   onView,
   onAddUser,
-}: VolunteersTableProps) {
+}: UserTableProps) {
   const colorMap = {
     red: '#d32f2f',
     green: '#388e3c',
@@ -93,28 +97,50 @@ export default function AdminVolTable({
     <>
       <div
         style={{
-          backgroundColor: lktheme.darkCyanRGBA(1),
+          backgroundColor: shows_staff
+            ? lktheme.darkCyanRGBA(1)
+            : lktheme.brownRGBA(1),
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           padding: '1.5rem',
         }}
       >
-        <div className="w-full flex justify-between">
-          <h1
-            style={{
-              fontSize: '24px',
-              fontWeight: 'bold',
-              marginBottom: '1rem',
-              color: '#fff',
-            }}
-          >
-            Staff
-          </h1>
-          <IconButton onClick={() => setModalOpen(true)}>
-            <AddCircleOutlineIcon fontSize="large" className="text-white" />
-          </IconButton>
-        </div>
+        {/* Header for the actual table */}
+        {is_admin ? (
+          <>
+            <div className="w-full flex justify-between">
+              <h1
+                style={{
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  marginBottom: '1rem',
+                  color: '#fff',
+                }}
+              >
+                {shows_staff ? 'Staff' : 'Volunteers'}
+              </h1>
+              <IconButton onClick={() => setModalOpen(true)}>
+                <AddCircleOutlineIcon fontSize="large" className="text-white" />
+              </IconButton>
+            </div>
+          </>
+        ) : (
+          <>
+            <h1
+              style={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+                marginBottom: '1rem',
+                color: '#fff',
+              }}
+            >
+              {shows_staff ? 'Staff' : 'Volunteers'}
+            </h1>
+          </>
+        )}
         <Divider sx={{ marginBottom: '1rem', backgroundColor: 'white' }} />
+
+        {/* the actual table */}
         <div style={{ width: '100%' }}>
           <DataGrid
             rows={rows}
@@ -123,7 +149,7 @@ export default function AdminVolTable({
               console.log('Row clicked:', params.row);
               onView(params.row);
             }}
-            sx={cyantable}
+            sx={shows_staff ? cyantable : browntable}
             initialState={{
               pagination: { paginationModel: { pageSize: 5 } },
             }}
@@ -132,13 +158,17 @@ export default function AdminVolTable({
         </div>
       </div>
 
-      <UserCreateModal
-        is_updater={false}
-        is_staff={true}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        createVolunteer={onAddUser || (() => Promise.resolve())}
-      />
+      {is_admin && (
+        <>
+          <UserCreateModal
+            is_updater={false}
+            is_staff={shows_staff}
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            createVolunteer={onAddUser || (() => Promise.resolve())}
+          />
+        </>
+      )}
     </>
   );
 }

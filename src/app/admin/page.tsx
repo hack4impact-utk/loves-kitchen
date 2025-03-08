@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import AdminVolTable from '@/components/AdminVolTable';
-import AdminStaffTable from '@/components/AdminStaffTable';
 import VolunteerDrawer from '@/components/VolunteerDrawer'; // Updated sidepage component
 import NavBar from '@/components/NavBar';
 import { IVolunteer } from '@/server/models/Volunteer';
@@ -10,6 +8,7 @@ import theme from '@/types/colors';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { getRoles } from '@/server/actions/auth0m';
 import { useRouter } from 'next/navigation';
+import UserTable from '@/components/UserTable';
 
 const Admin = () => {
   const { user } = useUser();
@@ -81,13 +80,17 @@ const Admin = () => {
     >
       <NavBar />
       <div className="flex flex-col items-center justify-center pt-[100px] pb-20 gap-10">
-        <AdminVolTable
+        <UserTable
+          is_admin={true}
+          shows_staff={false}
           volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
           onView={handleViewVolunteer} // Use the drawer open function
           onAddUser={handleAddUser}
         />
 
-        <AdminStaffTable
+        <UserTable
+          is_admin={true}
+          shows_staff={true}
           volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
           onView={handleViewVolunteer} // Use the drawer open function
           onAddUser={handleAddUser}
