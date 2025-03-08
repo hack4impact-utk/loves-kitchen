@@ -16,3 +16,10 @@ export async function getQRCode(qrSesh: ISession): Promise<string> {
 
   return output;
 }
+
+export async function getBaseURL(): Promise<string> {
+  if (!process.env.AUTH0_BASE_URL) {
+    throw new Error('Error: must have "AUTH0_BASE_URL" environment variable!');
+  }
+  return process.env.AUTH0_BASE_URL;
+}

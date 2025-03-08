@@ -66,6 +66,12 @@ export const cyantable = {
   '& .MuiButtonBase-root': {
     color: 'white',
   },
+  '& .MuiDataGrid-row.Mui-selected:nth-of-type(odd):hover': {
+    backgroundColor: 'rgb(4,72,71)',
+  },
+  '& .MuiDataGrid-row.Mui-selected:nth-of-type(even):hover': {
+    backgroundColor: 'rgb(4,62,61)',
+  },
 };
 
 export const browntable = {
