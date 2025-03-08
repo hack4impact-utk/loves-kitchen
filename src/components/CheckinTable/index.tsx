@@ -4,6 +4,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { IFlag, IVolunteer } from '@/server/models/Volunteer';
 import lktheme, { cyantable } from '@/types/colors';
 import { Divider } from '@mui/material';
+import CheckinModal from '../CheckinModal';
 
 interface UserRow {
   id: string;
@@ -20,8 +21,51 @@ interface UserRow {
   flags?: IFlag[];
 }
 
+interface CheckinData {
+  end_time: string;
+}
+
 export default function CheckinTable() {
   const [rows, setRows] = useState<UserRow[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [selectedVol, setSelectedVol] = useState<IVolunteer | undefined>();
+
+  async function handleCheckIn(data: CheckinData, length: number) {
+    if (!selectedVol) return;
+
+    const startTime = new Date();
+
+    // add session
+    await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
+      method: 'POST',
+      body: JSON.stringify({
+        startTime: startTime,
+        workedBy: selectedVol.authID,
+        length: length,
+        checked_out: false,
+      }),
+    });
+
+    const tmpVol = selectedVol;
+    tmpVol.checked_in = true;
+
+    // update volunteer
+    await fetch(`/api/volunteers/${selectedVol.authID}`, {
+      method: 'PUT',
+      body: JSON.stringify(tmpVol),
+    });
+
+    // update client-side state variable rows
+    setRows((prev) => [
+      ...prev.filter(
+        (oldVolunteer) => oldVolunteer.authID != selectedVol.authID
+      ),
+      {
+        ...tmpVol,
+        id: tmpVol.authID,
+      },
+    ]);
+  }
 
   useEffect(() => {
     (async () => {
@@ -67,7 +111,8 @@ export default function CheckinTable() {
               <>
                 <button
                   onClick={() => {
-                    console.log(volData);
+                    setModalOpen(true);
+                    setSelectedVol(volData);
                   }}
                   className="px-3 rounded-lg bg-green-600 hover:bg-green-500"
                 >
@@ -82,29 +127,36 @@ export default function CheckinTable() {
   ];
 
   return (
-    <div
-      style={{
-        backgroundColor: lktheme.darkCyanRGBA(1),
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        padding: '1.5rem',
-      }}
-    >
-      <p className="text-3xl text-white pb-5">Check In</p>
+    <>
+      <div
+        style={{
+          backgroundColor: lktheme.darkCyanRGBA(1),
+          borderRadius: '8px',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          padding: '1.5rem',
+        }}
+      >
+        <p className="text-3xl text-white pb-5">Check In</p>
 
-      <Divider sx={{ marginBottom: '1rem', backgroundColor: 'white' }} />
+        <Divider sx={{ marginBottom: '1rem', backgroundColor: 'white' }} />
 
-      <div style={{ width: '100%' }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          sx={cyantable}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 5 } },
-          }}
-          pageSizeOptions={[5]}
-        />
+        <div style={{ width: '100%' }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            sx={cyantable}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            pageSizeOptions={[5]}
+          />
+        </div>
       </div>
-    </div>
+      <CheckinModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCheckIn={handleCheckIn}
+      />
+    </>
   );
 }
