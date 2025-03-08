@@ -36,6 +36,20 @@ export default function CheckinTable() {
 
     const startTime = new Date();
 
+    // dont add session if there's already one that hasn't been checked out
+    // get sessions not checked out from
+    const res = await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
+      method: 'GET',
+    });
+    const sessions: ISession[] = (await res.json()).sessions;
+    const notCheckedOutSeshs = sessions.filter(
+      (session) => !session.checked_out
+    );
+    if (notCheckedOutSeshs.length > 1) {
+      throw new Error('Error: more than one non checked out session.');
+    }
+    if (notCheckedOutSeshs.length == 1) return;
+
     // add session
     await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
       method: 'POST',
@@ -71,16 +85,6 @@ export default function CheckinTable() {
   async function handleCheckOut() {
     if (!selectedVol) return;
 
-    // update session of the day
-    // get sessions of volunteer
-    // find the one that has the checked out field
-    //     if none, continue
-    //     if one:
-    //         determine length using current time
-    //         update the session
-    //     if 2+:
-    //         error
-
     // get sessions not checked out from
     const res = await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
       method: 'GET',
@@ -89,10 +93,13 @@ export default function CheckinTable() {
     const notCheckedOutSeshs = sessions.filter(
       (session) => !session.checked_out
     );
+
+    // if more than one session, panic
     if (notCheckedOutSeshs.length > 1) {
       throw new Error('Error: more than one session not checked out of!');
     }
 
+    // otherwise just change it
     if (notCheckedOutSeshs.length == 1) {
       const toUpdate = notCheckedOutSeshs[0];
       toUpdate.checked_out = true;

@@ -16,41 +16,9 @@ import lktheme from '@/types/colors';
 import VolunteerUpdate from '../VolunteerUpdate';
 import { IVolunteer } from '@/server/models/Volunteer';
 
-const withinTime = (time: string, hours: number) => {
-  const startTime = new Date(time);
-  const endTime = new Date(startTime.getTime() + hours * 60 * 60 * 1000);
-  const currentTime = new Date();
-
-  return currentTime >= startTime && currentTime <= endTime;
-};
-
 const UserInfo = () => {
   const { user, error, isLoading } = useUser();
   const [vol, setVol] = useState<IVolunteer>();
-  const [isCheckedIn, setIsCheckedIn] = useState(false);
-
-  useEffect(() => {
-    const checkSignedIn = async () => {
-      if (user != undefined) {
-        const response = await fetch(`api/volunteers/${user.sub}/sessions`);
-        const data = await response.json();
-
-        if (!data.success) {
-          alert('Failed to get sessions');
-          return;
-        }
-
-        if (data.sessions.length != 0) {
-          const session = data.sessions[0];
-          withinTime(session.startTime, session.length)
-            ? setIsCheckedIn(true)
-            : setIsCheckedIn(false);
-        }
-      }
-    };
-
-    checkSignedIn();
-  }, [user]);
 
   if (error) {
     console.log('Error: failed to load user credentials.');
@@ -113,16 +81,16 @@ const UserInfo = () => {
             {/* Alert using MUI that displays if a user is checked in. */}
             <Alert
               icon={
-                isCheckedIn ? (
+                vol?.checked_in ? (
                   <CheckIcon fontSize="inherit" />
                 ) : (
                   <ErrorIcon fontSize="inherit" />
                 )
               }
               className="my-3"
-              severity={isCheckedIn ? 'success' : 'warning'} // Change severity based on status
+              severity={vol?.checked_in ? 'success' : 'warning'} // Change severity based on status
             >
-              {isCheckedIn ? 'Checked in.' : 'Not checked in.'}{' '}
+              {vol?.checked_in ? 'Checked in.' : 'Not checked in.'}{' '}
               {/* Change display message */}
             </Alert>
           </Box>
