@@ -73,6 +73,7 @@ export const POST = async function (req: NextRequest) {
 
   // added to auth0 database, add to volunteer database
   const jsonVol = {
+    is_staff: body.is_staff,
     authID: addedUser.user_id,
     firstName: addedUser.given_name,
     lastName: addedUser.family_name,

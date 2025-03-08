@@ -52,6 +52,10 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     await fetch(`/api/volunteers/${volunteer.authID}`, {
       method: 'DELETE',
     });
+    setVolunteers((prev) =>
+      prev.filter((filterVol) => filterVol.authID != volunteer.authID)
+    );
+    setSelectedVol(null);
   };
 
   // Add a session and actively update session list

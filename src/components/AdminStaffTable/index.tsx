@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { IFlag, IVolunteer } from '@/server/models/Volunteer';
-import lktheme, { browntable } from '@/types/colors';
+import lktheme, { cyantable } from '@/types/colors';
 import { Divider, IconButton } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import UserCreateModal from '../UserCreateModal';
@@ -93,7 +93,7 @@ export default function AdminVolTable({
     <>
       <div
         style={{
-          backgroundColor: lktheme.brownRGBA(1),
+          backgroundColor: lktheme.darkCyanRGBA(1),
           borderRadius: '8px',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           padding: '1.5rem',
@@ -108,7 +108,7 @@ export default function AdminVolTable({
               color: '#fff',
             }}
           >
-            Volunteers
+            Staff
           </h1>
           <IconButton onClick={() => setModalOpen(true)}>
             <AddCircleOutlineIcon fontSize="large" className="text-white" />
@@ -123,7 +123,7 @@ export default function AdminVolTable({
               console.log('Row clicked:', params.row);
               onView(params.row);
             }}
-            sx={browntable}
+            sx={cyantable}
             initialState={{
               pagination: { paginationModel: { pageSize: 5 } },
             }}
@@ -133,7 +133,7 @@ export default function AdminVolTable({
       </div>
 
       <UserCreateModal
-        is_staff={false}
+        is_staff={true}
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         createVolunteer={onAddUser || (() => Promise.resolve())}

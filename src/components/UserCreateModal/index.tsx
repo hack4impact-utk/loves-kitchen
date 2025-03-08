@@ -16,6 +16,7 @@ const modalStyle = {
 
 interface UserCreateModalProps {
   open: boolean;
+  is_staff: boolean;
   onClose: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createVolunteer: (data: any) => Promise<void>;
@@ -23,6 +24,7 @@ interface UserCreateModalProps {
 
 const UserCreateModal = (props: UserCreateModalProps) => {
   const [data, setData] = useState<IVolunteerCreate>({
+    is_staff: props.is_staff,
     firstName: 'Tanguy',
     lastName: 'Abbott',
     age: 66,
@@ -53,6 +55,7 @@ const UserCreateModal = (props: UserCreateModalProps) => {
     data.age = Number(data.age);
     await props.createVolunteer(data);
     setData({
+      is_staff: props.is_staff,
       firstName: 'Tanguy',
       lastName: 'Abbott',
       age: 66,
@@ -67,7 +70,9 @@ const UserCreateModal = (props: UserCreateModalProps) => {
   return (
     <Modal open={props.open} onClose={props.onClose}>
       <Box sx={modalStyle}>
-        <h2 className="text-xl font-bold mb-4">Create a New Volunteer</h2>
+        <h2 className="text-xl font-bold mb-4">
+          Create a New {props.is_staff ? 'Staff' : 'Volunteer'}
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-5">
             <TextField

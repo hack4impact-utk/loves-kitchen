@@ -45,7 +45,11 @@ const VolunteerRegistrationForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...formData, authID: user.sub }),
+        body: JSON.stringify({
+          ...formData,
+          authID: user.sub,
+          is_staff: false,
+        }),
       });
 
       if (response.ok) {

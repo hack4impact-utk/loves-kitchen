@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import AdminVolTable from '@/components/AdminVolTable';
+import AdminStaffTable from '@/components/AdminStaffTable';
 import VolunteerDrawer from '@/components/VolunteerDrawer'; // Updated sidepage component
 import NavBar from '@/components/NavBar';
 import { IVolunteer } from '@/server/models/Volunteer';
@@ -57,27 +58,39 @@ const Admin = () => {
     setDrawerOpen(true); // Open the drawer
   };
 
-  const handleAddVolunteer = async (volunteer: IVolunteer) => {
-    await fetch('/api/volunteers', {
+  const handleAddUser = async (user: IVolunteer) => {
+    const res = await fetch('/api/volunteers', {
       method: 'POST',
-      body: JSON.stringify(volunteer),
+      body: JSON.stringify(user),
     });
+    const data = (await res.json()).volunteer;
+
+    if (data) {
+      user.authID = data.authID;
+      user.createdAt = data.createdAt;
+      setVolunteers((prev) => [...prev, user]);
+    }
   };
 
   return (
     <div
+      className="min-h-[100vh]"
       style={{
         backgroundColor: theme.offWhite,
-        height: '100vh',
-        overflow: 'hidden',
       }}
     >
       <NavBar />
-      <div className="flex flex-col items-center justify-center h-[100vh]">
+      <div className="flex flex-col items-center justify-center pt-[100px] pb-20 gap-10">
         <AdminVolTable
-          volunteers={volunteers}
+          volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
           onView={handleViewVolunteer} // Use the drawer open function
-          onAddVolunteer={handleAddVolunteer}
+          onAddUser={handleAddUser}
+        />
+
+        <AdminStaffTable
+          volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
+          onView={handleViewVolunteer} // Use the drawer open function
+          onAddUser={handleAddUser}
         />
 
         {/* Sidepage (Drawer) for Viewing Volunteer Details */}

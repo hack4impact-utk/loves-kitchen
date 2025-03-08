@@ -1,9 +1,15 @@
+import { getRoles } from '@/server/actions/auth0m';
 import { IVolunteer, Volunteer } from '@/server/models/Volunteer';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
     const toAdd: IVolunteer = await req.json();
+
+    // check whether corresponding auth0 user is a staff member
+    if ((await getRoles(toAdd.authID)).includes('Staff')) {
+      toAdd.is_staff = true;
+    }
 
     const volunteer = new Volunteer(toAdd);
     await volunteer.save();
