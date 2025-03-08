@@ -93,7 +93,7 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   // Add a session and actively update session list
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addSession = async (data: any): Promise<void> => {
-    const { workedBy, startTime, length } = data;
+    const { workedBy, startTime, length, checked_out } = data;
     const response = await fetch('api/volunteers/all/sessions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -101,6 +101,7 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
         workedBy,
         length,
         startTime,
+        checked_out,
       }),
     });
     const result = await response.json();

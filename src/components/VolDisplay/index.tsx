@@ -19,7 +19,11 @@ const VolDisplay = (props: VolDisplayProps) => {
   async function handleUpdateUser(newVol: IVolunteerCreate) {
     await fetch(`/api/volunteers/${props.volunteer.authID}`, {
       method: 'PUT',
-      body: JSON.stringify({ ...newVol, authID: props.volunteer.authID }),
+      body: JSON.stringify({
+        ...newVol,
+        authID: props.volunteer.authID,
+        checked_in: props.volunteer.checked_in,
+      }),
     });
 
     props.setVolunteer({

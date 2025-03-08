@@ -14,7 +14,7 @@ export const POST = async function (
     const { authID } = params;
 
     if (authID !== 'all') {
-      const { length, startTime } = await req.json();
+      const { length, startTime, checked_out } = await req.json();
 
       if (!length || !startTime) {
         return NextResponse.json(
@@ -36,6 +36,7 @@ export const POST = async function (
         workedBy: volunteer.authID,
         startTime: startTime,
         length: length,
+        checked_out: checked_out,
       });
 
       return NextResponse.json({ success: true, session }, { status: 200 });
@@ -43,7 +44,7 @@ export const POST = async function (
 
     // general add session
     else {
-      const { workedBy, length, startTime } = await req.json();
+      const { workedBy, length, startTime, checked_out } = await req.json();
 
       if (!length || !startTime || !workedBy) {
         return NextResponse.json(
@@ -65,6 +66,7 @@ export const POST = async function (
         workedBy: workedBy,
         startTime: startTime,
         length: length,
+        checked_out: checked_out,
       });
 
       return NextResponse.json({ success: true, session }, { status: 200 });

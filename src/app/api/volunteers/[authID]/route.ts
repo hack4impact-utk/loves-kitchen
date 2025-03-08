@@ -87,6 +87,7 @@ export const PUT = async function (
       { authID: authID },
 
       {
+        checked_in: body.checked_in,
         is_staff: body.is_staff,
         firstName: body.firstName,
         lastName: body.lastName,

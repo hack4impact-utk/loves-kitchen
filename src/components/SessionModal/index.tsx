@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Modal, Box, TextField, Button } from "@mui/material";
+import React, { useState } from 'react';
+import { Modal, Box, TextField, Button } from '@mui/material';
 
 const modalStyle = {
   position: 'absolute',
@@ -22,16 +22,15 @@ interface SessionModalProps {
 
 const SessionModal = (props: SessionModalProps) => {
   const [data, setData] = useState({
-    workedBy: "",
-    startTime: "",
+    workedBy: '',
+    startTime: '',
     length: 0,
   });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.type === "number") {
-      if (parseInt(e.target.value) < 0)
-        return;
+    if (e.target.type === 'number') {
+      if (parseInt(e.target.value) < 0) return;
     }
 
     setData({ ...data, [e.target.name]: e.target.value });
@@ -39,17 +38,17 @@ const SessionModal = (props: SessionModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (data.workedBy === "" || data.startTime === "" || data.length === 0) 
+    if (data.workedBy === '' || data.startTime === '' || data.length === 0)
       return;
 
-    setLoading(prev => !prev);
-    await props.createSession(data);
+    setLoading((prev) => !prev);
+    await props.createSession({ ...data, checked_out: true });
     setData({
-      workedBy: "",
-      startTime: "",
+      workedBy: '',
+      startTime: '',
       length: 0,
-    })
-    setLoading(prev => !prev);
+    });
+    setLoading((prev) => !prev);
   };
 
   return (
@@ -71,7 +70,7 @@ const SessionModal = (props: SessionModalProps) => {
             value={data.startTime}
             onChange={handleChange}
             fullWidth
-            InputLabelProps={{ shrink: true }} 
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             label="Length (in hours)"
@@ -85,11 +84,11 @@ const SessionModal = (props: SessionModalProps) => {
             <Button onClick={props.onClose} color="error" variant="outlined">
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              color="primary" 
+            <Button
+              type="submit"
+              color="primary"
               variant="contained"
-              disabled={loading} 
+              disabled={loading}
             >
               {loading ? 'Saving' : 'Save'}
             </Button>

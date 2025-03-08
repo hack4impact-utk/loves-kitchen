@@ -120,7 +120,8 @@ def main():
             sessions[authID].append({
                 "workedBy": authID,
                 "length": length,
-                "startTime": startWorkTime
+                "startTime": startWorkTime,
+                "checked_out": True
             })
 
     print("Successfully generated sessions, adding data to database...")

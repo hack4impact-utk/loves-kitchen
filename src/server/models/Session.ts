@@ -5,6 +5,7 @@ export interface ISession {
   workedBy: string;
   startTime: string;
   length: number;
+  checked_out: boolean;
 }
 
 const sessionSchema = new mongoose.Schema(
@@ -15,6 +16,7 @@ const sessionSchema = new mongoose.Schema(
       default: () => Date.now(),
     },
     length: Number,
+    checked_out: Boolean,
   },
   { collection: 'sessions' }
 );
