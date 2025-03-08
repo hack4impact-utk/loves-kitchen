@@ -73,6 +73,38 @@ export const DELETE = async function (req: Request) {
   }
 };
 
+// Delete a session
+export const PUT = async function (req: Request) {
+  await dbConnect();
+
+  try {
+    const { sessionId, length, checked_out } = await req.json();
+
+    if (!sessionId) {
+      return NextResponse.json(
+        { success: false, error: 'Session ID is missing' },
+        { status: 400 }
+      );
+    }
+
+    await sessionModel.findOneAndUpdate(
+      { _id: sessionId },
+      {
+        length: length,
+        checked_out: checked_out,
+      }
+    );
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting session:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete session' },
+      { status: 500 }
+    );
+  }
+};
+
 // Getting sessions of one or all volunteers from most recent to least recent
 export const GET = async function (
   req: Request,

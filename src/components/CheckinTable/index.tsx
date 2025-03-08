@@ -5,6 +5,7 @@ import { IFlag, IVolunteer } from '@/server/models/Volunteer';
 import lktheme, { cyantable } from '@/types/colors';
 import { Divider } from '@mui/material';
 import CheckinModal from '../CheckinModal';
+import { ISession } from '@/server/models/Session';
 
 interface UserRow {
   id: string;
@@ -67,6 +68,73 @@ export default function CheckinTable() {
     ]);
   }
 
+  async function handleCheckOut() {
+    if (!selectedVol) return;
+
+    // update session of the day
+    // get sessions of volunteer
+    // find the one that has the checked out field
+    //     if none, continue
+    //     if one:
+    //         determine length using current time
+    //         update the session
+    //     if 2+:
+    //         error
+
+    // get sessions not checked out from
+    const res = await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
+      method: 'GET',
+    });
+    const sessions: ISession[] = (await res.json()).sessions;
+    const notCheckedOutSeshs = sessions.filter(
+      (session) => !session.checked_out
+    );
+    if (notCheckedOutSeshs.length > 1) {
+      throw new Error('Error: more than one session not checked out of!');
+    }
+
+    if (notCheckedOutSeshs.length == 1) {
+      const toUpdate = notCheckedOutSeshs[0];
+      toUpdate.checked_out = true;
+
+      const endTime = new Date();
+      const length =
+        (endTime.getTime() - new Date(toUpdate.startTime).getTime()) /
+        (1000 * 60 * 60);
+
+      // update session in database
+      await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          sessionId: toUpdate._id,
+          length: length,
+          checked_out: true,
+        }),
+      });
+    }
+
+    // set volunteer to checked out
+    const tmpVol = selectedVol;
+    tmpVol.checked_in = false;
+
+    // update volunteer
+    await fetch(`/api/volunteers/${selectedVol.authID}`, {
+      method: 'PUT',
+      body: JSON.stringify(tmpVol),
+    });
+
+    // update client-side state variable rows
+    setRows((prev) => [
+      ...prev.filter(
+        (oldVolunteer) => oldVolunteer.authID != selectedVol.authID
+      ),
+      {
+        ...tmpVol,
+        id: tmpVol.authID,
+      },
+    ]);
+  }
+
   useEffect(() => {
     (async () => {
       const res = await fetch('/api/volunteers', {
@@ -100,7 +168,10 @@ export default function CheckinTable() {
               <>
                 <button
                   onClick={() => {
-                    console.log(volData);
+                    setSelectedVol(volData);
+                    if (confirm('Are you sure you want to check out?')) {
+                      handleCheckOut();
+                    }
                   }}
                   className="px-3 rounded-lg bg-red-600 hover:bg-red-500"
                 >
