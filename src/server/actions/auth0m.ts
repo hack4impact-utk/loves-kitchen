@@ -62,6 +62,17 @@ export async function addAuth0User(
   return data;
 }
 
+export async function delAuth0User(authID: string): Promise<void> {
+  const token = await getAuth0AccessToken();
+  await fetch(`${process.env.AUTH0_ISSUER_BASE_URL!}/api/v2/users/${authID}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
 export async function getRoles(userid: string): Promise<string[]> {
   const token = await getAuth0AccessToken();
   console.log(userid);

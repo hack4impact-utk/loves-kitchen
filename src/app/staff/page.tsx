@@ -160,6 +160,7 @@ const Staff = () => {
         {/* Sidepage (Drawer) for Viewing Volunteer Details */}
         {selectedVolunteer && (
           <VolunteerDrawer
+            admin={false}
             open={isDrawerOpen} // Controlled by state
             onClose={() => setDrawerOpen(false)} // Close the drawer
             volunteer={selectedVolunteer} // Pass the selected volunteer

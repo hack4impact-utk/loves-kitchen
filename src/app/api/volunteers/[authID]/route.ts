@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { IVolunteer, Volunteer } from '@/server/models/Volunteer';
 import dbConnect from '@/utils/dbconnect';
+import { delAuth0User } from '@/server/actions/auth0m';
 
 export const GET = async function (
   req: Request,
@@ -35,9 +36,14 @@ export const DELETE = async function (
   await dbConnect();
 
   try {
-    const volunteer = await Volunteer.deleteOne({ authID: params.authID });
-    // console.log('Fetched volunteers from DB:', volunteers);
-    return NextResponse.json({ success: true, volunteer }, { status: 200 });
+    await Volunteer.deleteOne({ authID: params.authID });
+
+    await delAuth0User(params.authID);
+
+    return NextResponse.json(
+      { success: true, message: 'Deleted volunteer successfully.' },
+      { status: 200 }
+    );
   } catch (error) {
     console.error(
       `Failed to delete volunteer with authID ${params.authID}`,

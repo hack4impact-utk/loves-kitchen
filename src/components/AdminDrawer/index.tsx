@@ -12,7 +12,6 @@ import VolDisplay from '../VolDisplay';
 import FlagDisplay from '../FlagDisplay';
 
 interface VolunteerDrawerProps {
-  admin: boolean;
   open: boolean;
   onClose: () => void;
   volunteer: IVolunteer;
@@ -21,7 +20,6 @@ interface VolunteerDrawerProps {
 }
 
 const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
-  admin,
   open,
   onClose,
   volunteer,
@@ -46,12 +44,6 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
       alert('Failed to delete session');
       console.error(data.error);
     }
-  };
-
-  const deleteVolunteer = async (volunteer: IVolunteer): Promise<void> => {
-    await fetch(`/api/volunteers/${volunteer.authID}`, {
-      method: 'DELETE',
-    });
   };
 
   // Add a session and actively update session list
@@ -144,21 +136,6 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
             onAddSession={addSession}
             onDeleteSession={deleteSession}
           />
-
-          {admin && (
-            <>
-              <Divider sx={{ my: 2 }} />
-
-              <div className="w-full flex justify-center">
-                <button
-                  onClick={() => deleteVolunteer(volunteer)}
-                  className="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg text-white"
-                >
-                  Delete
-                </button>
-              </div>
-            </>
-          )}
         </div>
       </Drawer>
     </>
