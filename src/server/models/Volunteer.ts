@@ -19,6 +19,7 @@ export interface IVolunteerCreate {
 
 export interface IVolunteer {
   _id: string;
+  checked_in: boolean;
   is_staff: boolean;
   authID: string;
   firstName: string;
@@ -32,6 +33,7 @@ export interface IVolunteer {
 }
 
 const volunteerSchema = new mongoose.Schema({
+  checked_in: { type: Boolean, required: true },
   is_staff: { type: Boolean, required: true },
   authID: { type: String, required: true },
   firstName: { type: String, required: true },

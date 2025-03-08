@@ -24,6 +24,7 @@ const VolDisplay = (props: VolDisplayProps) => {
 
     props.setVolunteer({
       _id: props.volunteer._id,
+      checked_in: props.volunteer.checked_in,
       authID: props.volunteer.authID,
       createdAt: props.volunteer.createdAt,
       flags: props.volunteer.flags,

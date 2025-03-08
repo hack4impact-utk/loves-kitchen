@@ -88,6 +88,7 @@ def main():
 
         # Store volunteer data in the dictionary
         volunteers[authID] = {
+            "checked_in": False,
             "is_staff": False,
             "authID": authID,
             "firstName": first_name,

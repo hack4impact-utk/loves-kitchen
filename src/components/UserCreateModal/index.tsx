@@ -69,7 +69,10 @@ const UserCreateModal = (props: UserCreateModalProps) => {
 
     setLoading((prev) => !prev);
     data.age = Number(data.age);
-    await props.createVolunteer(data);
+    await props.createVolunteer({
+      ...data,
+      checked_in: props.volunteer ? props.volunteer.checked_in : false,
+    });
     if (!props.volunteer) {
       setData({
         is_staff: props.is_staff,

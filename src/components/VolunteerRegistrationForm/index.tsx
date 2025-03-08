@@ -49,6 +49,7 @@ const VolunteerRegistrationForm = () => {
           ...formData,
           authID: user.sub,
           is_staff: false,
+          checked_in: false,
         }),
       });
 

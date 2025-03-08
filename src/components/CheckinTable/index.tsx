@@ -52,18 +52,7 @@ export default function CheckinTable() {
         const volData: IVolunteer = params.row;
         return (
           <div className="flex items-center justify-center h-full">
-            {volData.firstName.length > 5 ? (
-              <>
-                <button
-                  onClick={() => {
-                    console.log(volData);
-                  }}
-                  className="px-3 rounded-lg bg-green-600 hover:bg-green-500"
-                >
-                  <p className="leading-[30px]">Check In</p>
-                </button>
-              </>
-            ) : (
+            {volData.checked_in ? (
               <>
                 <button
                   onClick={() => {
@@ -72,6 +61,17 @@ export default function CheckinTable() {
                   className="px-3 rounded-lg bg-red-600 hover:bg-red-500"
                 >
                   <p className="leading-[30px]">Check Out</p>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    console.log(volData);
+                  }}
+                  className="px-3 rounded-lg bg-green-600 hover:bg-green-500"
+                >
+                  <p className="leading-[30px]">Check In</p>
                 </button>
               </>
             )}
