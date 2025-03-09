@@ -24,6 +24,7 @@ might come with them by default:
 
 ```
 pip install pymongo names
+pip install faker
 ```
 
 > [!WARNING]
