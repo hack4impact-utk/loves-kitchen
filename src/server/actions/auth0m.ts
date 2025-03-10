@@ -183,7 +183,10 @@ export async function setRoles(userid: string, roles: string[]): Promise<void> {
   // get roles which need to be removed (those in NOT new roles list but in current roles list)
   const toRemove: string[] = [];
   for (let i = 0; i < currentRoles.length; ++i) {
-    if (roles.find((role) => role == currentRoles[i]) == undefined) {
+    if (
+      roles.find((role) => role == currentRoles[i]) == undefined &&
+      currentRoles[i] != 'Admin'
+    ) {
       toRemove.push(currentRoles[i]);
     }
   }
