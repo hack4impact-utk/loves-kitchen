@@ -49,21 +49,19 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   // Add a session and actively update session list
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addSession = async (data: any): Promise<void> => {
-    const { workedBy, startTime, length } = data;
-    const response = await fetch('api/volunteers/all/sessions', {
+    const { startTime, length } = data;
+    const response = await fetch(`api/volunteers/${volunteer.authID}/sessions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        workedBy,
         length,
         startTime,
       }),
     });
     const result = await response.json();
-    console.log(result);
 
     if (result.success) {
-      setSessions([...sessions, result.session]);
+      setSessions([result.session, ...sessions]);
     } else {
       alert('Failed to add session');
       console.error(data.error);

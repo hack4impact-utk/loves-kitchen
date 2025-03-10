@@ -22,7 +22,6 @@ interface SessionModalProps {
 
 const SessionModal = (props: SessionModalProps) => {
   const [data, setData] = useState({
-    workedBy: "",
     startTime: "",
     length: 0,
   });
@@ -39,13 +38,12 @@ const SessionModal = (props: SessionModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (data.workedBy === "" || data.startTime === "" || data.length === 0) 
+    if (data.startTime === "" || data.length === 0) 
       return;
 
     setLoading(prev => !prev);
     await props.createSession(data);
     setData({
-      workedBy: "",
       startTime: "",
       length: 0,
     })
@@ -57,13 +55,6 @@ const SessionModal = (props: SessionModalProps) => {
       <Box sx={modalStyle}>
         <h2 className="text-xl font-bold mb-4">Create a New Session</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <TextField
-            label="Worked By"
-            name="workedBy"
-            value={data.workedBy}
-            onChange={handleChange}
-            fullWidth
-          />
           <TextField
             label="Start Time"
             name="startTime"

@@ -9,7 +9,9 @@ import {
 } from '@mui/x-data-grid';
 import SessionModal from '@/components/SessionModal';
 import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { ISession } from '@/server/models/Session';
 import { parseISOString } from '@/utils/isoParse';
@@ -23,12 +25,37 @@ interface SessionTableProps {
   onAddSession?: (data: any) => Promise<void>;
 }
 
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  borderRadius: '12px',
+  p: 4,
+};
+
 const SessionTable = (props: SessionTableProps) => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [sessionId, setSessionId] = useState('');
+
+  const handleDelete = async (sessionId: string) => {
+    setDeleteLoading(true);
+    if (props.onDeleteSession) 
+      await props.onDeleteSession(sessionId);
+
+    setDeleteLoading(false);
+    setSessionId('');
+    setDeleteModalOpen(false);
+  };
+
   // use the map function to fetch the data on the sessions from server
   const rows: GridValidRowModel[] = props.sessions.map((session) => ({
     id: session._id,
-    workedBy: session.workedBy,
     startTime: parseISOString(session.startTime).toLocaleTimeString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -50,21 +77,23 @@ const SessionTable = (props: SessionTableProps) => {
 
   //define the column headers
   const columns: GridColDef[] = [
-    { field: 'workedBy', headerName: 'Worked By', width: 200 },
-    { field: 'startTime', headerName: 'Start Time', width: 250 },
-    { field: 'length', headerName: 'Length', width: 150 },
+    { field: 'startTime', headerName: 'Start Time', width: 300 },
+    { field: 'length', headerName: 'Length', width: 200 },
     {
       field: 'id',
       headerName: 'Actions',
-      width: 150,
+      width: 200,
       renderCell: (params) => (
-        <IconButton
-          onClick={() =>
-            props.onDeleteSession && props.onDeleteSession(params.row.id)
-          }
+        <Button
+          onClick={() => {
+            setDeleteModalOpen(true)
+            setSessionId(params.row.id as string)
+          }}
+          variant="contained"
+          color="error"
         >
-          <DeleteIcon color="error" />
-        </IconButton>
+          Delete
+        </Button>
       ),
     },
   ];
@@ -91,7 +120,7 @@ const SessionTable = (props: SessionTableProps) => {
           <b>Sessions</b>
         </p>
         {props.staff && (
-          <IconButton onClick={() => setModalOpen(true)}>
+          <IconButton onClick={() => setAddModalOpen(true)}>
             <AddCircleOutlineIcon fontSize="large" className="text-white" />
           </IconButton>
         )}
@@ -110,13 +139,31 @@ const SessionTable = (props: SessionTableProps) => {
           sx={cyantable}
         />
       </ThemeProvider>
-      {modalOpen && (
-        <SessionModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          createSession={props.onAddSession || (() => Promise.resolve())}
-        />
-      )}
+
+      <SessionModal
+        open={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        createSession={props.onAddSession || (() => Promise.resolve())}
+      />
+
+      <Modal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+        <Box sx={modalStyle}>
+          <p className="mb-4">Are you sure you want to delete this session?</p>
+          <div className="flex justify-center space-x-2">
+            <Button variant="outlined" onClick={() => setDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => handleDelete(sessionId)}
+              variant="outlined" 
+              color="error"
+              disabled={deleteLoading} 
+            >
+              {deleteLoading ? 'Deleting...' : 'Confirm'}
+            </Button>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 };
