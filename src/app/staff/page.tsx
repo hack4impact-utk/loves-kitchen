@@ -9,15 +9,15 @@ import Divider from '@mui/material/Divider';
 import theme from '@/types/colors';
 import lktheme from '@/types/colors';
 import { Button } from '@mui/material';
-//import { useUser } from '@auth0/nextjs-auth0/client';
-//import { getRoles } from '@/server/actions/roles';
-//import { useRouter } from 'next/navigation';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { getRoles } from '@/server/actions/roles';
+import { useRouter } from 'next/navigation';
 
 const Staff = () => {
-  //const { user } = useUser();
-  //const router = useRouter();
+  const { user } = useUser();
+  const router = useRouter();
 
-  /*useEffect(() => {
+  useEffect(() => {
     const checkRoles = async () => {
       if (user?.sub && router) {
         const roles = await getRoles(user.sub!);
@@ -30,7 +30,7 @@ const Staff = () => {
     if (user) {
       checkRoles();
     }
-  }, [user, router]);*/
+  }, [user, router]);
 
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
