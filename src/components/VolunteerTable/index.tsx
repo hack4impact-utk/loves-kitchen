@@ -1,10 +1,10 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { IVolunteer } from '@/server/models/Volunteer';
 import FlagIcon from '@mui/icons-material/Flag';
 import { browntable } from '@/types/colors';
-
+import SearchBar from '../SearchBar';
 interface VolunteersTableProps {
   volunteers: IVolunteer[];
   onView: (volunteer: IVolunteer) => void;
@@ -21,6 +21,19 @@ export default function VolunteersTable({
     gray: '#ffffff',
     default: '#000000',
   };
+
+  useEffect(() => {
+    console.log(volunteers);
+    setDisplay(
+      volunteers.map((volunteer) => ({
+        ...volunteer,
+        id: volunteer._id,
+        createdAt: new Date(volunteer.createdAt).toLocaleDateString('en-US'),
+      }))
+    );
+  }, [volunteers]);
+
+  const [toDisplay, setDisplay] = useState<IVolunteer[]>([]);
 
   const columns: GridColDef[] = [
     { field: 'firstName', headerName: 'First', width: 100 },
@@ -51,49 +64,24 @@ export default function VolunteersTable({
         </div>
       ),
     },
-    // {
-    //   field: 'actions',
-    //   headerName: 'Actions',
-    //   width: 200,
-    //   renderCell: (params) => (
-    //     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-    //       <IconButton
-    //         sx={{
-    //           color: '#478c8c',
-    //         }}
-    //         onClick={() => {
-    //           console.log('View clicked:', params.row);
-    //           onView(params.row);
-    //         }}
-    //       >
-    //         <VisibilityIcon />
-    //       </IconButton>
-    //       <IconButton
-    //         sx={{
-    //           color: '#62392b',
-    //         }}
-    //         onClick={() => {
-    //           console.log('Flags clicked:', params.row);
-    //           onFlags(params.row);
-    //         }}
-    //       >
-    //         <FlagIcon />
-    //       </IconButton>
-    //     </div>
-    //   ),
-    // },
   ];
-
-  const rows = volunteers.map((volunteer) => ({
-    ...volunteer,
-    id: volunteer._id,
-    createdAt: new Date(volunteer.createdAt).toLocaleDateString('en-US'),
-  }));
 
   return (
     <div style={{ width: '100%' }}>
+      <SearchBar
+        volunteers={volunteers}
+        setData={(data: IVolunteer[]) => {
+          setDisplay(
+            data.map((row) => ({
+              ...row,
+              id: row._id,
+              createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
+            }))
+          );
+        }}
+      />
       <DataGrid
-        rows={rows}
+        rows={toDisplay}
         columns={columns}
         onRowClick={(params) => {
           console.log('Row clicked:', params.row);
