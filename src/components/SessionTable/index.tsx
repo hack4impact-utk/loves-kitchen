@@ -20,7 +20,7 @@ import lktheme, { cyantable } from '@/types/colors';
 interface SessionTableProps {
   sessions: ISession[];
   staff: boolean;
-  onDeleteSession?: (sessionId: string) => Promise<void>;
+  onDeleteSession?: (session: ISession) => Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onAddSession?: (data: any) => Promise<void>;
 }
@@ -41,21 +41,24 @@ const SessionTable = (props: SessionTableProps) => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [sessionId, setSessionId] = useState('');
+  const [selectedSession, setSelected] = useState<ISession | undefined>(
+    undefined
+  );
 
-  const handleDelete = async (sessionId: string) => {
+  const handleDelete = async (session: ISession) => {
     setDeleteLoading(true);
-    if (props.onDeleteSession) 
-      await props.onDeleteSession(sessionId);
+    if (props.onDeleteSession) await props.onDeleteSession(session);
 
     setDeleteLoading(false);
-    setSessionId('');
+    setSelected(undefined);
     setDeleteModalOpen(false);
   };
 
   // use the map function to fetch the data on the sessions from server
   const rows: GridValidRowModel[] = props.sessions.map((session) => ({
     id: session._id,
+    _id: session._id,
+    checked_out: session.checked_out,
     startTime: parseISOString(session.startTime).toLocaleTimeString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -86,8 +89,8 @@ const SessionTable = (props: SessionTableProps) => {
       renderCell: (params) => (
         <Button
           onClick={() => {
-            setDeleteModalOpen(true)
-            setSessionId(params.row.id as string)
+            setDeleteModalOpen(true);
+            setSelected(params.row);
           }}
           variant="contained"
           color="error"
@@ -150,14 +153,21 @@ const SessionTable = (props: SessionTableProps) => {
         <Box sx={modalStyle}>
           <p className="mb-4">Are you sure you want to delete this session?</p>
           <div className="flex justify-center space-x-2">
-            <Button variant="outlined" onClick={() => setDeleteModalOpen(false)}>
+            <Button
+              variant="outlined"
+              onClick={() => setDeleteModalOpen(false)}
+            >
               Cancel
             </Button>
-            <Button 
-              onClick={() => handleDelete(sessionId)}
-              variant="outlined" 
+            <Button
+              onClick={() => {
+                if (selectedSession) {
+                  handleDelete(selectedSession);
+                }
+              }}
+              variant="outlined"
               color="error"
-              disabled={deleteLoading} 
+              disabled={deleteLoading}
             >
               {deleteLoading ? 'Deleting...' : 'Confirm'}
             </Button>

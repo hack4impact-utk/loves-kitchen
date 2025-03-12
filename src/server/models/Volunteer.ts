@@ -6,8 +6,21 @@ export interface IFlag {
   color: string;
 }
 
+export interface IVolunteerCreate {
+  is_staff: boolean;
+  firstName: string;
+  lastName: string;
+  age: number;
+  email: string;
+  phone: string;
+  address: string;
+  password: string;
+}
+
 export interface IVolunteer {
   _id: string;
+  checked_in: boolean;
+  is_staff: boolean;
   authID: string;
   firstName: string;
   lastName: string;
@@ -20,6 +33,8 @@ export interface IVolunteer {
 }
 
 const volunteerSchema = new mongoose.Schema({
+  checked_in: { type: Boolean, required: true },
+  is_staff: { type: Boolean, required: true },
   authID: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },

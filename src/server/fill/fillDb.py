@@ -88,6 +88,8 @@ def main():
 
         # Store volunteer data in the dictionary
         volunteers[authID] = {
+            "checked_in": False,
+            "is_staff": False,
             "authID": authID,
             "firstName": first_name,
             "lastName": last_name,
@@ -118,7 +120,8 @@ def main():
             sessions[authID].append({
                 "workedBy": authID,
                 "length": length,
-                "startTime": startWorkTime
+                "startTime": startWorkTime,
+                "checked_out": True
             })
 
     print("Successfully generated sessions, adding data to database...")

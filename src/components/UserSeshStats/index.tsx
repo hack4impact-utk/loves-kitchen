@@ -17,7 +17,7 @@ const UserSeshStats = (props: UserSeshStatsProps) => {
         style={{ backgroundColor: lktheme.darkCyanRGBA(0.8) }}
       >
         <p className="text-neutral-300">Total Hours</p>
-        <p className="text-white text-[40px]">{sum}</p>
+        <p className="text-white text-[40px]">{sum.toFixed(1)}</p>
       </div>
 
       <div

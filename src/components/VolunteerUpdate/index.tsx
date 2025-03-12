@@ -21,27 +21,29 @@ const VolunteerUpdate = (props: VolunteerUpdateProps) => {
   }, [props.vol]);
 
   const handleSubmit = async () => {
-    try {
-      const response = await fetch(`/api/volunteers/${props.authID}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          address: address,
-          phone: phone,
-        }),
-      });
+    if (props.vol) {
+      try {
+        const newVol = props.vol;
+        newVol.address = address;
+        newVol.phone = phone;
+        const response = await fetch(`/api/volunteers/${props.authID}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newVol),
+        });
 
-      const result = await response.json();
-      if (result.success) {
-        setMessage('Update successful!');
-      } else {
-        setMessage('Update failed.');
+        const result = await response.json();
+        if (result.success) {
+          setMessage('Update successful!');
+        } else {
+          setMessage('Update failed.');
+        }
+      } catch (error) {
+        console.error(error);
+        setMessage('An error occurred during update.');
       }
-    } catch (error) {
-      console.error(error);
-      setMessage('An error occurred during update.');
     }
   };
 

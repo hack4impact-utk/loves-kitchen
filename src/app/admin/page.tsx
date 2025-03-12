@@ -10,7 +10,7 @@ import { getRoles } from '@/server/actions/auth0m';
 import { useRouter } from 'next/navigation';
 import UserTable from '@/components/UserTable';
 
-const Staff = () => {
+const Admin = () => {
   const { user } = useUser();
   const router = useRouter();
 
@@ -18,7 +18,7 @@ const Staff = () => {
     const checkRoles = async () => {
       if (user?.sub && router) {
         const roles = await getRoles(user.sub!);
-        if (!roles.includes('Staff')) {
+        if (!roles.includes('Admin')) {
           router.push('/');
         }
       }
@@ -57,38 +57,59 @@ const Staff = () => {
     setDrawerOpen(true); // Open the drawer
   };
 
+  const handleAddUser = async (user: IVolunteer) => {
+    const res = await fetch('/api/volunteers', {
+      method: 'POST',
+      body: JSON.stringify(user),
+    });
+    const data = (await res.json()).volunteer;
+
+    if (data) {
+      user.authID = data.authID;
+      user.createdAt = data.createdAt;
+      setVolunteers((prev) => [...prev, user]);
+    }
+  };
+
   return (
-    <div style={{ backgroundColor: theme.offWhite, minHeight: '100vh' }}>
+    <div
+      className="min-h-[100vh]"
+      style={{
+        backgroundColor: theme.offWhite,
+      }}
+    >
       <NavBar />
       <div className="flex flex-col items-center justify-center pt-[100px] pb-20 gap-10">
         <UserTable
-          is_admin={false}
+          is_admin={true}
           shows_staff={false}
           volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
           onView={handleViewVolunteer} // Use the drawer open function
+          onAddUser={handleAddUser}
         />
 
         <UserTable
-          is_admin={false}
+          is_admin={true}
           shows_staff={true}
           volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
           onView={handleViewVolunteer} // Use the drawer open function
+          onAddUser={handleAddUser}
         />
-      </div>
 
-      {/* Sidepage (Drawer) for Viewing Volunteer Details */}
-      {selectedVolunteer && (
-        <VolunteerDrawer
-          admin={false}
-          open={isDrawerOpen} // Controlled by state
-          onClose={() => setDrawerOpen(false)} // Close the drawer
-          volunteer={selectedVolunteer} // Pass the selected volunteer
-          setSelectedVol={setSelectedVolunteer}
-          setVolunteers={setVolunteers}
-        />
-      )}
+        {/* Sidepage (Drawer) for Viewing Volunteer Details */}
+        {selectedVolunteer && (
+          <VolunteerDrawer
+            admin={true}
+            open={isDrawerOpen} // Controlled by state
+            onClose={() => setDrawerOpen(false)} // Close the drawer
+            volunteer={selectedVolunteer} // Pass the selected volunteer
+            setSelectedVol={setSelectedVolunteer}
+            setVolunteers={setVolunteers}
+          />
+        )}
+      </div>
     </div>
   );
 };
 
-export default Staff;
+export default Admin;

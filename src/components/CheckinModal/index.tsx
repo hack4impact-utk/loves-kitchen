@@ -6,44 +6,53 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
   bgcolor: 'background.paper',
   boxShadow: 24,
   borderRadius: '12px',
   p: 4,
 };
 
-interface SessionModalProps {
-  open: boolean;
-  onClose: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createSession: (data: any) => Promise<void>;
+interface CheckinData {
+  end_time: string;
 }
 
-const SessionModal = (props: SessionModalProps) => {
-  const [data, setData] = useState({
-    startTime: '',
-    length: 0,
+interface CheckinModalProps {
+  open: boolean;
+  onClose: () => void;
+  onCheckIn: (data: CheckinData, length: number) => Promise<void>;
+}
+
+const CheckinModal = (props: CheckinModalProps) => {
+  const [data, setData] = useState<CheckinData>({
+    end_time: '',
   });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.type === 'number') {
-      if (parseInt(e.target.value) < 0) return;
-    }
-
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (data.startTime === '' || data.length === 0) return;
+    if (data.end_time == '') return;
+
+    const startTime = new Date();
+    const endTime = new Date();
+    endTime.setHours(
+      parseInt(data.end_time.split(':')[0]),
+      parseInt(data.end_time.split(':')[1])
+    );
+    const length = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
+    if (length <= 0) {
+      alert('You must provide a time in the future!');
+      return;
+    }
 
     setLoading((prev) => !prev);
-    await props.createSession({ ...data, checked_out: true });
+    await props.onCheckIn(data, length);
     setData({
-      startTime: '',
-      length: 0,
+      end_time: '',
     });
     setLoading((prev) => !prev);
   };
@@ -51,25 +60,19 @@ const SessionModal = (props: SessionModalProps) => {
   return (
     <Modal open={props.open} onClose={props.onClose}>
       <Box sx={modalStyle}>
-        <h2 className="text-xl font-bold mb-4">Create a New Session</h2>
+        <h2 className="text-xl font-bold mb-4">Check In</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <TextField
-            label="Start Time"
-            name="startTime"
-            type="datetime-local"
-            value={data.startTime}
-            onChange={handleChange}
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-          />
-          <TextField
-            label="Length (in hours)"
-            name="length"
-            type="number"
-            value={data.length}
-            onChange={handleChange}
-            fullWidth
-          />
+          <div className="flex flex-col gap-5">
+            <TextField
+              label="End Time"
+              name="end_time"
+              type="time"
+              value={data.end_time}
+              onChange={handleChange}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+          </div>
           <div className="flex justify-end space-x-2">
             <Button onClick={props.onClose} color="error" variant="outlined">
               Cancel
@@ -80,7 +83,7 @@ const SessionModal = (props: SessionModalProps) => {
               variant="contained"
               disabled={loading}
             >
-              {loading ? 'Saving' : 'Save'}
+              {loading ? 'Adding' : 'Confirm'}
             </Button>
           </div>
         </form>
@@ -89,4 +92,4 @@ const SessionModal = (props: SessionModalProps) => {
   );
 };
 
-export default SessionModal;
+export default CheckinModal;
