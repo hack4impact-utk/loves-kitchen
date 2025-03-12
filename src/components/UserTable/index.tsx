@@ -7,6 +7,7 @@ import { Divider, IconButton } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import UserCreateModal from '../UserCreateModal';
 import FlagIcon from '@mui/icons-material/Flag';
+import SearchBar from '../SearchBar';
 
 interface UserTableProps {
   is_admin: boolean;
@@ -163,6 +164,20 @@ export default function UserTable({
 
         {/* the actual table */}
         <div style={{ width: '100%' }}>
+          <SearchBar
+            volunteers={volunteers}
+            setData={(data: IVolunteer[]) => {
+              setRows(
+                data.map((row) => ({
+                  ...row,
+                  id: row._id,
+                  createdAt: new Date(row.createdAt).toLocaleDateString(
+                    'en-US'
+                  ),
+                }))
+              );
+            }}
+          />
           <DataGrid
             rows={rows}
             columns={columns}
