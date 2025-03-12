@@ -56,7 +56,7 @@ export const POST = async function (req: NextRequest) {
         success: false,
         message: 'Failed to add user to Auth0 database.',
       },
-      { status: 500 }
+      { status: 501 }
     );
   }
   // console.log(addedUser);
@@ -67,7 +67,7 @@ export const POST = async function (req: NextRequest) {
         success: false,
         message: 'Failed to add user to Auth0 database.',
       },
-      { status: 500 }
+      { status: 502 }
     );
   }
 
@@ -76,6 +76,7 @@ export const POST = async function (req: NextRequest) {
   // added to auth0 database, add to volunteer database
   const jsonVol = {
     is_staff: body.is_staff,
+    checked_in: false,
     authID: addedUser.user_id,
     firstName: addedUser.given_name,
     lastName: addedUser.family_name,
