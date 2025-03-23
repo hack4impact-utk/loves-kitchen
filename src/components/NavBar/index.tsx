@@ -49,10 +49,9 @@ export default function ButtonAppBar() {
             justifyContent: 'space-between',
             alignItems: 'center',
             backgroundColor: lktheme.brown,
-            opacity: '0.9999',
           }}
         >
-          <Box sx={{ display: 'flex', gap: 2, paddingLeft: 50 }}>
+          <Box sx={{ display: 'flex', gap: 2, paddingLeft: 35 }}>
             <Button color="inherit" href="/user" sx={{ color: 'white' }}>
               user
             </Button>
