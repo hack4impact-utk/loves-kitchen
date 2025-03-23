@@ -73,7 +73,7 @@ export const DELETE = async function (req: Request) {
   }
 };
 
-// Delete a session
+// Update a session
 export const PUT = async function (req: Request) {
   await dbConnect();
 
