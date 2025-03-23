@@ -14,7 +14,9 @@ export default function ButtonAppBar() {
   const { user, error, isLoading } = useUser();
 
   return (
-    <Box sx={{ flexGrow: 1, position: 'relative' }}>
+    <Box
+      sx={{ height: '64px', flexGrow: 1, position: 'absolute', width: '100%' }}
+    >
       <Box
         sx={{
           position: 'absolute',
