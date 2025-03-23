@@ -60,7 +60,7 @@ const Staff = () => {
   return (
     <div style={{ backgroundColor: theme.offWhite, minHeight: '100vh' }}>
       <NavBar />
-      <div className="flex flex-col items-center justify-center pt-[100px] pb-20 gap-10">
+      <div className="flex flex-col items-center justify-center pt-[164px] pb-20 gap-10">
         <UserTable
           is_admin={false}
           shows_staff={false}

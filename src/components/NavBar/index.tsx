@@ -14,56 +14,71 @@ export default function ButtonAppBar() {
   const { user, error, isLoading } = useUser();
 
   return (
-    <Box sx={{ flexGrow: 1, position: 'relative' }}>
+    // Seemingly redundant box allows for navbar not to take up vertical space
+    <Box sx={{ height: 0, position: 'relative', width: '100%' }}>
+      {/* Absolute positioning allows for navbar child to be taller than parent */}
       <Box
         sx={{
+          height: '64px',
+          flexGrow: 1,
           position: 'absolute',
+          width: '100%',
           top: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          backgroundColor: lktheme.darkCyan, //random color from colors.ts
-          padding: 2,
-          borderRadius: 4,
-          zIndex: 1,
+          left: 0,
         }}
-        onClick={() => (window.location.href = '/')}
       >
-        <Image
-          src="/lk-logo-transparent.png"
-          alt="Love Kitchen Logo"
-          width={200}
-          height={40}
-          priority
-          style={{ width: 'auto', height: 'auto' }}
-        />
-      </Box>
-
-      <AppBar position="static" color="inherit">
-        <Toolbar
+        <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: lktheme.brown,
+            position: 'absolute',
+            top: -20,
+            left: 100,
+            backgroundColor: lktheme.darkCyan,
+            padding: 2,
+            paddingTop: 5,
+            borderRadius: 4,
+            boxShadow: '0px 4px 10px rgba(0,0,0,0.3)',
+            zIndex: 2,
+            cursor: 'pointer',
           }}
+          onClick={() => (window.location.href = '/')}
         >
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit" href="/user" sx={{ color: 'white' }}>
-              user
-            </Button>
-            <Button color="inherit" href="/staff" sx={{ color: 'white' }}>
-              staff
-            </Button>
-            <Button color="inherit" href="/" sx={{ color: 'white' }}>
-              home
-            </Button>
-          </Box>
+          <Image
+            src="/lk-logo-transparent.png"
+            alt="Love Kitchen Logo"
+            width={200}
+            height={40}
+            priority
+            style={{ width: 'auto', height: 'auto' }}
+          />
+        </Box>
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <AccountMenu user={user} error={error} isLoading={isLoading} />
-          </Box>
-        </Toolbar>
-      </AppBar>
+        <AppBar position="static" color="inherit">
+          <Toolbar
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: lktheme.brown,
+            }}
+          >
+            <Box sx={{ display: 'flex', gap: 2, paddingLeft: 48 }}>
+              <Button color="inherit" href="/user" sx={{ color: 'white' }}>
+                user
+              </Button>
+              <Button color="inherit" href="/staff" sx={{ color: 'white' }}>
+                staff
+              </Button>
+              <Button color="inherit" href="/" sx={{ color: 'white' }}>
+                home
+              </Button>
+            </Box>
+
+            <Box sx={{ marginLeft: 'auto' }}>
+              <AccountMenu user={user} error={error} isLoading={isLoading} />
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Box>
     </Box>
   );
 }

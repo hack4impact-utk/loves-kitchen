@@ -79,7 +79,7 @@ const Admin = () => {
       }}
     >
       <NavBar />
-      <div className="flex flex-col items-center justify-center pt-[100px] pb-20 gap-10">
+      <div className="flex flex-col items-center justify-center pt-[164px] pb-20 gap-10">
         <UserTable
           is_admin={true}
           shows_staff={false}
