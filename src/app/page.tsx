@@ -35,9 +35,7 @@ const Main = () => {
           <a
             href="https://thelovekitchen.com"
             className="rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-[105%] hover:shadow-xl text-white text-xl font-bold"
-          >
-            Visit Love Kitchen
-          </a>
+          />
         </Box>
 
         {/* If user is logged in. */}

@@ -15,18 +15,20 @@ export default function ButtonAppBar() {
 
   return (
     <Box
-      sx={{ height: '64px', flexGrow: 1, position: 'absolute', width: '100%' }}
+      sx={{ height: '64px', flexGrow: 1, position: 'relative', width: '100%' }}
     >
       <Box
         sx={{
           position: 'absolute',
-          top: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          backgroundColor: lktheme.darkCyan, //random color from colors.ts
+          top: -20,
+          left: 100,
+          backgroundColor: lktheme.darkCyan,
           padding: 2,
+          paddingTop: 5,
           borderRadius: 4,
-          zIndex: 1,
+          boxShadow: '0px 4px 10px rgba(0,0,0,0.3)',
+          zIndex: 2,
+          cursor: 'pointer',
         }}
         onClick={() => (window.location.href = '/')}
       >
@@ -50,7 +52,7 @@ export default function ButtonAppBar() {
             opacity: '0.9999',
           }}
         >
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2, paddingLeft: 50 }}>
             <Button color="inherit" href="/user" sx={{ color: 'white' }}>
               user
             </Button>
@@ -62,7 +64,7 @@ export default function ButtonAppBar() {
             </Button>
           </Box>
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ marginLeft: 'auto' }}>
             <AccountMenu user={user} error={error} isLoading={isLoading} />
           </Box>
         </Toolbar>
