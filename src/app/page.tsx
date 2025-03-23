@@ -1,19 +1,11 @@
-'use client';
-
 import React from 'react';
 import Image from 'next/image';
 import NavBar from '@/components/NavBar';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import { Box, Typography } from '@mui/material';
 import lktheme from '@/types/colors';
+import UserGreet from '@/components/UserGreet';
 
 const Main = () => {
-  // get auth0 server information and make basic loading screen
-
-  const { user, error, isLoading } = useUser();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-
   return (
     <>
       <NavBar />
@@ -45,38 +37,7 @@ const Main = () => {
           </a>
         </Box>
 
-        {/* If user is logged in. */}
-        {user && user.email && user.name ? (
-          <>
-            <Box className="text-center p-5">
-              <Typography
-                variant="h5"
-                className="text-2xl"
-                sx={{ color: lktheme.brown }}
-              >
-                Hello, {user.name}!
-              </Typography>
-            </Box>
-          </>
-        ) : (
-          // Render an else statement, e.g., a message to log in
-          <Box className="text-center p-5">
-            <Typography
-              variant="h5"
-              className="text-2xl"
-              sx={{ color: lktheme.brown }}
-            >
-              Please{' '}
-              <a
-                href="/api/auth/login"
-                className="text-green-500 underline underline-offset-6"
-              >
-                log in
-              </a>{' '}
-              to view your profile.
-            </Typography>
-          </Box>
-        )}
+        <UserGreet />
 
         <Box
           className="flex flex-col px-6 py-5 rounded-xl"
