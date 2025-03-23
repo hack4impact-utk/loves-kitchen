@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import NavBar from '@/components/NavBar';
 import { Box, Typography } from '@mui/material';
 import lktheme from '@/types/colors';
@@ -10,31 +9,25 @@ const Main = () => {
     <>
       <NavBar />
       <div
-        className="flex flex-col items-center text-white min-h-screen"
+        className="flex flex-col items-center text-white min-h-screen pb-[64px]"
         style={{ backgroundColor: lktheme.offWhite }}
       >
         <Box
           sx={{
-            mt: 20,
+            mt: 0,
             mb: 2,
-            display: 'flex',
-            justifyContent: 'center',
+            width: '100%',
+            height: 700,
+            backgroundImage: 'url(/realest.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
           }}
         >
-          {/* Link component for better interactivity */}
           <a
             href="https://thelovekitchen.com"
-            className="rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-[105%] hover:shadow-xl"
-          >
-            <Image
-              src="/lk-logo.jpg"
-              alt="Love Kitchen Logo"
-              width={1000}
-              height={200}
-              style={{ width: 'auto', height: 'auto' }}
-              // Adding rounded corners to the image and scaling effect on hover
-            />
-          </a>
+            className="rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-[105%] hover:shadow-xl text-white text-xl font-bold"
+          />
         </Box>
 
         <UserGreet />
