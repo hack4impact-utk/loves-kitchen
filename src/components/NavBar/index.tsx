@@ -7,11 +7,14 @@ import Toolbar from '@mui/material/Toolbar';
 import Image from 'next/image';
 import Button from '@mui/material/Button';
 import AccountMenu from '../AccountMenu';
+import BurgerDrawer from '../BurgerDrawer';
 import lktheme from '@/types/colors';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useMediaQuery } from '@mui/material';
 
 export default function ButtonAppBar() {
   const { user, error, isLoading } = useUser();
+  const isMobile = useMediaQuery('(max-width: 600px)'); // can be adjusted
 
   return (
     // Seemingly redundant box allows for navbar not to take up vertical space
@@ -31,7 +34,7 @@ export default function ButtonAppBar() {
           sx={{
             position: 'absolute',
             top: -20,
-            left: 100,
+            left: 50,
             backgroundColor: lktheme.darkCyan,
             padding: 2,
             paddingTop: 5,
@@ -61,20 +64,28 @@ export default function ButtonAppBar() {
               backgroundColor: lktheme.brown,
             }}
           >
-            <Box sx={{ display: 'flex', gap: 2, paddingLeft: 48 }}>
-              <Button color="inherit" href="/user" sx={{ color: 'white' }}>
-                user
-              </Button>
-              <Button color="inherit" href="/staff" sx={{ color: 'white' }}>
-                staff
-              </Button>
-              <Button color="inherit" href="/" sx={{ color: 'white' }}>
-                home
-              </Button>
-            </Box>
+            {!isMobile && (
+              <Box sx={{ display: 'flex', gap: 2, paddingLeft: 28 }}>
+                <Button color="inherit" href="/user" sx={{ color: 'white' }}>
+                  user
+                </Button>
+                <Button color="inherit" href="/staff" sx={{ color: 'white' }}>
+                  staff
+                </Button>
+                <Button color="inherit" href="/" sx={{ color: 'white' }}>
+                  home
+                </Button>
+              </Box>
+            )}
 
-            <Box sx={{ marginLeft: 'auto' }}>
-              <AccountMenu user={user} error={error} isLoading={isLoading} />
+            <Box
+              sx={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}
+            >
+              {isMobile ? (
+                <BurgerDrawer />
+              ) : (
+                <AccountMenu user={user} error={error} isLoading={isLoading} />
+              )}
             </Box>
           </Toolbar>
         </AppBar>
