@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Box } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/navigation';
 
 export default function TopDrawer() {
@@ -62,7 +63,9 @@ export default function TopDrawer() {
 
   return (
     <div>
-      <Button onClick={toggleDrawer(true)}>Menu</Button>
+      <IconButton onClick={toggleDrawer(true)} sx={{ color: 'white' }}>
+        <MenuIcon />
+      </IconButton>
       <Drawer anchor="top" open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>
