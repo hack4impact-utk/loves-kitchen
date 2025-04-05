@@ -8,8 +8,10 @@ import ListItemText from '@mui/material/ListItemText';
 import { Box, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function TopDrawer() {
+  const { user } = useUser();
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
 
@@ -43,7 +45,7 @@ export default function TopDrawer() {
       onClick={toggleDrawer(false)}
     >
       <List>
-        {['user', 'staff', 'home'].map((text, index) => (
+        {['user', 'staff', 'home'].map((text) => (
           <React.Fragment key={text}>
             <ListItem disablePadding>
               <ListItemButton
@@ -64,11 +66,29 @@ export default function TopDrawer() {
               </ListItemButton>
             </ListItem>
             {/* Add a divider between each item, except after the last item */}
-            {index < 2 && (
-              <Divider sx={{ backgroundColor: '#ccc', margin: '5px 0' }} />
-            )}
+            <Divider sx={{ backgroundColor: '#ccc', margin: '5px 0' }} />
           </React.Fragment>
         ))}
+
+        {/* login/logout */}
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() =>
+              handleNavigation(user ? '/api/auth/logout' : '/api/auth/login')
+            }
+          >
+            <ListItemText
+              primary={user ? 'logout' : 'login'}
+              sx={{
+                textAlign: 'left',
+                color: '#6F4E44',
+                fontWeight: 500, // Matches button font-weight
+                fontSize: '1rem', // Matches button font size
+                textTransform: 'uppercase', // Similar to default button style
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
