@@ -81,7 +81,8 @@ const SessionTable = (props: SessionTableProps) => {
   //define the column headers
   const columns: GridColDef[] = [
     { field: 'startTime', headerName: 'Start Time', width: 300 },
-    { field: 'length', headerName: 'Length', width: 200 },
+    // { field: 'length', headerName: 'Length', width: 200 },
+    { field: 'endTime', headerName: 'End Time', width: 200 },
     {
       field: 'id',
       headerName: 'Actions',

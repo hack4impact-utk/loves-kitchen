@@ -27,6 +27,8 @@ const CheckinModal = (props: CheckinModalProps) => {
   const [data, setData] = useState<CheckinData>({
     end_time: '',
   });
+
+  const [startTimeInput, setStartTimeInput] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,26 +37,28 @@ const CheckinModal = (props: CheckinModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (data.end_time == '') return;
 
-    const startTime = new Date();
-    const endTime = new Date();
-    endTime.setHours(
-      parseInt(data.end_time.split(':')[0]),
-      parseInt(data.end_time.split(':')[1])
-    );
-    const length = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
-    if (length <= 0) {
-      alert('You must provide a time in the future!');
+    if (!startTimeInput || !data.end_time) {
+      alert('Please fill out both start and end times.');
       return;
     }
 
-    setLoading((prev) => !prev);
+    // Convert times to Date objects on a dummy day
+    const startTime = new Date(`2000-01-01T${startTimeInput}:00`);
+    const endTime = new Date(`2000-01-01T${data.end_time}:00`);
+
+    const length = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60); // in hours
+
+    if (length <= 0) {
+      alert('End time must be after start time.');
+      return;
+    }
+
+    setLoading(true);
     await props.onCheckIn(data, length);
-    setData({
-      end_time: '',
-    });
-    setLoading((prev) => !prev);
+    setData({ end_time: '' });
+    setStartTimeInput('');
+    setLoading(false);
   };
 
   return (
@@ -63,6 +67,15 @@ const CheckinModal = (props: CheckinModalProps) => {
         <h2 className="text-xl font-bold mb-4">Check In</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-5">
+            <TextField
+              label="Start Time"
+              name="start_time"
+              type="time"
+              value={startTimeInput}
+              onChange={(e) => setStartTimeInput(e.target.value)}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
             <TextField
               label="End Time"
               name="end_time"

@@ -80,7 +80,14 @@ export default function CheckInPage() {
           <Typography variant="h6">
             Start Time: {new Date(session.startTime).toLocaleString()}
           </Typography>
-          <Typography variant="h6">Length: {session.length} hours</Typography>
+          {/* <Typography variant="h6">Length: {session.length} hours</Typography> */}
+          <Typography variant="h6">
+            End Time:{' '}
+            {new Date(
+              new Date(session.startTime).getTime() +
+                session.length * 60 * 60 * 1000
+            ).toLocaleString()}
+          </Typography>
           <Button
             variant="contained"
             sx={{ mt: 2, backgroundColor: lktheme.darkCyan }}
