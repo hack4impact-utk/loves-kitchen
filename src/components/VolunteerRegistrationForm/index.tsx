@@ -1,8 +1,11 @@
 'use client';
+import lktheme from '@/types/colors';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 const VolunteerRegistrationForm = () => {
+  const router = useRouter();
   const { user } = useUser();
   const [formData, setFormData] = useState({
     firstName: '',
@@ -14,6 +17,37 @@ const VolunteerRegistrationForm = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    (async () => {
+      if (user && router) {
+        // check if user exists in database
+        const res = await fetch(`/api/volunteers/${user.sub}`, {
+          method: 'GET',
+        });
+        const data = await res.json();
+
+        // if so, redirect them
+        if (data.volunteer != undefined) {
+          router.push('/user');
+        }
+      }
+    })();
+  }, [user, router]);
+
+  const getDisplayLabel = (rawName: string) => {
+    let blah = '';
+    let foundUpper = false;
+    for (let i = 0; i < rawName.length; ++i) {
+      if (rawName[i].toUpperCase() == rawName[i]) {
+        blah = rawName.slice(0, i) + ' ' + rawName.slice(i);
+        foundUpper = true;
+      }
+    }
+
+    if (foundUpper) return blah.charAt(0).toUpperCase() + blah.slice(1);
+    else return rawName.charAt(0).toUpperCase() + rawName.slice(1);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,7 +61,8 @@ const VolunteerRegistrationForm = () => {
     const newErrors: Record<string, string> = {};
     Object.keys(formData).forEach((key) => {
       if (!formData[key as keyof typeof formData].trim()) {
-        newErrors[key] = `${key} is required`;
+        newErrors[key] =
+          `${key[0].toLocaleUpperCase() + getDisplayLabel(key).toLocaleLowerCase().slice(1)} is required`;
       }
     });
 
@@ -72,22 +107,20 @@ const VolunteerRegistrationForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
+    <div
+      className="max-w-[400px] w-[87vw] text-white shadow-lg mt-[160px] lg:mt-[80px]"
       style={{
-        maxWidth: '400px',
-        margin: 'auto',
         padding: '20px',
-        backgroundColor: '#f9f9f9',
+        backgroundColor: lktheme.brown,
         borderRadius: '8px',
       }}
     >
-      <h2>Volunteer Registration</h2>
+      <p className="text-lg mb-4">Volunteer Registration</p>
       {['firstName', 'lastName', 'age', 'address', 'phone', 'email'].map(
         (field) => (
           <div key={field} style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', marginBottom: '8px' }}>
-              {field.charAt(0).toUpperCase() + field.slice(1)}
+              {getDisplayLabel(field)}
             </label>
             <input
               type={
@@ -101,6 +134,7 @@ const VolunteerRegistrationForm = () => {
               value={formData[field as keyof typeof formData]}
               onChange={handleChange}
               style={{
+                color: 'black',
                 width: '100%',
                 padding: '8px',
                 border: '1px solid #ccc',
@@ -109,16 +143,16 @@ const VolunteerRegistrationForm = () => {
               required
             />
             {errors[field] && (
-              <span style={{ color: 'red' }}>{errors[field]}</span>
+              <span style={{ color: '#ff4f4f' }}>{errors[field]}</span>
             )}
           </div>
         )
       )}
       <button
-        type="submit"
+        onClick={handleSubmit}
         style={{
           padding: '10px 20px',
-          backgroundColor: '#007BFF',
+          backgroundColor: lktheme.darkCyan,
           color: '#fff',
           border: 'none',
           borderRadius: '4px',
@@ -127,7 +161,7 @@ const VolunteerRegistrationForm = () => {
       >
         Submit
       </button>
-    </form>
+    </div>
   );
 };
 

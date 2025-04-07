@@ -11,6 +11,18 @@ export async function POST(req: Request) {
       toAdd.is_staff = true;
     }
 
+    // check if volunteer already exists
+    const search = await Volunteer.find({
+      authID: toAdd.authID,
+    });
+    if (search.length == 1) {
+      console.error('Registered volunteer already exists.');
+      return NextResponse.json(
+        { message: 'Internal server error' },
+        { status: 500 }
+      );
+    }
+
     const volunteer = new Volunteer(toAdd);
     await volunteer.save();
 
