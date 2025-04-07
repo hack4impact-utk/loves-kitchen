@@ -6,9 +6,10 @@ import lktheme, { cyantable } from '@/types/colors';
 import { Divider } from '@mui/material';
 import CheckinModal from '../CheckinModal';
 import { ISession } from '@/server/models/Session';
+import VolSearchBar from '../VolSearchBar';
 
 interface UserRow {
-  id: string;
+  id?: string;
   _id: string;
   is_staff: boolean;
   authID: string;
@@ -20,6 +21,7 @@ interface UserRow {
   address: string;
   createdAt: string;
   flags?: IFlag[];
+  checked_in: boolean;
 }
 
 interface CheckinData {
@@ -27,9 +29,48 @@ interface CheckinData {
 }
 
 export default function CheckinTable() {
+  const [allRows, setAllRows] = useState<IVolunteer[]>([]);
   const [rows, setRows] = useState<UserRow[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedVol, setSelectedVol] = useState<IVolunteer | undefined>();
+
+  function updateRows(newVol: UserRow) {
+    // set all rows
+    let replaceIdx = -1;
+    for (let i = 0; i < allRows.length; ++i) {
+      if (allRows[i].authID == newVol.authID) {
+        replaceIdx = i;
+      }
+    }
+    if (replaceIdx != -1) {
+      setAllRows(() => [
+        ...allRows.slice(0, replaceIdx),
+        {
+          ...newVol,
+          id: newVol.authID,
+        },
+        ...allRows.slice(replaceIdx + 1),
+      ]);
+    }
+
+    // set current rows
+    replaceIdx = -1;
+    for (let i = 0; i < rows.length; ++i) {
+      if (rows[i].authID == newVol.authID) {
+        replaceIdx = i;
+      }
+    }
+    if (replaceIdx != -1) {
+      setRows(() => [
+        ...rows.slice(0, replaceIdx),
+        {
+          ...newVol,
+          id: newVol.authID,
+        },
+        ...rows.slice(replaceIdx + 1),
+      ]);
+    }
+  }
 
   async function handleCheckIn(data: CheckinData, length: number) {
     if (!selectedVol) return;
@@ -70,22 +111,7 @@ export default function CheckinTable() {
       body: JSON.stringify(tmpVol),
     });
 
-    let replaceIdx = -1;
-    for (let i = 0; i < rows.length; ++i) {
-      if (rows[i].authID == tmpVol.authID) {
-        replaceIdx = i;
-      }
-    }
-
-    // update client-side state variable rows
-    setRows(() => [
-      ...rows.slice(0, replaceIdx),
-      {
-        ...tmpVol,
-        id: tmpVol.authID,
-      },
-      ...rows.slice(replaceIdx + 1),
-    ]);
+    updateRows(tmpVol);
   }
 
   async function handleCheckOut(toCheckOut: IVolunteer) {
@@ -136,22 +162,7 @@ export default function CheckinTable() {
       body: JSON.stringify(tmpVol),
     });
 
-    let replaceIdx = -1;
-    for (let i = 0; i < rows.length; ++i) {
-      if (rows[i].authID == tmpVol.authID) {
-        replaceIdx = i;
-      }
-    }
-
-    // update client-side state variable rows
-    setRows(() => [
-      ...rows.slice(0, replaceIdx),
-      {
-        ...tmpVol,
-        id: tmpVol.authID,
-      },
-      ...rows.slice(replaceIdx + 1),
-    ]);
+    updateRows(tmpVol);
   }
 
   useEffect(() => {
@@ -159,9 +170,9 @@ export default function CheckinTable() {
       const res = await fetch('/api/volunteers', {
         method: 'GET',
       });
-      const volunteers: IVolunteer[] = (await res.json()).volunteers;
+      const tmpVols: IVolunteer[] = (await res.json()).volunteers;
       const tmpRows: UserRow[] = [];
-      volunteers.forEach((volunteer) =>
+      tmpVols.forEach((volunteer) =>
         tmpRows.push({
           ...volunteer,
           id: volunteer.authID,
@@ -169,6 +180,7 @@ export default function CheckinTable() {
         })
       );
       setRows(tmpRows);
+      setAllRows(tmpRows);
     })();
   }, []);
 
@@ -231,6 +243,8 @@ export default function CheckinTable() {
         <p className="text-3xl text-white pb-5">Check In</p>
 
         <Divider sx={{ marginBottom: '1rem', backgroundColor: 'white' }} />
+
+        <VolSearchBar volunteers={allRows} setData={setRows} />
 
         <div style={{ width: '100%' }}>
           <DataGrid

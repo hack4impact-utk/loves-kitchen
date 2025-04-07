@@ -10,7 +10,7 @@ interface SearchBarProps {
   setData: (data: IVolunteer[]) => void;
 }
 
-export default function SearchBar({ volunteers, setData }: SearchBarProps) {
+export default function VolSearchBar({ volunteers, setData }: SearchBarProps) {
   // State to store the input value
   const [inputValue, setInputValue] = React.useState('');
 
