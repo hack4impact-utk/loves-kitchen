@@ -141,15 +141,32 @@ export default function CheckinTable() {
         (endTime.getTime() - new Date(toUpdate.startTime).getTime()) /
         (1000 * 60 * 60);
 
-      // update session in database
-      await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          sessionId: toUpdate._id,
-          length: length,
-          checked_out: true,
-        }),
-      });
+      if (length < 0.4) {
+        if (
+          confirm(
+            'Session length is less than 15 minutes. Delete session data?'
+          )
+        ) {
+          await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
+            method: 'DELETE',
+            body: JSON.stringify({
+              sessionId: toUpdate._id,
+            }),
+          });
+        } else {
+          return;
+        }
+      } else {
+        // update session in database
+        await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            sessionId: toUpdate._id,
+            length: length,
+            checked_out: true,
+          }),
+        });
+      }
     }
 
     // set volunteer to checked out
