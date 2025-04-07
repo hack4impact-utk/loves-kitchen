@@ -70,15 +70,21 @@ export default function CheckinTable() {
       body: JSON.stringify(tmpVol),
     });
 
+    let replaceIdx = -1;
+    for (let i = 0; i < rows.length; ++i) {
+      if (rows[i].authID == tmpVol.authID) {
+        replaceIdx = i;
+      }
+    }
+
     // update client-side state variable rows
-    setRows((prev) => [
-      ...prev.filter(
-        (oldVolunteer) => oldVolunteer.authID != selectedVol.authID
-      ),
+    setRows(() => [
+      ...rows.slice(0, replaceIdx),
       {
         ...tmpVol,
         id: tmpVol.authID,
       },
+      ...rows.slice(replaceIdx + 1),
     ]);
   }
 
@@ -130,15 +136,21 @@ export default function CheckinTable() {
       body: JSON.stringify(tmpVol),
     });
 
+    let replaceIdx = -1;
+    for (let i = 0; i < rows.length; ++i) {
+      if (rows[i].authID == tmpVol.authID) {
+        replaceIdx = i;
+      }
+    }
+
     // update client-side state variable rows
-    setRows((prev) => [
-      ...prev.filter(
-        (oldVolunteer) => oldVolunteer.authID != toCheckOut.authID
-      ),
+    setRows(() => [
+      ...rows.slice(0, replaceIdx),
       {
         ...tmpVol,
         id: tmpVol.authID,
       },
+      ...rows.slice(replaceIdx + 1),
     ]);
   }
 
@@ -191,7 +203,7 @@ export default function CheckinTable() {
               <>
                 <button
                   onClick={() => {
-                    setSelectedVol(volData);
+                    setSelectedVol(() => volData);
                     setModalOpen(true);
                   }}
                   className="px-3 rounded-lg bg-green-600 hover:bg-green-500"
