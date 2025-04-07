@@ -55,6 +55,7 @@ const CheckinModal = (props: CheckinModalProps) => {
       end_time: '',
     });
     setLoading((prev) => !prev);
+    props.onClose();
   };
 
   return (

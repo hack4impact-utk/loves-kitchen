@@ -82,11 +82,11 @@ export default function CheckinTable() {
     ]);
   }
 
-  async function handleCheckOut() {
-    if (!selectedVol) return;
+  async function handleCheckOut(toCheckOut: IVolunteer) {
+    if (!toCheckOut) return;
 
     // get sessions not checked out from
-    const res = await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
+    const res = await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
       method: 'GET',
     });
     const sessions: ISession[] = (await res.json()).sessions;
@@ -110,7 +110,7 @@ export default function CheckinTable() {
         (1000 * 60 * 60);
 
       // update session in database
-      await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
+      await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
         method: 'PUT',
         body: JSON.stringify({
           sessionId: toUpdate._id,
@@ -121,11 +121,11 @@ export default function CheckinTable() {
     }
 
     // set volunteer to checked out
-    const tmpVol = selectedVol;
+    const tmpVol = toCheckOut;
     tmpVol.checked_in = false;
 
     // update volunteer
-    await fetch(`/api/volunteers/${selectedVol.authID}`, {
+    await fetch(`/api/volunteers/${toCheckOut.authID}`, {
       method: 'PUT',
       body: JSON.stringify(tmpVol),
     });
@@ -133,7 +133,7 @@ export default function CheckinTable() {
     // update client-side state variable rows
     setRows((prev) => [
       ...prev.filter(
-        (oldVolunteer) => oldVolunteer.authID != selectedVol.authID
+        (oldVolunteer) => oldVolunteer.authID != toCheckOut.authID
       ),
       {
         ...tmpVol,
@@ -175,9 +175,11 @@ export default function CheckinTable() {
               <>
                 <button
                   onClick={() => {
-                    setSelectedVol(volData);
                     if (confirm('Are you sure you want to check out?')) {
-                      handleCheckOut();
+                      setSelectedVol(() => {
+                        handleCheckOut(volData);
+                        return volData;
+                      });
                     }
                   }}
                   className="px-3 rounded-lg bg-red-600 hover:bg-red-500"
@@ -189,8 +191,8 @@ export default function CheckinTable() {
               <>
                 <button
                   onClick={() => {
-                    setModalOpen(true);
                     setSelectedVol(volData);
+                    setModalOpen(true);
                   }}
                   className="px-3 rounded-lg bg-green-600 hover:bg-green-500"
                 >
