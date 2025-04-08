@@ -23,7 +23,7 @@ interface SessionModalProps {
 const SessionModal = (props: SessionModalProps) => {
   const [data, setData] = useState({
     startTime: '',
-    length: 0,
+    endTime: '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -37,13 +37,30 @@ const SessionModal = (props: SessionModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (data.startTime === '' || data.length === 0) return;
+    if (data.startTime === '' || data.endTime === '') return;
+
+    console.log(data.startTime);
+    console.log(new Date(data.startTime));
+    console.log(new Date(data.endTime));
+
+    const length =
+      (new Date(data.endTime).getTime() - new Date(data.startTime).getTime()) /
+      (1000 * 60 * 60); // in hours
+
+    if (length <= 0) {
+      alert('End time must be after start time.');
+      return;
+    }
 
     setLoading((prev) => !prev);
-    await props.createSession({ ...data, checked_out: true });
+    await props.createSession({
+      startTime: data.startTime,
+      length: length,
+      checked_out: true,
+    });
     setData({
       startTime: '',
-      length: 0,
+      endTime: '',
     });
     setLoading((prev) => !prev);
   };
@@ -63,12 +80,13 @@ const SessionModal = (props: SessionModalProps) => {
             InputLabelProps={{ shrink: true }}
           />
           <TextField
-            label="Length (in hours)"
-            name="length"
-            type="number"
-            value={data.length}
+            label="End Time"
+            name="endTime"
+            type="datetime-local"
+            value={data.endTime}
             onChange={handleChange}
             fullWidth
+            InputLabelProps={{ shrink: true }}
           />
           <div className="flex justify-end space-x-2">
             <Button onClick={props.onClose} color="error" variant="outlined">

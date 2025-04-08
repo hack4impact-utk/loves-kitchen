@@ -6,9 +6,10 @@ import lktheme, { cyantable } from '@/types/colors';
 import { Divider } from '@mui/material';
 import CheckinModal from '../CheckinModal';
 import { ISession } from '@/server/models/Session';
+import VolSearchBar from '../VolSearchBar';
 
 interface UserRow {
-  id: string;
+  id?: string;
   _id: string;
   is_staff: boolean;
   authID: string;
@@ -20,6 +21,7 @@ interface UserRow {
   address: string;
   createdAt: string;
   flags?: IFlag[];
+  checked_in: boolean;
 }
 
 interface CheckinData {
@@ -27,9 +29,48 @@ interface CheckinData {
 }
 
 export default function CheckinTable() {
+  const [allRows, setAllRows] = useState<IVolunteer[]>([]);
   const [rows, setRows] = useState<UserRow[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedVol, setSelectedVol] = useState<IVolunteer | undefined>();
+
+  function updateRows(newVol: UserRow) {
+    // set all rows
+    let replaceIdx = -1;
+    for (let i = 0; i < allRows.length; ++i) {
+      if (allRows[i].authID == newVol.authID) {
+        replaceIdx = i;
+      }
+    }
+    if (replaceIdx != -1) {
+      setAllRows(() => [
+        ...allRows.slice(0, replaceIdx),
+        {
+          ...newVol,
+          id: newVol.authID,
+        },
+        ...allRows.slice(replaceIdx + 1),
+      ]);
+    }
+
+    // set current rows
+    replaceIdx = -1;
+    for (let i = 0; i < rows.length; ++i) {
+      if (rows[i].authID == newVol.authID) {
+        replaceIdx = i;
+      }
+    }
+    if (replaceIdx != -1) {
+      setRows(() => [
+        ...rows.slice(0, replaceIdx),
+        {
+          ...newVol,
+          id: newVol.authID,
+        },
+        ...rows.slice(replaceIdx + 1),
+      ]);
+    }
+  }
 
   async function handleCheckIn(data: CheckinData, length: number) {
     if (!selectedVol) return;
@@ -70,23 +111,14 @@ export default function CheckinTable() {
       body: JSON.stringify(tmpVol),
     });
 
-    // update client-side state variable rows
-    setRows((prev) => [
-      ...prev.filter(
-        (oldVolunteer) => oldVolunteer.authID != selectedVol.authID
-      ),
-      {
-        ...tmpVol,
-        id: tmpVol.authID,
-      },
-    ]);
+    updateRows(tmpVol);
   }
 
-  async function handleCheckOut() {
-    if (!selectedVol) return;
+  async function handleCheckOut(toCheckOut: IVolunteer) {
+    if (!toCheckOut) return;
 
     // get sessions not checked out from
-    const res = await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
+    const res = await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
       method: 'GET',
     });
     const sessions: ISession[] = (await res.json()).sessions;
@@ -109,37 +141,45 @@ export default function CheckinTable() {
         (endTime.getTime() - new Date(toUpdate.startTime).getTime()) /
         (1000 * 60 * 60);
 
-      // update session in database
-      await fetch(`/api/volunteers/${selectedVol.authID}/sessions`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          sessionId: toUpdate._id,
-          length: length,
-          checked_out: true,
-        }),
-      });
+      if (length < 0.4) {
+        if (
+          confirm(
+            'Session length is less than 15 minutes. Delete session data?'
+          )
+        ) {
+          await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
+            method: 'DELETE',
+            body: JSON.stringify({
+              sessionId: toUpdate._id,
+            }),
+          });
+        } else {
+          return;
+        }
+      } else {
+        // update session in database
+        await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            sessionId: toUpdate._id,
+            length: length,
+            checked_out: true,
+          }),
+        });
+      }
     }
 
     // set volunteer to checked out
-    const tmpVol = selectedVol;
+    const tmpVol = toCheckOut;
     tmpVol.checked_in = false;
 
     // update volunteer
-    await fetch(`/api/volunteers/${selectedVol.authID}`, {
+    await fetch(`/api/volunteers/${toCheckOut.authID}`, {
       method: 'PUT',
       body: JSON.stringify(tmpVol),
     });
 
-    // update client-side state variable rows
-    setRows((prev) => [
-      ...prev.filter(
-        (oldVolunteer) => oldVolunteer.authID != selectedVol.authID
-      ),
-      {
-        ...tmpVol,
-        id: tmpVol.authID,
-      },
-    ]);
+    updateRows(tmpVol);
   }
 
   useEffect(() => {
@@ -147,9 +187,9 @@ export default function CheckinTable() {
       const res = await fetch('/api/volunteers', {
         method: 'GET',
       });
-      const volunteers: IVolunteer[] = (await res.json()).volunteers;
+      const tmpVols: IVolunteer[] = (await res.json()).volunteers;
       const tmpRows: UserRow[] = [];
-      volunteers.forEach((volunteer) =>
+      tmpVols.forEach((volunteer) =>
         tmpRows.push({
           ...volunteer,
           id: volunteer.authID,
@@ -157,6 +197,7 @@ export default function CheckinTable() {
         })
       );
       setRows(tmpRows);
+      setAllRows(tmpRows);
     })();
   }, []);
 
@@ -175,9 +216,11 @@ export default function CheckinTable() {
               <>
                 <button
                   onClick={() => {
-                    setSelectedVol(volData);
                     if (confirm('Are you sure you want to check out?')) {
-                      handleCheckOut();
+                      setSelectedVol(() => {
+                        handleCheckOut(volData);
+                        return volData;
+                      });
                     }
                   }}
                   className="px-3 rounded-lg bg-red-600 hover:bg-red-500"
@@ -189,8 +232,8 @@ export default function CheckinTable() {
               <>
                 <button
                   onClick={() => {
+                    setSelectedVol(() => volData);
                     setModalOpen(true);
-                    setSelectedVol(volData);
                   }}
                   className="px-3 rounded-lg bg-green-600 hover:bg-green-500"
                 >
@@ -217,6 +260,8 @@ export default function CheckinTable() {
         <p className="text-3xl text-white pb-5">Check In</p>
 
         <Divider sx={{ marginBottom: '1rem', backgroundColor: 'white' }} />
+
+        <VolSearchBar volunteers={allRows} setData={setRows} />
 
         <div style={{ width: '100%' }}>
           <DataGrid

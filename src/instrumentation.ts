@@ -61,26 +61,53 @@
     }
 }*/
 
+import { IVolunteer } from '@/server/models/Volunteer';
+import { Model } from 'mongoose';
+
 export async function register() {
-  
-  async function checkOutVolunteers(VolModel, SessionModel, db) {
+  async function checkOutVolunteers(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    VolModel: Model<
+      any,
+      NonNullable<unknown>,
+      NonNullable<unknown>,
+      NonNullable<unknown>,
+      any,
+      any
+    >,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    SessionModel: Model<
+      any,
+      NonNullable<unknown>,
+      NonNullable<unknown>,
+      NonNullable<unknown>,
+      any,
+      any
+    >,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    db: () => Promise<any>
+  ) {
     await db();
     try {
-      const checkedInVolunteers = await VolModel.find({ checked_in: true }).select('authID');
+      const checkedInVolunteers = await VolModel.find({
+        checked_in: true,
+      }).select('authID');
 
       if (checkedInVolunteers.length === 0) {
         console.log('No volunteers to check out.');
         return;
       }
 
-      const authIDs = checkedInVolunteers.map((v: any) => v.authID);
+      const authIDs = checkedInVolunteers.map((v: IVolunteer) => v.authID);
 
       const checkedInSessions = await SessionModel.find({
         workedBy: { $in: authIDs },
-        checked_out: false
+        checked_out: false,
       }).select('_id');
 
-      const sessionIdsToUpdate = checkedInSessions.map(session => session._id);
+      const sessionIdsToUpdate = checkedInSessions.map(
+        (session) => session._id
+      );
 
       // Update all checked in sessions where a volunteer is checked in
       await SessionModel.updateMany(
@@ -94,9 +121,9 @@ export async function register() {
         { $set: { checked_in: false } }
       );
 
-      console.log("Successfully checkout out volunteers!");
+      console.log('Successfully checkout out volunteers!');
     } catch (err) {
-      console.log("Failed to update volunteers", err);
+      console.log('Failed to update volunteers', err);
     }
   }
 
@@ -106,12 +133,18 @@ export async function register() {
     const { sessionModel } = await import('@/server/models/Session');
     const { Volunteer } = await import('@/server/models/Volunteer');
 
-    schedule('0 16 * * *', async () => {
-      console.log(`Running automatic volunteer checkout at ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })}`);
-      await checkOutVolunteers(Volunteer, sessionModel, dbConnect);
-    }, {
-      scheduled: true,
-      timezone: "America/New_York"
-    });
+    schedule(
+      '0 16 * * *',
+      async () => {
+        console.log(
+          `Running automatic volunteer checkout at ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })}`
+        );
+        checkOutVolunteers(Volunteer, sessionModel, dbConnect);
+      },
+      {
+        scheduled: true,
+        timezone: 'America/New_York',
+      }
+    );
   }
 }

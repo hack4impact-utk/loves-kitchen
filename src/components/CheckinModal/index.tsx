@@ -47,6 +47,9 @@ const CheckinModal = (props: CheckinModalProps) => {
     if (length <= 0) {
       alert('You must provide a time in the future!');
       return;
+    } else if (length < 0.4) {
+      alert('Session lengths should be longer than 15 minutes.');
+      return;
     }
 
     setLoading((prev) => !prev);
@@ -55,6 +58,7 @@ const CheckinModal = (props: CheckinModalProps) => {
       end_time: '',
     });
     setLoading((prev) => !prev);
+    props.onClose();
   };
 
   return (
