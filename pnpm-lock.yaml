@@ -41,6 +41,9 @@ importers:
       next-qrcode:
         specifier: ^2.5.1
         version: 2.5.1(react@18.2.0)
+      nextjs-template:
+        specifier: 'file:'
+        version: file:(@babel/core@7.25.8)(@mui/system@5.16.7(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(babel-plugin-macros@3.1.0)(tailwindcss@3.4.14)
       node-cron:
         specifier: ^3.0.3
         version: 3.0.3
@@ -2559,6 +2562,9 @@ packages:
         optional: true
       sass:
         optional: true
+
+  'nextjs-template@file:':
+    resolution: {directory: '', type: directory}
 
   node-cron@3.0.3:
     resolution: {integrity: sha512-dOal67//nohNgYWb+nWmg5dkFdIwDm8EpeGYMekPMrngV3637lqnX0lbUcCtgibHTz6SEz7DAIjKvKDFYCnO1A==}
@@ -6515,6 +6521,43 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
+
+  nextjs-template@file:(@babel/core@7.25.8)(@mui/system@5.16.7(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(babel-plugin-macros@3.1.0)(tailwindcss@3.4.14):
+    dependencies:
+      '@auth0/nextjs-auth0': 3.5.0(next@14.2.15(@babel/core@7.25.8)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
+      '@emotion/react': 11.13.3(@types/react@18.2.74)(react@18.2.0)
+      '@emotion/styled': 11.13.0(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0)
+      '@mui/base': 5.0.0-beta.61(@types/react@18.2.74)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@mui/icons-material': 6.1.5(@mui/material@5.16.7(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@types/react@18.2.74)(react@18.2.0)
+      '@mui/material': 5.16.7(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@mui/x-data-grid': 7.22.2(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@mui/material@5.16.7(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@mui/system@5.16.7(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react@18.2.0))(@types/react@18.2.74)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      dotenv: 16.4.7
+      mongoose: 8.7.2
+      next: 14.2.15(@babel/core@7.25.8)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      next-qrcode: 2.5.1(react@18.2.0)
+      node-cron: 3.0.3
+      qrcode.react: 4.2.0(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tailwind-scrollbar: 3.1.0(tailwindcss@3.4.14)
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - '@aws-sdk/credential-providers'
+      - '@babel/core'
+      - '@mongodb-js/zstd'
+      - '@mui/system'
+      - '@opentelemetry/api'
+      - '@playwright/test'
+      - '@types/react'
+      - babel-plugin-macros
+      - gcp-metadata
+      - kerberos
+      - mongodb-client-encryption
+      - sass
+      - snappy
+      - socks
+      - supports-color
+      - tailwindcss
 
   node-cron@3.0.3:
     dependencies:
