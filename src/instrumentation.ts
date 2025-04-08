@@ -1,7 +1,5 @@
-import { IVolunteer } from '@/server/models/Volunteer';
-import { ISession } from '@/server/models/Session';
-
-async function randomizeCheckin() {
+// Testing purposes?
+/*async function randomizeCheckin() {
   const baseURL = process.env.AUTH0_BASE_URL;
 
   async function checkInSessions(authId: string) {
@@ -61,88 +59,59 @@ async function randomizeCheckin() {
     } else {
       console.log('Failed to fetch volunteers');
     }
-}
+}*/
 
 export async function register() {
-  const baseURL = process.env.AUTH0_BASE_URL;
   
-  async function checkOutSessions(authId: string) {
-    const response = await fetch (`${baseURL}/api/volunteers/${authId}/sessions`);
-    const data = await response.json();
+  async function checkOutVolunteers(VolModel, SessionModel, db) {
+    await db();
+    try {
+      const checkedInVolunteers = await VolModel.find({ checked_in: true }).select('authID');
 
-    if (data.success) {
-      const checkedInSesh: ISession[] = data.sessions.filter((sesh: ISession) => !sesh.checked_out);
-
-      for (const session of checkedInSesh) {
-        await fetch(`${baseURL}/api/volunteers/${authId}/sessions`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sessionId: session._id,
-              length: session.length,
-              checked_out: true
-            }),
-          })
+      if (checkedInVolunteers.length === 0) {
+        console.log('No volunteers to check out.');
+        return;
       }
 
-    } else {
-      console.log('Faliled to fetch sessions');
+      const authIDs = checkedInVolunteers.map((v: any) => v.authID);
+
+      const checkedInSessions = await SessionModel.find({
+        workedBy: { $in: authIDs },
+        checked_out: false
+      }).select('_id');
+
+      const sessionIdsToUpdate = checkedInSessions.map(session => session._id);
+
+      // Update all checked in sessions where a volunteer is checked in
+      await SessionModel.updateMany(
+        { _id: { $in: sessionIdsToUpdate } },
+        { $set: { checked_out: true } }
+      );
+
+      // Checkout all volunteers
+      await VolModel.updateMany(
+        { authID: { $in: authIDs } },
+        { $set: { checked_in: false } }
+      );
+
+      console.log("Successfully checkout out volunteers!");
+    } catch (err) {
+      console.log("Failed to update volunteers", err);
     }
-  }
-
-  async function checkOutVolunteers() {
-    const response = await fetch(`${baseURL}/api/volunteers`);
-    const data = await response.json();
-
-    if (data.success) {
-      const checkedInVols: IVolunteer[] = data.volunteers.filter((v: IVolunteer) => v.checked_in);
-
-      for (const v of checkedInVols) {
-        await checkOutSessions(v.authID);
-        await fetch(`${baseURL}/api/volunteers/${v.authID}`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              checked_in: false,
-              authID: v.authID,
-              is_staff: v.is_staff,
-              firstName: v.firstName,
-              lastName: v.lastName,
-              age: v.age,
-              email: v.email,
-              phone: v.phone,
-              address: v.address,
-            }),
-          })
-      }
-    } else {
-      console.log('Failed to fetch volunteers');
-      return [];
-    }
-
-    const updatedResponse = await fetch(`${baseURL}/api/volunteers`);
-    const updatedData = await updatedResponse.json();
-    return updatedData.volunteers;
-  }
-
-  
-  function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     const { schedule } = await import('node-cron');
-    schedule('0 * * * * *',  async () => {
-      console.log('Randomizing volunteers...');
-      //await randomizeCheckin();
-      console.log("CHECKING OUT VOLS");
-      //await sleep(20000);
-      const vols: IVolunteer[] = await checkOutVolunteers();
-      const val = vols.some(v => v.checked_in);
-      val ? console.log("FAILURE") : console.log("SUCCESS");
-      //console.log('CHECKED OUT!!');
+    const { default: dbConnect } = await import('@/utils/dbconnect');
+    const { sessionModel } = await import('@/server/models/Session');
+    const { Volunteer } = await import('@/server/models/Volunteer');
+
+    schedule('0 16 * * *', async () => {
+      console.log(`Running automatic volunteer checkout at ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })}`);
+      await checkOutVolunteers(Volunteer, sessionModel, dbConnect);
+    }, {
+      scheduled: true,
+      timezone: "America/New_York"
     });
   }
 }
