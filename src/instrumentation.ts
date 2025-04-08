@@ -66,22 +66,26 @@ import { Model } from 'mongoose';
 
 export async function register() {
   async function checkOutVolunteers(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     VolModel: Model<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any,
       NonNullable<unknown>,
       NonNullable<unknown>,
       NonNullable<unknown>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any
     >,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     SessionModel: Model<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any,
       NonNullable<unknown>,
       NonNullable<unknown>,
       NonNullable<unknown>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       any
     >,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
