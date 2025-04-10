@@ -5,35 +5,30 @@ import VolunteerDrawer from '@/components/VolunteerDrawer'; // Updated sidepage 
 import NavBar from '@/components/NavBar';
 import { IVolunteer } from '@/server/models/Volunteer';
 import theme from '@/types/colors';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { getRoles } from '@/server/actions/auth0m';
-import { useRouter } from 'next/navigation';
 import UserTable from '@/components/UserTable';
+import VerifyLayout, {
+  PageVerifyType,
+  VerifyContextType,
+} from '@/components/VerifyLayout';
 
 const Staff = () => {
-  const { user } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    const checkRoles = async () => {
-      if (user?.sub && router) {
-        const roles = await getRoles(user.sub!);
-        if (!roles.includes('Staff')) {
-          router.push('/');
-        }
-      }
-    };
-
-    if (user) {
-      checkRoles();
-    }
-  }, [user, router]);
-
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
     null
   );
   const [isDrawerOpen, setDrawerOpen] = useState(false); // Drawer state
+
+  function verify(vcontext: VerifyContextType): PageVerifyType {
+    const out: PageVerifyType = {
+      accepted: false,
+      url: '/',
+      rejectMsg: 'Invalid permissions!',
+    };
+    if (vcontext.roles && vcontext.roles.includes('Staff')) {
+      out.accepted = true;
+    }
+    return out;
+  }
 
   // Fetch volunteers from the server
   useEffect(() => {
@@ -58,36 +53,38 @@ const Staff = () => {
   };
 
   return (
-    <div style={{ backgroundColor: theme.offWhite, minHeight: '100vh' }}>
-      <NavBar />
-      <div className="flex flex-col items-center justify-center pt-[164px] pb-20 gap-10">
-        <UserTable
-          is_admin={false}
-          shows_staff={false}
-          volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
-          onView={handleViewVolunteer} // Use the drawer open function
-        />
+    <VerifyLayout verify={verify} doGetRoles={true} doGetVol={false}>
+      <div style={{ backgroundColor: theme.offWhite, minHeight: '100vh' }}>
+        <NavBar />
+        <div className="flex flex-col items-center justify-center pt-[164px] pb-20 gap-10">
+          <UserTable
+            is_admin={false}
+            shows_staff={false}
+            volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
+            onView={handleViewVolunteer} // Use the drawer open function
+          />
 
-        <UserTable
-          is_admin={false}
-          shows_staff={true}
-          volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
-          onView={handleViewVolunteer} // Use the drawer open function
-        />
+          <UserTable
+            is_admin={false}
+            shows_staff={true}
+            volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
+            onView={handleViewVolunteer} // Use the drawer open function
+          />
+        </div>
+
+        {/* Sidepage (Drawer) for Viewing Volunteer Details */}
+        {selectedVolunteer && (
+          <VolunteerDrawer
+            admin={false}
+            open={isDrawerOpen} // Controlled by state
+            onClose={() => setDrawerOpen(false)} // Close the drawer
+            volunteer={selectedVolunteer} // Pass the selected volunteer
+            setSelectedVol={setSelectedVolunteer}
+            setVolunteers={setVolunteers}
+          />
+        )}
       </div>
-
-      {/* Sidepage (Drawer) for Viewing Volunteer Details */}
-      {selectedVolunteer && (
-        <VolunteerDrawer
-          admin={false}
-          open={isDrawerOpen} // Controlled by state
-          onClose={() => setDrawerOpen(false)} // Close the drawer
-          volunteer={selectedVolunteer} // Pass the selected volunteer
-          setSelectedVol={setSelectedVolunteer}
-          setVolunteers={setVolunteers}
-        />
-      )}
-    </div>
+    </VerifyLayout>
   );
 };
 

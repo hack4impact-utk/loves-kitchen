@@ -129,7 +129,6 @@ pnpm test
 
 ## Things to fix:
 
-- prevent users from seeing anything on staff or admin page with layout
 - clicking on someone in user table shouldn't undo the search filter
 - nonstaff shouldn't be able to visit staff/checkin
 - show email in user tables? helps with multiple users
@@ -155,6 +154,7 @@ pnpm test
 
 ## Completed fixes:
 
+- prevent users from seeing anything on staff or admin page with layout
 - user page should show name of username-password users, use auth0 email if not found
 - stylize the auth0 login page
 - have link to staff/checkin and admin somewhere on site

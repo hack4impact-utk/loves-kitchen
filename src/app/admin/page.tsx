@@ -5,29 +5,24 @@ import VolunteerDrawer from '@/components/VolunteerDrawer'; // Updated sidepage 
 import NavBar from '@/components/NavBar';
 import { IVolunteer } from '@/server/models/Volunteer';
 import theme from '@/types/colors';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { getRoles } from '@/server/actions/auth0m';
-import { useRouter } from 'next/navigation';
 import UserTable from '@/components/UserTable';
+import VerifyLayout, {
+  PageVerifyType,
+  VerifyContextType,
+} from '@/components/VerifyLayout';
 
 const Admin = () => {
-  const { user } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    const checkRoles = async () => {
-      if (user?.sub && router) {
-        const roles = await getRoles(user.sub!);
-        if (!roles.includes('Admin')) {
-          router.push('/');
-        }
-      }
+  function verify(vcontext: VerifyContextType): PageVerifyType {
+    const out: PageVerifyType = {
+      accepted: false,
+      url: '/',
+      rejectMsg: 'Invalid permissions!',
     };
-
-    if (user) {
-      checkRoles();
+    if (vcontext.roles && vcontext.roles.includes('Admin')) {
+      out.accepted = true;
     }
-  }, [user, router]);
+    return out;
+  }
 
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
@@ -72,43 +67,45 @@ const Admin = () => {
   };
 
   return (
-    <div
-      className="min-h-[100vh]"
-      style={{
-        backgroundColor: theme.offWhite,
-      }}
-    >
-      <NavBar />
-      <div className="flex flex-col items-center justify-center pt-[164px] pb-20 gap-10">
-        <UserTable
-          is_admin={true}
-          shows_staff={false}
-          volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
-          onView={handleViewVolunteer} // Use the drawer open function
-          onAddUser={handleAddUser}
-        />
-
-        <UserTable
-          is_admin={true}
-          shows_staff={true}
-          volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
-          onView={handleViewVolunteer} // Use the drawer open function
-          onAddUser={handleAddUser}
-        />
-
-        {/* Sidepage (Drawer) for Viewing Volunteer Details */}
-        {selectedVolunteer && (
-          <VolunteerDrawer
-            admin={true}
-            open={isDrawerOpen} // Controlled by state
-            onClose={() => setDrawerOpen(false)} // Close the drawer
-            volunteer={selectedVolunteer} // Pass the selected volunteer
-            setSelectedVol={setSelectedVolunteer}
-            setVolunteers={setVolunteers}
+    <VerifyLayout verify={verify} doGetRoles={true} doGetVol={false}>
+      <div
+        className="min-h-[100vh]"
+        style={{
+          backgroundColor: theme.offWhite,
+        }}
+      >
+        <NavBar />
+        <div className="flex flex-col items-center justify-center pt-[164px] pb-20 gap-10">
+          <UserTable
+            is_admin={true}
+            shows_staff={false}
+            volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
+            onView={handleViewVolunteer} // Use the drawer open function
+            onAddUser={handleAddUser}
           />
-        )}
+
+          <UserTable
+            is_admin={true}
+            shows_staff={true}
+            volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
+            onView={handleViewVolunteer} // Use the drawer open function
+            onAddUser={handleAddUser}
+          />
+
+          {/* Sidepage (Drawer) for Viewing Volunteer Details */}
+          {selectedVolunteer && (
+            <VolunteerDrawer
+              admin={true}
+              open={isDrawerOpen} // Controlled by state
+              onClose={() => setDrawerOpen(false)} // Close the drawer
+              volunteer={selectedVolunteer} // Pass the selected volunteer
+              setSelectedVol={setSelectedVolunteer}
+              setVolunteers={setVolunteers}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </VerifyLayout>
   );
 };
 
