@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import lktheme from '@/types/colors';
+import NavBar from '../NavBar';
 
 export interface VerifyContextType {
   roles?: string[];
@@ -65,35 +66,42 @@ const VerifyLayout = (props: VerifyLayoutProps) => {
   return (
     <>
       {!valid && (
-        <div
-          className="w-screen h-screen flex items-center justify-center"
-          style={{ backgroundColor: lktheme.offWhite }}
-        >
-          {/* If loading, show spinning wheel */}
-          <div className="animate-spin opacity-60">
-            <Image
-              width={80}
-              height={80}
-              alt="preparing QR code..."
-              src="/loading.svg"
-            />
+        <>
+          <NavBar />
+          <div
+            className="w-screen h-screen flex items-center justify-center"
+            style={{ backgroundColor: lktheme.offWhite }}
+          >
+            {/* If loading, show spinning wheel */}
+            <div className="animate-spin opacity-60">
+              <Image
+                width={80}
+                height={80}
+                alt="preparing QR code..."
+                src="/loading.svg"
+                priority
+              />
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {valid?.accepted && props.children}
 
       {valid && !valid.accepted && (
-        <div
-          className="w-screen h-screen flex items-center justify-center"
-          style={{ backgroundColor: lktheme.offWhite }}
-        >
-          {/* If denied, show some error display */}
-          <div className="flex flex-col justify-center items-center gap-2 border-red-500 p-3 rounded-lg text-white">
-            <ErrorOutlineIcon color="error" />
-            <p className="w-fit text-red-600">{valid?.rejectMsg}</p>
+        <>
+          <NavBar />
+          <div
+            className="w-screen h-screen flex items-center justify-center"
+            style={{ backgroundColor: lktheme.offWhite }}
+          >
+            {/* If denied, show some error display */}
+            <div className="flex flex-col justify-center items-center gap-2 border-red-500 p-3 rounded-lg text-white">
+              <ErrorOutlineIcon color="error" />
+              <p className="w-fit text-red-600">{valid?.rejectMsg}</p>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

@@ -7,7 +7,7 @@ export default function RegisterPage() {
     <>
       <NavBar />
       <div
-        className="flex flex-col justify-center items-center min-h-screen w-screen pb-[100px] xl:pb-0"
+        className="flex flex-col justify-center items-center min-h-full w-full pb-[100px]"
         style={{
           backgroundColor: lktheme.offWhite,
         }}

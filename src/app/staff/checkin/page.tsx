@@ -32,6 +32,9 @@ const checkin = () => {
         <NavBar />
 
         <div className="flex flex-col items-center justify-center pt-[164px] pb-20 gap-10">
+          <p className="text-xl" style={{ color: lktheme.brown }}>
+            New here? Scan this QR code!
+          </p>
           <DailyQR />
           <div className="w-[600px]">
             <CheckinTable />

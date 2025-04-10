@@ -129,15 +129,6 @@ pnpm test
 
 ## Things to fix:
 
-- nonstaff shouldn't be able to visit staff/checkin
-- show email in user tables? helps with multiple users
-- user/register should prevent people from registering an email already in the database
-- deleting yourself should automatically log you out, lol
-- tell users above the QR code in staff page to scan if it's their first time
-- disclaimer legal stuff at bottom of register page
-- hour minimum length for sessions
-- delete staff/volunteer confirmation
-
 - replace age with emergency contact in volunteer model and registration form
 
   - display emergency contact in staff page
@@ -153,6 +144,14 @@ pnpm test
 
 ## Completed fixes:
 
+- delete staff/volunteer confirmation
+- hour minimum length for sessions
+- disclaimer legal stuff at bottom of register page
+- tell users above the QR code in staff page to scan if it's their first time
+- deleting yourself should automatically log you out, lol
+- user/register should prevent people from registering an email already in the database
+- show email in user tables (helps with multiple users)
+- nonstaff shouldn't be able to visit staff/checkin
 - clicking on someone in user table shouldn't undo the search filter
 - prevent users from seeing anything on staff or admin page with layout
 - user page should show name of username-password users, use auth0 email if not found

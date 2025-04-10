@@ -31,6 +31,7 @@ const DailyQR = () => {
                 height={80}
                 alt="preparing QR code..."
                 src="/loading.svg"
+                priority
               />
             </div>
           </div>

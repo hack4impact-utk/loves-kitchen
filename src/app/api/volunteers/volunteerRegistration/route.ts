@@ -11,12 +11,24 @@ export async function POST(req: Request) {
       toAdd.is_staff = true;
     }
 
-    // check if volunteer already exists
-    const search = await Volunteer.find({
+    // check if volunteer already exists by authID
+    let search = await Volunteer.find({
       authID: toAdd.authID,
     });
     if (search.length == 1) {
       console.error('Registered volunteer already exists.');
+      return NextResponse.json(
+        { message: 'Internal server error' },
+        { status: 500 }
+      );
+    }
+
+    // check if volunteer already exists by email
+    search = await Volunteer.find({
+      email: toAdd.email,
+    });
+    if (search.length == 1) {
+      console.error('Email already exists.');
       return NextResponse.json(
         { message: 'Internal server error' },
         { status: 500 }

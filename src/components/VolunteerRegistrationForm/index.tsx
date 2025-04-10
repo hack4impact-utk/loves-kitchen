@@ -15,6 +15,7 @@ const VolunteerRegistrationForm = () => {
     phone: '',
     email: '',
   });
+  const [holdHarmless, setHoldHarmless] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -86,6 +87,11 @@ const VolunteerRegistrationForm = () => {
       }
     });
 
+    // check if they signed the agreement
+    if (!holdHarmless) {
+      newErrors['holdHarmless'] = 'This field is required';
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -128,7 +134,7 @@ const VolunteerRegistrationForm = () => {
 
   return (
     <div
-      className="max-w-[400px] w-[87vw] text-white shadow-lg mt-[160px] lg:mt-[80px]"
+      className="max-w-[400px] w-[87vw] text-white shadow-lg mt-[160px]"
       style={{
         padding: '20px',
         backgroundColor: lktheme.brown,
@@ -168,6 +174,36 @@ const VolunteerRegistrationForm = () => {
           </div>
         )
       )}
+
+      {/* Exculpatory Hold Harmless Agreement */}
+      <div className="flex flex-col items-center gap-2 my-8">
+        <p>Exculpatory Hold Harmless Agreement</p>
+        <p className="text-sm">
+          I understand that I am working at The Love Kitchen as a volunteer by
+          permission. In consideration for being permitted to work, I hereby
+          agree in advance to exculpate, hold harmless, and release The Love
+          Kitchen, Inc., its directors, officers, and employees from any
+          liability to me if I am injured in any way—including through
+          negligence—on The Love Kitchen property. I understand that I can never
+          recover money damages from The Love Kitchen, Inc., or its directors,
+          officers, or employees should I in the future be injured on The Love
+          Kitchen property.
+        </p>
+        <div className="flex gap-5">
+          <input
+            type="checkbox"
+            checked={holdHarmless}
+            onChange={(e) => setHoldHarmless(e.target.checked)}
+          />
+          <p>
+            I have read and understand this agreement. I sign it voluntarily.
+          </p>
+        </div>
+        {errors['holdHarmless'] && (
+          <p className="text-[#ff4f4f]">{errors['holdHarmless']}</p>
+        )}
+      </div>
+
       <button
         onClick={handleSubmit}
         style={{

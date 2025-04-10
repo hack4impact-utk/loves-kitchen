@@ -141,11 +141,9 @@ export default function CheckinTable() {
         (endTime.getTime() - new Date(toUpdate.startTime).getTime()) /
         (1000 * 60 * 60);
 
-      if (length < 0.4) {
+      if (length < 1) {
         if (
-          confirm(
-            'Session length is less than 15 minutes. Delete session data?'
-          )
+          confirm('Session length is less than 1 hour. Delete session data?')
         ) {
           await fetch(`/api/volunteers/${toCheckOut.authID}/sessions`, {
             method: 'DELETE',

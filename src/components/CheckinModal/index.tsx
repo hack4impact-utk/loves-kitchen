@@ -47,8 +47,8 @@ const CheckinModal = (props: CheckinModalProps) => {
     if (length <= 0) {
       alert('You must provide a time in the future!');
       return;
-    } else if (length < 0.4) {
-      alert('Session lengths should be longer than 15 minutes.');
+    } else if (length < 1) {
+      alert('Session lengths should be longer than 1 hour.');
       return;
     }
 

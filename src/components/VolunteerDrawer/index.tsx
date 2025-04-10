@@ -11,6 +11,7 @@ import UserSeshStats from '../UserSeshStats';
 import VolDisplay from '../VolDisplay';
 import FlagDisplay from '../FlagDisplay';
 import { UserRow } from '@/app/staff/page';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 interface VolunteerDrawerProps {
   admin: boolean;
@@ -33,6 +34,7 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
 }) => {
   const [isFlagModalOpen, setFlagModalOpen] = useState(false);
   const [sessions, setSessions] = useState<ISession[]>([]);
+  const { user } = useUser();
 
   // Delete a session and actively update session list
   const deleteSession = async (toDelete: ISession): Promise<void> => {
@@ -77,6 +79,10 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   };
 
   const deleteVolunteer = async (volunteer: IVolunteer): Promise<void> => {
+    if (!confirm(`Delete ${volunteer.firstName} ${volunteer.lastName}?`)) {
+      return;
+    }
+
     await fetch(`/api/volunteers/${volunteer.authID}`, {
       method: 'DELETE',
     });
@@ -272,6 +278,10 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
                   <button
                     onClick={() => deleteVolunteer(volunteer)}
                     className="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-lg text-white"
+                    style={{
+                      opacity: user && user.email == volunteer.email ? 0.6 : 1,
+                    }}
+                    disabled={user && user.email == volunteer.email}
                   >
                     Delete
                   </button>

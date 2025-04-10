@@ -43,10 +43,10 @@ export default function UserTable({
   const columns: GridColDef[] = [
     { field: 'firstName', headerName: 'First', width: 100 },
     { field: 'lastName', headerName: 'Last', width: 100 },
-    { field: 'age', headerName: 'Age', width: 60 },
+    { field: 'email', headerName: 'Email', width: 160 },
     { field: 'phone', headerName: 'Phone', width: 150 },
     { field: 'address', headerName: 'Address', width: 150 },
-    { field: 'createdAt', headerName: 'Date Created', width: 200 },
+    { field: 'createdAt', headerName: 'Date Created', width: 150 },
     {
       field: 'flags',
       headerName: 'Flags',
@@ -72,18 +72,18 @@ export default function UserTable({
     {
       field: 'checked_in',
       headerName: 'Checked In',
-      width: 200,
+      width: 150,
       renderCell: (params) => {
         const volData: IVolunteer = params.row;
         return (
           <div className="flex items-center justify-center h-full">
             {volData.checked_in ? (
               <div className="px-3 rounded-lg bg-green-600 hover:bg-green-500">
-                <p className="leading-[30px]">Checked In</p>
+                <p className="leading-[30px]">True</p>
               </div>
             ) : (
               <div className="px-3 rounded-lg bg-red-600 hover:bg-red-500">
-                <p className="leading-[30px]">Checked Out</p>
+                <p className="leading-[30px]">False</p>
               </div>
             )}
           </div>
