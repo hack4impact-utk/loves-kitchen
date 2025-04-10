@@ -126,3 +126,38 @@ pnpm test
 - `src/services`: Contains functionality for interacting with external data sources (e.g. APIs)
 - `src/types`: Contains TypeScript types and interfaces used across the project
 - `src/utils`: Contains utility functions used across the project
+
+## Things to fix:
+
+- prevent users from seeing anything on staff or admin page with layout
+- clicking on someone in user table shouldn't undo the search filter
+- nonstaff shouldn't be able to visit staff/checkin
+- show email in user tables? helps with multiple users
+- user/register should prevent people from registering an email already in the database
+- deleting yourself should automatically log you out, lol
+- tell users above the QR code in staff page to scan if it's their first time
+- disclaimer legal stuff at bottom of register page
+- hour minimum length for sessions
+- delete staff/volunteer confirmation
+
+- replace age with emergency contact in volunteer model and registration form
+
+  - display emergency contact in staff page
+  - allow for it to be changed by users
+
+- total hours from all or one volunteer in time block (only on admin)
+
+  - kinda like the volunteer search bar, but two fields
+  - update the two boxes "Total Hours" and "Avg"
+
+- add tablet role to prevent access to staff page
+  - cannot visit user page either
+
+## Completed fixes:
+
+- user page should show name of username-password users, use auth0 email if not found
+- stylize the auth0 login page
+- have link to staff/checkin and admin somewhere on site
+- don't allow for setting password of someone that signed in via google auth
+- basic verification for phone number and email in user/register
+- basic verification for phone number in user page

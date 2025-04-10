@@ -69,10 +69,10 @@ const UserInfo = () => {
               className="rounded-full m-5"
             />
             <Typography variant="h5" className="mt-2 text-2xl text-white">
-              {user.name}
+              {vol ? `${vol.firstName} ${vol.lastName}` : user.name}
             </Typography>
             <Typography variant="body1" className="text-[#a7a7a7]">
-              {user.email}
+              {vol ? vol.email : user.email}
             </Typography>
 
             {/* Update the address and phone number? */}

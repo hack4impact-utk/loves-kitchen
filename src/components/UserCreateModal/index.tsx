@@ -104,13 +104,27 @@ const UserCreateModal = (props: UserCreateModalProps) => {
               onChange={handleChange}
               fullWidth
             />
-            <TextField
-              label="Password"
-              name="password"
-              value={data.password}
-              onChange={handleChange}
-              fullWidth
-            />
+            <div>
+              <TextField
+                label="Password"
+                name="password"
+                value={data.password}
+                onChange={handleChange}
+                fullWidth
+                disabled={
+                  props.is_updater &&
+                  props.volunteer?.authID.slice(0, 13) == 'google-oauth2'
+                }
+              />
+              {props.is_updater &&
+                props.volunteer?.authID.slice(0, 13) == 'google-oauth2' && (
+                  <>
+                    <p className="text-orange-500">
+                      * Password modification disabled for Google users
+                    </p>
+                  </>
+                )}
+            </div>
             <TextField
               label="First Name"
               name="firstName"

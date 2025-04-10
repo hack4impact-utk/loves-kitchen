@@ -11,6 +11,7 @@ import BurgerDrawer from '../BurgerDrawer';
 import lktheme from '@/types/colors';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useMediaQuery } from '@mui/material';
+import OtherLinks from '../OtherLinks';
 
 export default function ButtonAppBar() {
   const { user, error, isLoading } = useUser();
@@ -103,15 +104,13 @@ export default function ButtonAppBar() {
           >
             {!isMobile && (
               <Box sx={{ display: 'flex', gap: 2, paddingLeft: 46 }}>
-                <Button color="inherit" href="/user" sx={{ color: 'white' }}>
-                  user
-                </Button>
-                <Button color="inherit" href="/staff" sx={{ color: 'white' }}>
-                  staff
-                </Button>
                 <Button color="inherit" href="/" sx={{ color: 'white' }}>
                   home
                 </Button>
+                <Button color="inherit" href="/user" sx={{ color: 'white' }}>
+                  user
+                </Button>
+                <OtherLinks />
               </Box>
             )}
 

@@ -58,11 +58,31 @@ const VolunteerRegistrationForm = () => {
 
     e.preventDefault();
 
+    // verify fields
     const newErrors: Record<string, string> = {};
     Object.keys(formData).forEach((key) => {
-      if (!formData[key as keyof typeof formData].trim()) {
+      const entry = formData[key as keyof typeof formData].trim();
+
+      // make sure none are empty
+      if (!entry) {
         newErrors[key] =
           `${key[0].toLocaleUpperCase() + getDisplayLabel(key).toLocaleLowerCase().slice(1)} is required`;
+      }
+
+      // use REGEX verification for emails and phone numbers
+      if (key == 'phone') {
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(entry)) {
+          newErrors[key] = 'Invalid phone number format. (Ex: 0123456789)';
+        }
+      }
+
+      if (key == 'email') {
+        const phoneRegex =
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!entry.toLowerCase().match(phoneRegex)) {
+          newErrors[key] = 'Invalid email format. (Ex: name@example.com)';
+        }
       }
     });
 
