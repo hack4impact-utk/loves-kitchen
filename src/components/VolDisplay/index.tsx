@@ -2,14 +2,14 @@
 
 import { IVolunteer, IVolunteerCreate } from '@/server/models/Volunteer';
 import lktheme from '@/types/colors';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import UserCreateModal from '../UserCreateModal';
 
 interface VolDisplayProps {
   volunteer: IVolunteer;
   admin: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setVolunteer: Dispatch<SetStateAction<IVolunteer | null>>;
+  setVolunteer: (vol: IVolunteer) => void;
 }
 
 const VolDisplay = (props: VolDisplayProps) => {

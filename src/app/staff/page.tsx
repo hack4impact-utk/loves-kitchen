@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import VolunteerDrawer from '@/components/VolunteerDrawer'; // Updated sidepage component
 import NavBar from '@/components/NavBar';
-import { IVolunteer } from '@/server/models/Volunteer';
+import { IFlag, IVolunteer } from '@/server/models/Volunteer';
 import theme from '@/types/colors';
 import UserTable from '@/components/UserTable';
 import VerifyLayout, {
@@ -11,8 +11,24 @@ import VerifyLayout, {
   VerifyContextType,
 } from '@/components/VerifyLayout';
 
+export interface UserRow {
+  id: string;
+  _id: string;
+  is_staff: boolean;
+  authID: string;
+  firstName: string;
+  lastName: string;
+  age: number;
+  email: string;
+  phone: string;
+  address: string;
+  createdAt: string;
+  flags?: IFlag[];
+}
+
 const Staff = () => {
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
+  const [newRows, setNewRows] = useState<UserRow[]>([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
     null
   );
@@ -37,6 +53,13 @@ const Staff = () => {
       const data = await response.json();
       if (data.success) {
         setVolunteers(data.volunteers);
+        setNewRows(
+          data.volunteers.map((row: IVolunteer) => ({
+            ...row,
+            id: row.authID,
+            createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
+          }))
+        );
       } else {
         console.error('Failed to fetch volunteers:', data.error);
       }
@@ -60,14 +83,18 @@ const Staff = () => {
           <UserTable
             is_admin={false}
             shows_staff={false}
-            volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
+            volunteers={volunteers}
+            rows={newRows}
+            setRows={setNewRows}
             onView={handleViewVolunteer} // Use the drawer open function
           />
 
           <UserTable
             is_admin={false}
             shows_staff={true}
-            volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
+            volunteers={volunteers}
+            rows={newRows}
+            setRows={setNewRows}
             onView={handleViewVolunteer} // Use the drawer open function
           />
         </div>
@@ -81,6 +108,7 @@ const Staff = () => {
             volunteer={selectedVolunteer} // Pass the selected volunteer
             setSelectedVol={setSelectedVolunteer}
             setVolunteers={setVolunteers}
+            setRows={setNewRows}
           />
         )}
       </div>

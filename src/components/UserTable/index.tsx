@@ -1,42 +1,32 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { IFlag, IVolunteer } from '@/server/models/Volunteer';
+import { IVolunteer } from '@/server/models/Volunteer';
 import lktheme, { browntable, cyantable } from '@/types/colors';
 import { Divider, IconButton } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import UserCreateModal from '../UserCreateModal';
 import FlagIcon from '@mui/icons-material/Flag';
 import VolSearchBar from '../VolSearchBar';
+import { UserRow } from '@/app/staff/page';
 
 interface UserTableProps {
   is_admin: boolean;
   shows_staff: boolean;
   volunteers: IVolunteer[];
+  rows: UserRow[];
+  setRows: React.Dispatch<React.SetStateAction<UserRow[]>>;
   onView: (volunteer: IVolunteer) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onAddUser?: (data: any) => Promise<void>;
-}
-
-interface UserRow {
-  id: string;
-  _id: string;
-  is_staff: boolean;
-  authID: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-  email: string;
-  phone: string;
-  address: string;
-  createdAt: string;
-  flags?: IFlag[];
 }
 
 export default function UserTable({
   is_admin,
   shows_staff,
   volunteers,
+  rows,
+  setRows,
   onView,
   onAddUser,
 }: UserTableProps) {
@@ -49,19 +39,6 @@ export default function UserTable({
   };
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [rows, setRows] = useState<UserRow[]>([]);
-
-  useEffect(() => {
-    const tmpRows: UserRow[] = [];
-    volunteers.forEach((volunteer) =>
-      tmpRows.push({
-        ...volunteer,
-        id: volunteer.authID,
-        createdAt: new Date(volunteer.createdAt).toLocaleDateString('en-US'),
-      })
-    );
-    setRows(tmpRows);
-  }, [volunteers]);
 
   const columns: GridColDef[] = [
     { field: 'firstName', headerName: 'First', width: 100 },
@@ -179,7 +156,9 @@ export default function UserTable({
             }}
           />
           <DataGrid
-            rows={rows}
+            rows={rows.filter((row) =>
+              shows_staff ? row.is_staff : !row.is_staff
+            )}
             columns={columns}
             onRowClick={(params) => {
               console.log('Row clicked:', params.row);

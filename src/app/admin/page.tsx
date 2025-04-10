@@ -10,6 +10,7 @@ import VerifyLayout, {
   PageVerifyType,
   VerifyContextType,
 } from '@/components/VerifyLayout';
+import { UserRow } from '../staff/page';
 
 const Admin = () => {
   function verify(vcontext: VerifyContextType): PageVerifyType {
@@ -25,6 +26,7 @@ const Admin = () => {
   }
 
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
+  const [newRows, setNewRows] = useState<UserRow[]>([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
     null
   );
@@ -37,6 +39,13 @@ const Admin = () => {
       const data = await response.json();
       if (data.success) {
         setVolunteers(data.volunteers);
+        setNewRows(
+          data.volunteers.map((row: IVolunteer) => ({
+            ...row,
+            id: row.authID,
+            createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
+          }))
+        );
       } else {
         console.error('Failed to fetch volunteers:', data.error);
       }
@@ -79,7 +88,9 @@ const Admin = () => {
           <UserTable
             is_admin={true}
             shows_staff={false}
-            volunteers={volunteers.filter((volunteer) => !volunteer.is_staff)}
+            volunteers={volunteers}
+            rows={newRows}
+            setRows={setNewRows}
             onView={handleViewVolunteer} // Use the drawer open function
             onAddUser={handleAddUser}
           />
@@ -87,7 +98,9 @@ const Admin = () => {
           <UserTable
             is_admin={true}
             shows_staff={true}
-            volunteers={volunteers.filter((volunteer) => volunteer.is_staff)}
+            volunteers={volunteers}
+            rows={newRows}
+            setRows={setNewRows}
             onView={handleViewVolunteer} // Use the drawer open function
             onAddUser={handleAddUser}
           />
@@ -101,6 +114,7 @@ const Admin = () => {
               volunteer={selectedVolunteer} // Pass the selected volunteer
               setSelectedVol={setSelectedVolunteer}
               setVolunteers={setVolunteers}
+              setRows={setNewRows}
             />
           )}
         </div>

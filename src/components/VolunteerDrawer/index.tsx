@@ -10,6 +10,7 @@ import lktheme from '@/types/colors';
 import UserSeshStats from '../UserSeshStats';
 import VolDisplay from '../VolDisplay';
 import FlagDisplay from '../FlagDisplay';
+import { UserRow } from '@/app/staff/page';
 
 interface VolunteerDrawerProps {
   admin: boolean;
@@ -18,6 +19,7 @@ interface VolunteerDrawerProps {
   volunteer: IVolunteer;
   setSelectedVol: React.Dispatch<React.SetStateAction<IVolunteer | null>>;
   setVolunteers: React.Dispatch<React.SetStateAction<IVolunteer[]>>;
+  setRows: React.Dispatch<React.SetStateAction<UserRow[]>>;
 }
 
 const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
@@ -27,6 +29,7 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   volunteer,
   setSelectedVol,
   setVolunteers,
+  setRows,
 }) => {
   const [isFlagModalOpen, setFlagModalOpen] = useState(false);
   const [sessions, setSessions] = useState<ISession[]>([]);
@@ -56,6 +59,13 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
         ...prev.filter((vol) => vol.authID != volunteer.authID),
         tmpVol,
       ]);
+      setRows((prev) => [
+        ...prev.filter((vol) => vol.authID != volunteer.authID),
+        {
+          ...tmpVol,
+          id: tmpVol._id,
+        },
+      ]);
     }
 
     if (data.success) {
@@ -72,6 +82,9 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     });
     setVolunteers((prev) =>
       prev.filter((filterVol) => filterVol.authID != volunteer.authID)
+    );
+    setRows((prev) =>
+      prev.filter((filterRow) => filterRow.authID != volunteer.authID)
     );
     setSelectedVol(null);
   };
@@ -90,6 +103,13 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
       ...prev.filter((oldVolunteer) => oldVolunteer.authID != volunteer.authID),
       putData,
     ]);
+    setRows((prev) => [
+      ...prev.filter((oldRow) => oldRow.authID != volunteer.authID),
+      {
+        ...putData,
+        id: putData._id,
+      },
+    ]);
   };
 
   const demoteVolunteer = async (volunteer: IVolunteer): Promise<void> => {
@@ -105,6 +125,13 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     setVolunteers((prev) => [
       ...prev.filter((oldVolunteer) => oldVolunteer.authID != volunteer.authID),
       putData,
+    ]);
+    setRows((prev) => [
+      ...prev.filter((oldRow) => oldRow.authID != volunteer.authID),
+      {
+        ...putData,
+        id: putData._id,
+      },
     ]);
   };
 
@@ -144,10 +171,17 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     })();
   }, [volunteer]);
 
-  const updateVolunteerFlags = (updatedVolunteer: IVolunteer) => {
+  const updateVolunteer = (updatedVolunteer: IVolunteer) => {
     setVolunteers((prev) =>
       prev.map((vol) =>
         vol._id === updatedVolunteer._id ? updatedVolunteer : vol
+      )
+    );
+    setRows((prev) =>
+      prev.map((row) =>
+        row._id === updatedVolunteer._id
+          ? { ...updatedVolunteer, id: updatedVolunteer._id }
+          : row
       )
     );
     setSelectedVol(updatedVolunteer);
@@ -159,7 +193,7 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
         open={isFlagModalOpen}
         handleClose={() => setFlagModalOpen(false)}
         volunteer={volunteer}
-        updateVolunteer={updateVolunteerFlags}
+        updateVolunteer={updateVolunteer}
       />
 
       <Drawer anchor="left" open={open} onClose={onClose}>
@@ -179,7 +213,7 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
             <VolDisplay
               volunteer={volunteer}
               admin={admin}
-              setVolunteer={setSelectedVol}
+              setVolunteer={(vol: IVolunteer) => updateVolunteer(vol)}
             />
 
             <Divider sx={{ my: 2 }} />
