@@ -150,7 +150,7 @@ pnpm test
 - tell users above the QR code in staff page to scan if it's their first time
 - deleting yourself should automatically log you out, lol
 - user/register should prevent people from registering an email already in the database
-- show email in user tables (helps with multiple users)
+- show email in user tables (helps with multiple users of same name)
 - nonstaff shouldn't be able to visit staff/checkin
 - clicking on someone in user table shouldn't undo the search filter
 - prevent users from seeing anything on staff or admin page with layout
