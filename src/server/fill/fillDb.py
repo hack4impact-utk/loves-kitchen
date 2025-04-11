@@ -79,7 +79,6 @@ def main():
 
         # Generate authid, age, creation date, and flags
         authID = f"{email.split('@')[0]}.id"
-        age = random.randint(16, 75)
         createdAt = random_datetime("4/16/2004 1:30 PM", "10/13/2024 4:50 AM", '%m/%d/%Y %I:%M %p', random.random())
 
         # Use Faker to generate phone number and address
@@ -93,7 +92,7 @@ def main():
             "authID": authID,
             "firstName": first_name,
             "lastName": last_name,
-            "age": age,
+            "emergencyContact": str(random.randint(1000000000, 9999999999)),
             "email": email,
             "phone": phone,
             "address": address,

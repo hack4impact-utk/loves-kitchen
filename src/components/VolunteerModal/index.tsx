@@ -82,7 +82,7 @@ export default function VolunteerModal({
           General Information
         </Typography>
         <Typography sx={{ mt: 1 }}>
-          <strong>Age:</strong> {volunteer.age}
+          <strong>Emergency Contact:</strong> {volunteer.emergencyContact}
         </Typography>
         <Typography sx={{ mt: 1 }}>
           <strong>Account Created:</strong>{' '}

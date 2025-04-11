@@ -15,7 +15,7 @@ interface UserRow {
   authID: string;
   firstName: string;
   lastName: string;
-  age: number;
+  emergencyContact: string;
   email: string;
   phone: string;
   address: string;

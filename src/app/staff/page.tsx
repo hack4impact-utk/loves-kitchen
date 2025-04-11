@@ -18,7 +18,7 @@ export interface UserRow {
   authID: string;
   firstName: string;
   lastName: string;
-  age: number;
+  emergencyContact: string;
   email: string;
   phone: string;
   address: string;
@@ -28,7 +28,8 @@ export interface UserRow {
 
 const Staff = () => {
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
-  const [newRows, setNewRows] = useState<UserRow[]>([]);
+  const [userRows, setUserRows] = useState<UserRow[]>([]);
+  const [staffRows, setStaffRows] = useState<UserRow[]>([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
     null
   );
@@ -53,12 +54,23 @@ const Staff = () => {
       const data = await response.json();
       if (data.success) {
         setVolunteers(data.volunteers);
-        setNewRows(
-          data.volunteers.map((row: IVolunteer) => ({
-            ...row,
-            id: row.authID,
-            createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
-          }))
+        setUserRows(
+          data.volunteers
+            .filter((vol: IVolunteer) => !vol.is_staff)
+            .map((row: IVolunteer) => ({
+              ...row,
+              id: row.authID,
+              createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
+            }))
+        );
+        setStaffRows(
+          data.volunteers
+            .filter((vol: IVolunteer) => vol.is_staff)
+            .map((row: IVolunteer) => ({
+              ...row,
+              id: row.authID,
+              createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
+            }))
         );
       } else {
         console.error('Failed to fetch volunteers:', data.error);
@@ -84,8 +96,8 @@ const Staff = () => {
             is_admin={false}
             shows_staff={false}
             volunteers={volunteers}
-            rows={newRows}
-            setRows={setNewRows}
+            rows={userRows}
+            setRows={setUserRows}
             onView={handleViewVolunteer} // Use the drawer open function
           />
 
@@ -93,8 +105,8 @@ const Staff = () => {
             is_admin={false}
             shows_staff={true}
             volunteers={volunteers}
-            rows={newRows}
-            setRows={setNewRows}
+            rows={staffRows}
+            setRows={setStaffRows}
             onView={handleViewVolunteer} // Use the drawer open function
           />
         </div>
@@ -108,7 +120,8 @@ const Staff = () => {
             volunteer={selectedVolunteer} // Pass the selected volunteer
             setSelectedVol={setSelectedVolunteer}
             setVolunteers={setVolunteers}
-            setRows={setNewRows}
+            setUserRows={setUserRows}
+            setStaffRows={setStaffRows}
           />
         )}
       </div>

@@ -26,7 +26,8 @@ const Admin = () => {
   }
 
   const [volunteers, setVolunteers] = useState<IVolunteer[]>([]);
-  const [newRows, setNewRows] = useState<UserRow[]>([]);
+  const [userRows, setUserRows] = useState<UserRow[]>([]);
+  const [staffRows, setStaffRows] = useState<UserRow[]>([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState<IVolunteer | null>(
     null
   );
@@ -39,12 +40,23 @@ const Admin = () => {
       const data = await response.json();
       if (data.success) {
         setVolunteers(data.volunteers);
-        setNewRows(
-          data.volunteers.map((row: IVolunteer) => ({
-            ...row,
-            id: row.authID,
-            createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
-          }))
+        setUserRows(
+          data.volunteers
+            .filter((vol: IVolunteer) => !vol.is_staff)
+            .map((row: IVolunteer) => ({
+              ...row,
+              id: row.authID,
+              createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
+            }))
+        );
+        setStaffRows(
+          data.volunteers
+            .filter((vol: IVolunteer) => vol.is_staff)
+            .map((row: IVolunteer) => ({
+              ...row,
+              id: row.authID,
+              createdAt: new Date(row.createdAt).toLocaleDateString('en-US'),
+            }))
         );
       } else {
         console.error('Failed to fetch volunteers:', data.error);
@@ -71,7 +83,25 @@ const Admin = () => {
     if (data) {
       user.authID = data.authID;
       user.createdAt = data.createdAt;
-      setVolunteers((prev) => [...prev, user]);
+      setVolunteers((prev) => [user, ...prev]);
+
+      if (user.is_staff) {
+        setStaffRows((prev) => [
+          {
+            ...user,
+            id: user.authID,
+          },
+          ...prev,
+        ]);
+      } else {
+        setUserRows((prev) => [
+          {
+            ...user,
+            id: user.authID,
+          },
+          ...prev,
+        ]);
+      }
     }
   };
 
@@ -89,8 +119,8 @@ const Admin = () => {
             is_admin={true}
             shows_staff={false}
             volunteers={volunteers}
-            rows={newRows}
-            setRows={setNewRows}
+            rows={userRows}
+            setRows={setUserRows}
             onView={handleViewVolunteer} // Use the drawer open function
             onAddUser={handleAddUser}
           />
@@ -99,8 +129,8 @@ const Admin = () => {
             is_admin={true}
             shows_staff={true}
             volunteers={volunteers}
-            rows={newRows}
-            setRows={setNewRows}
+            rows={staffRows}
+            setRows={setStaffRows}
             onView={handleViewVolunteer} // Use the drawer open function
             onAddUser={handleAddUser}
           />
@@ -114,7 +144,8 @@ const Admin = () => {
               volunteer={selectedVolunteer} // Pass the selected volunteer
               setSelectedVol={setSelectedVolunteer}
               setVolunteers={setVolunteers}
-              setRows={setNewRows}
+              setUserRows={setUserRows}
+              setStaffRows={setStaffRows}
             />
           )}
         </div>

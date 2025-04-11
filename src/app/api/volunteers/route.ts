@@ -80,7 +80,7 @@ export const POST = async function (req: NextRequest) {
     authID: addedUser.user_id,
     firstName: addedUser.given_name,
     lastName: addedUser.family_name,
-    age: body.age,
+    emergencyContact: body.emergencyContact,
     email: addedUser.email,
     phone: body.phone,
     address: body.address,

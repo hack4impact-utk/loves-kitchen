@@ -10,7 +10,7 @@ const VolunteerRegistrationForm = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    age: '',
+    emergencyContact: '',
     address: '',
     phone: '',
     email: '',
@@ -119,7 +119,7 @@ const VolunteerRegistrationForm = () => {
         setFormData({
           firstName: '',
           lastName: '',
-          age: '',
+          emergencyContact: '',
           address: '',
           phone: '',
           email: '',
@@ -142,43 +142,42 @@ const VolunteerRegistrationForm = () => {
       }}
     >
       <p className="text-lg mb-4">Volunteer Registration</p>
-      {['firstName', 'lastName', 'age', 'address', 'phone', 'email'].map(
-        (field) => (
-          <div key={field} style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', marginBottom: '8px' }}>
-              {getDisplayLabel(field)}
-            </label>
-            <input
-              type={
-                field === 'age'
-                  ? 'number'
-                  : field === 'email'
-                    ? 'email'
-                    : 'text'
-              }
-              name={field}
-              value={formData[field as keyof typeof formData]}
-              onChange={handleChange}
-              style={{
-                color: 'black',
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
-              required
-            />
-            {errors[field] && (
-              <span style={{ color: '#ff4f4f' }}>{errors[field]}</span>
-            )}
-          </div>
-        )
-      )}
+      {[
+        'firstName',
+        'lastName',
+        'emergencyContact',
+        'address',
+        'phone',
+        'email',
+      ].map((field) => (
+        <div key={field} style={{ marginBottom: '16px' }}>
+          <label style={{ display: 'block', marginBottom: '8px' }}>
+            {getDisplayLabel(field)}
+          </label>
+          <input
+            type={field === 'email' ? 'email' : 'text'}
+            name={field}
+            value={formData[field as keyof typeof formData]}
+            onChange={handleChange}
+            style={{
+              color: 'black',
+              width: '100%',
+              padding: '8px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+            }}
+            required
+          />
+          {errors[field] && (
+            <span style={{ color: '#ff4f4f' }}>{errors[field]}</span>
+          )}
+        </div>
+      ))}
 
       {/* Exculpatory Hold Harmless Agreement */}
       <div className="flex flex-col items-center gap-2 my-8">
         <p>Exculpatory Hold Harmless Agreement</p>
-        <p className="text-sm">
+        <p className="text-sm text-neutral-300">
           I understand that I am working at The Love Kitchen as a volunteer by
           permission. In consideration for being permitted to work, I hereby
           agree in advance to exculpate, hold harmless, and release The Love

@@ -20,7 +20,8 @@ interface VolunteerDrawerProps {
   volunteer: IVolunteer;
   setSelectedVol: React.Dispatch<React.SetStateAction<IVolunteer | null>>;
   setVolunteers: React.Dispatch<React.SetStateAction<IVolunteer[]>>;
-  setRows: React.Dispatch<React.SetStateAction<UserRow[]>>;
+  setUserRows: React.Dispatch<React.SetStateAction<UserRow[]>>;
+  setStaffRows: React.Dispatch<React.SetStateAction<UserRow[]>>;
 }
 
 const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
@@ -30,7 +31,8 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   volunteer,
   setSelectedVol,
   setVolunteers,
-  setRows,
+  setUserRows,
+  setStaffRows,
 }) => {
   const [isFlagModalOpen, setFlagModalOpen] = useState(false);
   const [sessions, setSessions] = useState<ISession[]>([]);
@@ -61,13 +63,24 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
         ...prev.filter((vol) => vol.authID != volunteer.authID),
         tmpVol,
       ]);
-      setRows((prev) => [
-        ...prev.filter((vol) => vol.authID != volunteer.authID),
-        {
-          ...tmpVol,
-          id: tmpVol._id,
-        },
-      ]);
+
+      if (tmpVol.is_staff) {
+        setStaffRows((prev) => [
+          ...prev.filter((vol) => vol.authID != volunteer.authID),
+          {
+            ...tmpVol,
+            id: tmpVol._id,
+          },
+        ]);
+      } else {
+        setUserRows((prev) => [
+          ...prev.filter((vol) => vol.authID != volunteer.authID),
+          {
+            ...tmpVol,
+            id: tmpVol._id,
+          },
+        ]);
+      }
     }
 
     if (data.success) {
@@ -89,9 +102,15 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     setVolunteers((prev) =>
       prev.filter((filterVol) => filterVol.authID != volunteer.authID)
     );
-    setRows((prev) =>
-      prev.filter((filterRow) => filterRow.authID != volunteer.authID)
-    );
+    if (volunteer.is_staff) {
+      setStaffRows((prev) =>
+        prev.filter((filterRow) => filterRow.authID != volunteer.authID)
+      );
+    } else {
+      setUserRows((prev) =>
+        prev.filter((filterRow) => filterRow.authID != volunteer.authID)
+      );
+    }
     setSelectedVol(null);
   };
 
@@ -109,7 +128,10 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
       ...prev.filter((oldVolunteer) => oldVolunteer.authID != volunteer.authID),
       putData,
     ]);
-    setRows((prev) => [
+    setUserRows((prev) =>
+      prev.filter((oldRow) => oldRow.authID != volunteer.authID)
+    );
+    setStaffRows((prev) => [
       ...prev.filter((oldRow) => oldRow.authID != volunteer.authID),
       {
         ...putData,
@@ -132,13 +154,16 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
       ...prev.filter((oldVolunteer) => oldVolunteer.authID != volunteer.authID),
       putData,
     ]);
-    setRows((prev) => [
+    setUserRows((prev) => [
       ...prev.filter((oldRow) => oldRow.authID != volunteer.authID),
       {
         ...putData,
         id: putData._id,
       },
     ]);
+    setStaffRows((prev) =>
+      prev.filter((oldRow) => oldRow.authID != volunteer.authID)
+    );
   };
 
   // Add a session and actively update session list
@@ -178,18 +203,34 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   }, [volunteer]);
 
   const updateVolunteer = (updatedVolunteer: IVolunteer) => {
+    if (!updatedVolunteer._id) {
+      updatedVolunteer._id =
+        updatedVolunteer.firstName +
+        updatedVolunteer.lastName +
+        updatedVolunteer.email;
+    }
     setVolunteers((prev) =>
       prev.map((vol) =>
         vol._id === updatedVolunteer._id ? updatedVolunteer : vol
       )
     );
-    setRows((prev) =>
-      prev.map((row) =>
-        row._id === updatedVolunteer._id
-          ? { ...updatedVolunteer, id: updatedVolunteer._id }
-          : row
-      )
-    );
+    if (updatedVolunteer.is_staff) {
+      setStaffRows((prev) =>
+        prev.map((row) =>
+          row._id === updatedVolunteer._id
+            ? { ...updatedVolunteer, id: updatedVolunteer._id }
+            : row
+        )
+      );
+    } else {
+      setUserRows((prev) =>
+        prev.map((row) =>
+          row._id === updatedVolunteer._id
+            ? { ...updatedVolunteer, id: updatedVolunteer._id }
+            : row
+        )
+      );
+    }
     setSelectedVol(updatedVolunteer);
   };
 

@@ -31,7 +31,7 @@ const UserCreateModal = (props: UserCreateModalProps) => {
           is_staff: props.is_staff,
           firstName: props.volunteer.firstName,
           lastName: props.volunteer.lastName,
-          age: props.volunteer.age,
+          emergencyContact: props.volunteer.emergencyContact,
           email: props.volunteer.email,
           phone: props.volunteer.phone,
           address: props.volunteer.address,
@@ -41,7 +41,7 @@ const UserCreateModal = (props: UserCreateModalProps) => {
           is_staff: props.is_staff,
           firstName: 'Tanguy',
           lastName: 'Abbott',
-          age: 66,
+          emergencyContact: '4445556666',
           email: 'tabbott@gmail.com',
           phone: '1112223333',
           address: '111 Drive Dr',
@@ -68,7 +68,6 @@ const UserCreateModal = (props: UserCreateModalProps) => {
     }
 
     setLoading((prev) => !prev);
-    data.age = Number(data.age);
     await props.createVolunteer({
       ...data,
       checked_in: props.volunteer ? props.volunteer.checked_in : false,
@@ -78,7 +77,7 @@ const UserCreateModal = (props: UserCreateModalProps) => {
         is_staff: props.is_staff,
         firstName: 'Tanguy',
         lastName: 'Abbott',
-        age: 66,
+        emergencyContact: '4445556666',
         email: 'tabbott@gmail.com',
         phone: '1112223333',
         address: '111 Drive Dr',
@@ -140,10 +139,9 @@ const UserCreateModal = (props: UserCreateModalProps) => {
               fullWidth
             />
             <TextField
-              label="Age"
-              name="age"
-              type="number"
-              value={data.age}
+              label="Emergency Contact"
+              name="emergencyContact"
+              value={data.emergencyContact}
               onChange={handleChange}
               fullWidth
             />

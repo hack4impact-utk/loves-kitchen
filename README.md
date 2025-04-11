@@ -129,11 +129,6 @@ pnpm test
 
 ## Things to fix:
 
-- replace age with emergency contact in volunteer model and registration form
-
-  - display emergency contact in staff page
-  - allow for it to be changed by users
-
 - total hours from all or one volunteer in time block (only on admin)
 
   - kinda like the volunteer search bar, but two fields
@@ -143,6 +138,11 @@ pnpm test
   - cannot visit user page either
 
 ## Completed fixes:
+
+- replace age with emergency contact in volunteer model and registration form
+
+  - display emergency contact in staff page
+  - allow for it to be changed by users
 
 - delete staff/volunteer confirmation
 - hour minimum length for sessions

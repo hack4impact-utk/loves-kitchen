@@ -10,7 +10,7 @@ export interface IVolunteerCreate {
   is_staff: boolean;
   firstName: string;
   lastName: string;
-  age: number;
+  emergencyContact: string;
   email: string;
   phone: string;
   address: string;
@@ -24,7 +24,7 @@ export interface IVolunteer {
   authID: string;
   firstName: string;
   lastName: string;
-  age: number;
+  emergencyContact: string;
   email: string;
   phone: string;
   address: string;
@@ -38,7 +38,7 @@ const volunteerSchema = new mongoose.Schema({
   authID: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  age: { type: Number, required: true },
+  emergencyContact: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
   address: { type: String, required: true },

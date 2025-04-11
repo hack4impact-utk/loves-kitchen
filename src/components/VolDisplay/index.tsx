@@ -35,7 +35,7 @@ const VolDisplay = (props: VolDisplayProps) => {
       is_staff: props.volunteer.is_staff,
       firstName: newVol.firstName,
       lastName: newVol.lastName,
-      age: newVol.age,
+      emergencyContact: newVol.emergencyContact,
       email: newVol.email,
       phone: newVol.phone,
       address: newVol.address,
@@ -49,11 +49,11 @@ const VolDisplay = (props: VolDisplayProps) => {
     >
       <p className="text-3xl text-center">{`${vol.firstName} ${vol.lastName}`}</p>
       <p className="text-lg text-center text-neutral-400">
-        {vol.authID}
-        <br />
         {vol.email} | {vol.phone}
         <br />
         <i>{vol.address}</i>
+        <br />
+        Emergency Contact: {vol.emergencyContact}
       </p>
 
       {props.admin && (

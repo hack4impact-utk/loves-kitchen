@@ -91,7 +91,7 @@ export const PUT = async function (
         is_staff: body.is_staff,
         firstName: body.firstName,
         lastName: body.lastName,
-        age: body.age,
+        emergencyContact: body.emergencyContact,
         email: body.email,
         phone: body.phone,
         address: body.address,

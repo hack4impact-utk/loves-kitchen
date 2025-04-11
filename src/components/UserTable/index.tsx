@@ -147,7 +147,7 @@ export default function UserTable({
               setRows(
                 data.map((row) => ({
                   ...row,
-                  id: row._id,
+                  id: row.authID,
                   createdAt: new Date(row.createdAt).toLocaleDateString(
                     'en-US'
                   ),

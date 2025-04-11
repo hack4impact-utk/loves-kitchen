@@ -9,6 +9,7 @@ interface VolunteerUpdateProps {
 const VolunteerUpdate = (props: VolunteerUpdateProps) => {
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
+  const [emContact, setEmContact] = useState('');
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState<string[]>(['', '']);
 
@@ -18,6 +19,7 @@ const VolunteerUpdate = (props: VolunteerUpdateProps) => {
     if (props.vol != undefined) {
       setAddress(props.vol.address);
       setPhone(props.vol.phone);
+      setEmContact(props.vol.emergencyContact);
     }
   }, [props.vol]);
 
@@ -27,6 +29,7 @@ const VolunteerUpdate = (props: VolunteerUpdateProps) => {
         const newVol = props.vol;
         newVol.address = address;
         newVol.phone = phone;
+        newVol.emergencyContact = emContact;
 
         // do basic REGEX check for number (is it only digits and 10 characters?)
         const phoneRegex = /^\d{10}$/;
@@ -63,6 +66,7 @@ const VolunteerUpdate = (props: VolunteerUpdateProps) => {
       <div className="flex flex-col items-center text-white gap-5 mt-5">
         <div>
           {/* Address: */}
+          <p className="text-neutral-300">Address</p>
           <input
             type="text"
             value={address}
@@ -75,14 +79,27 @@ const VolunteerUpdate = (props: VolunteerUpdateProps) => {
 
         <div>
           {/* Phone: */}
+          <p className="text-neutral-300">Phone</p>
           <input
             type="text"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="Enter new phone number"
+            placeholder="i.e., 1112223333"
             className="bg-transparent border-b-2 border-b-neutral-400 focus:border-b-white outline-none"
           />
           {errors[1] != '' && <p className="text-red-500">{errors[1]}</p>}
+        </div>
+
+        <div>
+          {/* Emergency Contact: */}
+          <p className="text-neutral-300">Emergency Contact</p>
+          <input
+            type="text"
+            value={emContact}
+            onChange={(e) => setEmContact(e.target.value)}
+            placeholder="Email or phone"
+            className="bg-transparent border-b-2 border-b-neutral-400 focus:border-b-white outline-none"
+          />
         </div>
 
         <button
