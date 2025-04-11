@@ -36,7 +36,7 @@ const Admin = () => {
   const [globalSeshStatsState, setSeshStats] = useState({ avg: 0, total: 0 });
   const [globalTimes, setGlobalTimes] = useState({
     startTimeISO: '1986-02-14T00:00',
-    endTimeISO: new Date().toISOString().split('T')[0] + 'T00:00',
+    endTimeISO: new Date().toISOString().split('T')[0] + 'T23:59',
   });
 
   // Fetch volunteers from the server

@@ -129,15 +129,15 @@ pnpm test
 
 ## Things to fix:
 
-- total hours from all or one volunteer in time block (only on admin)
-
-  - kinda like the volunteer search bar, but two fields
-  - update the two boxes "Total Hours" and "Avg"
-
 - add tablet role to prevent access to staff page
   - cannot visit user page either
 
 ## Completed fixes:
+
+- total hours from all or one volunteer in time block (only on admin)
+
+  - kinda like the volunteer search bar, but two fields
+  - update the two boxes "Total Hours" and "Avg"
 
 - replace age with emergency contact in volunteer model and registration form
 

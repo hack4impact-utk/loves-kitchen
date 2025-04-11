@@ -5,10 +5,14 @@ import React from 'react';
 
 interface UserSeshStatsProps {
   sessions: ISession[];
+  drawerTimes?: {
+    startTimeISO: string;
+    endTimeISO: string;
+  };
 }
 
 const UserSeshStats = (props: UserSeshStatsProps) => {
-  const { sum, avg } = getStats(props.sessions);
+  const { sum, avg } = getStats(props.sessions, props.drawerTimes);
 
   return (
     <div className="flex justify-center w-full gap-5">

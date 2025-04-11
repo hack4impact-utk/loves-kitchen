@@ -12,6 +12,7 @@ import VolDisplay from '../VolDisplay';
 import FlagDisplay from '../FlagDisplay';
 import { UserRow } from '@/app/staff/page';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import DrawerTimesForm from '../DrawerTimesForm';
 
 interface VolunteerDrawerProps {
   admin: boolean;
@@ -53,6 +54,10 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
 }) => {
   const [isFlagModalOpen, setFlagModalOpen] = useState(false);
   const [sessions, setSessions] = useState<ISession[]>([]);
+  const [drawerTimes, setDrawerTimes] = useState({
+    startTimeISO: '1986-02-14T00:00',
+    endTimeISO: new Date().toISOString().split('T')[0] + 'T23:59',
+  });
   const { user } = useUser();
 
   // Delete a session and actively update session list
@@ -339,12 +344,37 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
 
             <Divider sx={{ my: 2 }} />
 
-            <UserSeshStats sessions={sessions} />
+            {admin ? (
+              <>
+                <UserSeshStats sessions={sessions} drawerTimes={drawerTimes} />
+                <DrawerTimesForm
+                  drawerTimes={drawerTimes}
+                  setDrawerTimes={setDrawerTimes}
+                />
+              </>
+            ) : (
+              <>
+                <UserSeshStats sessions={sessions} />
+              </>
+            )}
 
             <Divider sx={{ my: 2 }} />
 
             <SessionTable
-              sessions={sessions}
+              sessions={
+                !admin
+                  ? sessions
+                  : sessions.filter((sesh) => {
+                      const present = new Date(sesh.startTime).getTime();
+                      const endTime = new Date(
+                        drawerTimes.endTimeISO
+                      ).getTime();
+                      const startTime = new Date(
+                        drawerTimes.startTimeISO
+                      ).getTime();
+                      return present < endTime && present > startTime;
+                    })
+              }
               staff
               onAddSession={addSession}
               onDeleteSession={deleteSession}
