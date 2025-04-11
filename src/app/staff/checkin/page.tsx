@@ -17,7 +17,10 @@ const checkin = () => {
       url: '/',
       rejectMsg: 'Invalid permissions!',
     };
-    if (vcontext.roles && vcontext.roles.includes('Staff')) {
+    if (
+      vcontext.roles &&
+      (vcontext.roles.includes('Tablet') || vcontext.roles.includes('Staff'))
+    ) {
       out.accepted = true;
     }
     return out;
