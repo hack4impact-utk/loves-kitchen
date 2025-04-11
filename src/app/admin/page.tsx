@@ -11,6 +11,7 @@ import VerifyLayout, {
   VerifyContextType,
 } from '@/components/VerifyLayout';
 import { UserRow } from '../staff/page';
+import GlobalSeshStats from '@/components/GlobalSeshStats';
 
 const Admin = () => {
   function verify(vcontext: VerifyContextType): PageVerifyType {
@@ -32,6 +33,11 @@ const Admin = () => {
     null
   );
   const [isDrawerOpen, setDrawerOpen] = useState(false); // Drawer state
+  const [globalSeshStatsState, setSeshStats] = useState({ avg: 0, total: 0 });
+  const [globalTimes, setGlobalTimes] = useState({
+    startTimeISO: '1986-02-14T00:00',
+    endTimeISO: new Date().toISOString().split('T')[0] + 'T00:00',
+  });
 
   // Fetch volunteers from the server
   useEffect(() => {
@@ -115,6 +121,13 @@ const Admin = () => {
       >
         <NavBar />
         <div className="flex flex-col items-center justify-center pt-[164px] pb-20 gap-10">
+          <GlobalSeshStats
+            stats={globalSeshStatsState}
+            setStats={setSeshStats}
+            globalTimes={globalTimes}
+            setGlobalTimes={setGlobalTimes}
+          />
+
           <UserTable
             is_admin={true}
             shows_staff={false}
@@ -146,6 +159,9 @@ const Admin = () => {
               setVolunteers={setVolunteers}
               setUserRows={setUserRows}
               setStaffRows={setStaffRows}
+              setGlobSeshStats={setSeshStats}
+              globSeshStats={globalSeshStatsState}
+              globalTimes={globalTimes}
             />
           )}
         </div>

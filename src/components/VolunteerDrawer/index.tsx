@@ -5,7 +5,7 @@ import { IVolunteer } from '@/server/models/Volunteer';
 import { Divider, Box } from '@mui/material';
 import FlagModal from '../FlagModal';
 import { ISession } from '@/server/models/Session';
-import SessionTable from '../SessionTable';
+import SessionTable, { SessionRow } from '../SessionTable';
 import lktheme from '@/types/colors';
 import UserSeshStats from '../UserSeshStats';
 import VolDisplay from '../VolDisplay';
@@ -22,6 +22,20 @@ interface VolunteerDrawerProps {
   setVolunteers: React.Dispatch<React.SetStateAction<IVolunteer[]>>;
   setUserRows: React.Dispatch<React.SetStateAction<UserRow[]>>;
   setStaffRows: React.Dispatch<React.SetStateAction<UserRow[]>>;
+  setGlobSeshStats?: React.Dispatch<
+    React.SetStateAction<{
+      avg: number;
+      total: number;
+    }>
+  >;
+  globSeshStats?: {
+    avg: number;
+    total: number;
+  };
+  globalTimes?: {
+    startTimeISO: string;
+    endTimeISO: string;
+  };
 }
 
 const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
@@ -33,13 +47,16 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
   setVolunteers,
   setUserRows,
   setStaffRows,
+  setGlobSeshStats,
+  globSeshStats,
+  globalTimes,
 }) => {
   const [isFlagModalOpen, setFlagModalOpen] = useState(false);
   const [sessions, setSessions] = useState<ISession[]>([]);
   const { user } = useUser();
 
   // Delete a session and actively update session list
-  const deleteSession = async (toDelete: ISession): Promise<void> => {
+  const deleteSession = async (toDelete: SessionRow): Promise<void> => {
     const response = await fetch('api/volunteers/all/sessions', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -84,6 +101,28 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     }
 
     if (data.success) {
+      // update global session stats if necessary
+      if (
+        globalTimes &&
+        globSeshStats &&
+        setGlobSeshStats &&
+        !volunteer.is_staff
+      ) {
+        sessions.find((sesh) => sesh.workedBy == toDelete.workedBy);
+        const present = new Date(toDelete.rawStartTime).getTime();
+        const endTime = new Date(globalTimes.endTimeISO).getTime();
+        const startTime = new Date(globalTimes.startTimeISO).getTime();
+        if (present < endTime && present > startTime) {
+          setGlobSeshStats((prev) => {
+            const len = prev.total / prev.avg;
+            return {
+              total: len != 1 ? prev.total - toDelete.length : 0,
+              avg: len != 1 ? (prev.total - toDelete.length) / (len - 1) : 0,
+            };
+          });
+        }
+      }
+
       setSessions(sessions.filter((session) => session._id != toDelete._id));
     } else {
       alert('Failed to delete session');
@@ -185,6 +224,26 @@ const VolunteerDrawer: React.FC<VolunteerDrawerProps> = ({
     const result = await response.json();
 
     if (result.success) {
+      // update global session stats if necessary
+      if (
+        globalTimes &&
+        globSeshStats &&
+        setGlobSeshStats &&
+        !volunteer.is_staff
+      ) {
+        const present = new Date(data.startTime).getTime();
+        const endTime = new Date(globalTimes.endTimeISO).getTime();
+        const startTime = new Date(globalTimes.startTimeISO).getTime();
+        if (present < endTime && present > startTime) {
+          setGlobSeshStats((prev) => {
+            const len = prev.avg != 0 ? prev.total / prev.avg : 0;
+            return {
+              total: prev.total + data.length,
+              avg: (prev.total + data.length) / (len + 1),
+            };
+          });
+        }
+      }
       setSessions([result.session, ...sessions]);
     } else {
       alert('Failed to add session');

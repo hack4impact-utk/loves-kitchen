@@ -1,12 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material';
-import {
-  DataGrid,
-  GridColDef,
-  GridEventListener,
-  GridValidRowModel,
-} from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridEventListener } from '@mui/x-data-grid';
 import SessionModal from '@/components/SessionModal';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
@@ -20,9 +15,18 @@ import lktheme, { cyantable } from '@/types/colors';
 interface SessionTableProps {
   sessions: ISession[];
   staff: boolean;
-  onDeleteSession?: (session: ISession) => Promise<void>;
+  onDeleteSession?: (session: SessionRow) => Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onAddSession?: (data: any) => Promise<void>;
+}
+
+export interface SessionRow {
+  _id: string;
+  workedBy: string;
+  startTime: string;
+  rawStartTime: string;
+  length: number;
+  checked_out: boolean;
 }
 
 const modalStyle = {
@@ -41,11 +45,11 @@ const SessionTable = (props: SessionTableProps) => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [selectedSession, setSelected] = useState<ISession | undefined>(
+  const [selectedSession, setSelected] = useState<SessionRow | undefined>(
     undefined
   );
 
-  const handleDelete = async (session: ISession) => {
+  const handleDelete = async (session: SessionRow) => {
     setDeleteLoading(true);
     if (props.onDeleteSession) await props.onDeleteSession(session);
 
@@ -55,7 +59,7 @@ const SessionTable = (props: SessionTableProps) => {
   };
 
   // use the map function to fetch the data on the sessions from server
-  const rows: GridValidRowModel[] = props.sessions.map((session) => ({
+  const rows: SessionRow[] = props.sessions.map((session) => ({
     id: session._id,
     _id: session._id,
     checked_out: session.checked_out,
@@ -64,6 +68,8 @@ const SessionTable = (props: SessionTableProps) => {
       month: 'long',
       day: 'numeric',
     }),
+    workedBy: session.workedBy,
+    rawStartTime: session.startTime,
     length: session.length,
   }));
 

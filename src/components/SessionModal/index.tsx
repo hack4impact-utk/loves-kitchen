@@ -39,10 +39,6 @@ const SessionModal = (props: SessionModalProps) => {
     e.preventDefault();
     if (data.startTime === '' || data.endTime === '') return;
 
-    console.log(data.startTime);
-    console.log(new Date(data.startTime));
-    console.log(new Date(data.endTime));
-
     const length =
       (new Date(data.endTime).getTime() - new Date(data.startTime).getTime()) /
       (1000 * 60 * 60); // in hours
