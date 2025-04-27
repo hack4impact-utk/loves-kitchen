@@ -29,7 +29,6 @@ export default function CheckInPage() {
   const { code } = useParams<{ code: string }>();
   const url_decoded = decodeURIComponent(code);
   const { user } = useUser();
-  console.log(user);
   /* Ensuring this is a string as this was throwing a lot of errors. */
   const codeString = Array.isArray(url_decoded) ? url_decoded[0] : url_decoded;
 
