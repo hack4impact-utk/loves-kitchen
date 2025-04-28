@@ -24,7 +24,7 @@ const User = () => {
   }
 
   return (
-    <VerifyLayout verify={verify} doGetRoles={true} doGetVol={false}>
+    <VerifyLayout verify={verify} doGetRoles={true} doGetVol={true}>
       <NavBar />
       <div
         className="flex flex-col items-center p-5 gap-10 pt-[164px] pb-[64px] min-h-[100vh]"
