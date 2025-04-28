@@ -27,7 +27,7 @@ const User = () => {
     <VerifyLayout verify={verify} doGetRoles={true} doGetVol={false}>
       <NavBar />
       <div
-        className="flex flex-col items-center p-5 gap-10 pt-[164px] pb-[64px] min-h-[100vh]"
+        className="flex flex-col items-center p-5 gap-10 pt-[164px] pb-[64px] w-[100vw] min-h-[100vh]"
         style={{ backgroundColor: lktheme.offWhiteRGBA(1) }}
       >
         <UserInfo />
