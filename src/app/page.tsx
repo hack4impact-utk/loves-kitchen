@@ -17,7 +17,7 @@ const Main = () => {
             mt: 0,
             mb: 2,
             width: '100%',
-            height: 700,
+            height: {xs: 300, sm: 500, md: 700 }, //change height with screen size
             backgroundImage: 'url(/realest.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -27,7 +27,8 @@ const Main = () => {
           <a
             href="https://thelovekitchen.com"
             className="rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-[105%] hover:shadow-xl text-white text-xl font-bold"
-          />
+            >
+          </a>
         </Box>
 
         <UserGreet />
