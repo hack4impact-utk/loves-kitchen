@@ -15,7 +15,7 @@ const UserSeshStats = (props: UserSeshStatsProps) => {
   const { sum, avg } = getStats(props.sessions, props.drawerTimes);
 
   return (
-    <div className="flex justify-center w-full gap-5">
+    <div className="flex flex-col md:flex-row justify-center w-full gap-5">
       <div
         className="w-[300px] h-[150px] rounded-xl p-5 flex flex-col justify-around"
         style={{ backgroundColor: lktheme.darkCyanRGBA(0.8) }}
