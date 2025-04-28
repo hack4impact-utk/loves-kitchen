@@ -9,7 +9,11 @@ import { Box, Button, Typography } from '@mui/material';
 import lktheme from '@/types/colors';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { ISession } from '@/server/models/Session';
-import Image from 'next/image';
+// import Image from 'next/image';
+import VerifyLayout, {
+  PageVerifyType,
+  VerifyContextType,
+} from '@/components/VerifyLayout';
 
 interface CheckinData {
   end_time: string;
@@ -17,13 +21,15 @@ interface CheckinData {
 
 const containerStyle = {
   textAlign: 'center',
-  padding: '1.25rem',        
-  borderWidth: '2px',        
-  borderColor: lktheme.brown,       
-  borderRadius: '0.5rem',    
-  boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)'
-}
-
+  padding: '1.25rem',
+  borderWidth: '2px',
+  // borderColor: lktheme.brown,
+  borderRadius: '0.5rem',
+  backgroundColor: lktheme.brown,
+  color: 'white',
+  boxShadow:
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+};
 
 export default function CheckInPage() {
   const { code } = useParams<{ code: string }>();
@@ -37,29 +43,48 @@ export default function CheckInPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function validateSessionTime() {
-      try {
-        if (!codeString) return;
-        const decrypted = await decrypt(codeString);
-
-        const now = new Date();
-        const day = new Date(decrypted); 
-        const sixHoursInMs = 6 * 60 * 60 * 1000;
-
-        if (now < day || now.getTime() - day.getTime() > sixHoursInMs) {
-          setError('Session has expired or is invalid');
-          return;
-        }
-                
-      } catch (err) {
-        setError('Invalid QR code');
-      } finally {
-        setLoading(false);
-      }
+  function verify(vcontext: VerifyContextType): PageVerifyType {
+    const out: PageVerifyType = {
+      accepted: false,
+      url: '/user/register',
+      rejectMsg: 'Invalid permissions!',
+    };
+    if (vcontext.vol) {
+      out.accepted = true;
     }
-    validateSessionTime();
-  }, [codeString]);
+    return out;
+  }
+
+  useEffect(() => {
+    if (codeString && user) {
+      (async () => {
+        // Decode QR code if possible
+        try {
+          if (!codeString) return;
+          const decrypted = await decrypt(codeString);
+
+          const now = new Date();
+          const day = new Date(decrypted);
+          const sixHoursInMs = 6 * 60 * 60 * 1000;
+
+          if (now < day || now.getTime() - day.getTime() > sixHoursInMs) {
+            setError('Session has expired or is invalid');
+            return;
+          }
+        } catch (err) {
+          setError('Invalid QR code');
+        }
+
+        // Check whether already signed in
+        const res = await fetch(`/api/volunteers/${user.sub}`, {
+          method: 'GET',
+        });
+        const volData = await res.json();
+        setCheckedIn(volData.volunteer.checked_in);
+        setLoading(false);
+      })();
+    }
+  }, [codeString, user]);
 
   const handleCheckIn = async (data: CheckinData, length: number) => {
     if (user != undefined) {
@@ -67,7 +92,7 @@ export default function CheckInPage() {
         method: 'POST',
         body: JSON.stringify({
           authID: user.sub,
-          length: length
+          length: length,
         }),
       });
       const obj = await res.json();
@@ -143,68 +168,57 @@ export default function CheckInPage() {
 
       setCheckedIn(false);
     }
-  }
-
-  if (loading) {
-    return (
-      <div
-        className="flex flex-col items-center justify-center text-neutral-800 h-[100vh] p-2"
-        style={{ backgroundColor: lktheme.offWhite}}
-      >
-        <div className="flex items-center justify-center">
-          <div className="animate-spin opacity-60">
-            <Image
-              width={80}
-              height={80}
-              alt="loading webpage..."
-              src="/loading.svg"
-              priority
-            />
-          </div>
-        </div>
-      </div>
-    )
-  }
+  };
 
   return (
-    <>
+    // VerifyLayout checks whether user is registered
+    <VerifyLayout doGetRoles={false} doGetVol={true} verify={verify}>
       <NavBar />
       <div
         className="flex flex-col items-center justify-center text-neutral-800 h-[100vh] p-2"
-        style={{ backgroundColor: lktheme.offWhite}}
+        style={{ backgroundColor: lktheme.offWhite }}
       >
         {!error ? (
           <Box sx={containerStyle}>
-            <Typography variant="h4" sx={{ color: lktheme.brown, marginBottom: 2 }}>
-              {new Date().toLocaleDateString('en-US', {
-                  weekday: 'short',  
-                  year: 'numeric',  
-                  month: 'long',    
-                  day: 'numeric'    
-                })
-              }
+            <Typography variant="h4" sx={{ color: 'white', marginBottom: 2 }}>
+              {loading
+                ? 'Loading...'
+                : new Date().toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
             </Typography>
-            <Button
-              variant='contained'
-              color={checkedIn ? 'error' : 'success'}
-              onClick={handleClick}
-            >
-              {checkedIn ? "Check-out" : "Check-in"}
-            </Button>
+            {loading ? (
+              <>
+                <div className="w-[118.83px] h-[36.5px]"></div>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="contained"
+                  color={checkedIn ? 'error' : 'success'}
+                  onClick={handleClick}
+                >
+                  {checkedIn ? 'Check-out' : 'Check-in'}
+                </Button>
+              </>
+            )}
           </Box>
-        ) : 
+        ) : (
           <Box className="text-center p-5">
             <Typography variant="h4" sx={{ color: lktheme.brown }}>
               {error}
             </Typography>
           </Box>
-        }
+        )}
       </div>
       <CheckinModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onCheckIn={handleCheckIn}
       />
-    </>
+    </VerifyLayout>
   );
 }
