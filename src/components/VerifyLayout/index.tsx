@@ -49,7 +49,8 @@ const VerifyLayout = (props: VerifyLayoutProps) => {
           const res = await fetch(`/api/volunteers/${user.sub}`, {
             method: 'GET',
           });
-          vol = await res.json();
+          const volData = await res.json();
+          vol = volData.success ? volData.volunteer : undefined;
         }
 
         // actually get validity
