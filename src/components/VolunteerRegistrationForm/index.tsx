@@ -1,11 +1,9 @@
 'use client';
 import lktheme from '@/types/colors';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const VolunteerRegistrationForm = () => {
-  const router = useRouter();
   const { user } = useUser();
   const [formData, setFormData] = useState({
     firstName: '',
@@ -16,25 +14,7 @@ const VolunteerRegistrationForm = () => {
     email: '',
   });
   const [holdHarmless, setHoldHarmless] = useState(false);
-
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    (async () => {
-      if (user && router) {
-        // check if user exists in database
-        const res = await fetch(`/api/volunteers/${user.sub}`, {
-          method: 'GET',
-        });
-        const data = await res.json();
-
-        // if so, redirect them
-        if (data.volunteer != undefined) {
-          router.push('/user');
-        }
-      }
-    })();
-  }, [user, router]);
 
   const getDisplayLabel = (rawName: string) => {
     let blah = '';
