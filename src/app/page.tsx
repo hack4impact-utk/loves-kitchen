@@ -14,21 +14,21 @@ const Main = () => {
       >
         <Box
           sx={{
-            mt: 0,
+            mt: '64px',
             mb: 2,
             width: '100%',
-            height: {xs: 300, sm: 500, md: 700 }, //change height with screen size
+            height: { xs: 350, sm: 350, md: 500, lg: 700 }, //change height with screen size
             backgroundImage: 'url(/realest.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            boxShadow: '0px -65px 80px -80px #000000 inset',
           }}
         >
           <a
             href="https://thelovekitchen.com"
             className="rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-[105%] hover:shadow-xl text-white text-xl font-bold"
-            >
-          </a>
+          ></a>
         </Box>
 
         <UserGreet />
@@ -36,7 +36,7 @@ const Main = () => {
         <Box
           className="flex flex-col px-6 py-5 rounded-xl"
           sx={{
-            width: '50%', // Set the width to 50% of the page
+            width: { xs: '90%', sm: '75%', md: '50%' }, // Set the width to 50% of the page
             backgroundColor: lktheme.darkCyan,
           }}
         >
