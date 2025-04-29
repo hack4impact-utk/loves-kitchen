@@ -26,7 +26,7 @@ const UserSeshInfo = () => {
     <div className="flex flex-col items-center">
       <UserSeshStats sessions={sessions} />
 
-      <div className="w-[55vw] mt-10">
+      <div className="w-[90vw] sm:w-auto lg:w-[55vw] mt-10">
         <SessionTable sessions={sessions} staff={false} />
       </div>
     </div>
