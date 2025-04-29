@@ -80,8 +80,11 @@ export default function CheckInPage() {
           method: 'GET',
         });
         const volData = await res.json();
-        setCheckedIn(volData.volunteer.checked_in);
-        setLoading(false);
+
+        if (volData.volunteer) {
+          setCheckedIn(volData.volunteer.checked_in);
+          setLoading(false);
+        }
       })();
     }
   }, [codeString, user]);
