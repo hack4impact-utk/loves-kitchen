@@ -17,6 +17,10 @@ const User = () => {
       url: '/',
       rejectMsg: 'Invalid permissions!',
     };
+    if (!vcontext.vol) {
+      out.url = '/user/register';
+      return out;
+    }
     if (vcontext.roles && !vcontext.roles.includes('Tablet')) {
       out.accepted = true;
     }
@@ -24,7 +28,7 @@ const User = () => {
   }
 
   return (
-    <VerifyLayout verify={verify} doGetRoles={true} doGetVol={false}>
+    <VerifyLayout verify={verify} doGetRoles={true} doGetVol={true}>
       <NavBar />
       <div
         className="flex flex-col items-center p-5 gap-10 pt-[164px] pb-[64px] w-[full] min-h-[full]"
