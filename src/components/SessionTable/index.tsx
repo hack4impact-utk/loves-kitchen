@@ -86,8 +86,8 @@ const SessionTable = (props: SessionTableProps) => {
 
   //define the column headers
   const columns: GridColDef[] = [
-    { field: 'startTime', headerName: 'Start Time', width: 300 },
-    { field: 'length', headerName: 'Length', width: 200 },
+    { field: 'startTime', headerName: 'Start Time', width: 210 },
+    { field: 'length', headerName: 'Length', width: 70 },
     {
       field: 'id',
       headerName: 'Actions',
@@ -121,7 +121,7 @@ const SessionTable = (props: SessionTableProps) => {
 
   return (
     <div
-      className="p-5 rounded-lg w-[75vw] md:w-[50vw] overflow-x-auto justify-center"
+      className="p-5 rounded-lg"
       style={{ backgroundColor: lktheme.darkCyanRGBA(1) }}
     >
       <div className="text-2xl border-b border-b-neutral-300 pb-4 mb-4 w-full flex items-center justify-between">
