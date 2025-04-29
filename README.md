@@ -2,12 +2,9 @@
 
 ## About this repository
 
-Provides a UI for volunteer and volunteer session verification for Love's Kitchen.
+Provides a UI for volunteer and volunteer session management for the Love Kitchen.
 
-Volunteers will sign in by scanning their driver's license and can check out by visiting the site. Volunteers should
-be able to see their sessions and general statistics related to them. An admin can manually set the passwords for
-volunteers to sign in by using Auth0. Admins should also be able to add notes to users or even sessions (e.g. "this
-person is a no-show", "this volunteer is great"), and add, edit, or delete them.
+Volunteers will check in and out by visiting a tablet in the Love Kitchen building. Volunteers can see their sessions and general statistics related to them. An admin can manually set the passwords for volunteers to sign in by using Auth0. Staff can add notes to users (e.g. "this person is a no-show", "this volunteer is great"), and add, edit, or delete these notes.
 
 <!-- DELETE THIS SECTION AFTER USING TEMPLATE -->
 
@@ -33,11 +30,11 @@ person is a no-show", "this volunteer is great"), and add, edit, or delete them.
   - [Pull Request template](https://github.com/hack4impact-utk/nextjs-template/blob/main/.github/pull_request_template.md)
 - Pre-commit linting hook
 
-# Project Title
+# Love Kitchen Volunteer Manager
 
 ## Overview
 
-Put an overview of the non-profit you are working with and what you are doing for them here.
+The Love Kitchen is a nonprofit which offers food to the homeless. This volunteer manager allows for digital access of LK's volunteers and sessions.
 
 ## Getting Started
 
@@ -71,11 +68,30 @@ Either ask a project lead for the `.env.local` file or create your own. The `.en
 
 <!-- Add any other environment variables your project requires to this table. -->
 
-| Variable Name | Description              |
-| ------------- | ------------------------ |
-| MONGODB_URI   | URI for MongoDB database |
+| Variable Name         | Description                            |
+| --------------------- | -------------------------------------- |
+| MONGODB_URI           | URL to MONGODB database                |
+| AUTH0_SECRET          | Auth0 client-specific secret           |
+| AUTH0_BASE_URL        | Base URL of this site                  |
+| AUTH0_ISSUER_BASE_URL | Base URL for client-specific Auth0 API |
+| AUTH0_CLIENT_ID       | Auth0's client-specific ID             |
+| AUTH0_CLIENT_SECRET   | Another Auth0 client-specific secret   |
+| QR_KEY                | random 32-character base 64 number     |
+| QR_IV                 | random 16-character base 64 number     |
 
-### 5. Run the development server
+QR_KEY and QR_IV can be created with the following command:
+
+```bash
+openssl rand -base64 <number of characters>
+```
+
+### 5. (Optional) Populate database
+
+```bash
+python src/server/fill/fillDb.py
+```
+
+### 6. Run the development server
 
 ```bash
 pnpm dev
