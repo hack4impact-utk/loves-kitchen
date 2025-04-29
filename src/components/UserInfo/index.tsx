@@ -54,7 +54,7 @@ const UserInfo = () => {
         <>
           <Box
             className={
-              'flex flex-col items-center px-3 py-5 rounded-xl w-[50vw] relative'
+              'flex flex-col items-center px-3 py-5 rounded-xl w-[80vw] md:w-[50vw] relative'
             }
             sx={{
               backgroundColor: lktheme.brown,
