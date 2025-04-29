@@ -50,10 +50,6 @@ const VerifyLayout = (props: VerifyLayoutProps) => {
             method: 'GET',
           });
           vol = await res.json();
-
-          if (!vol.phone || !vol.address) {
-            router.push('/user/register');
-          }
         }
 
         // actually get validity

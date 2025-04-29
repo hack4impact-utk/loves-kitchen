@@ -17,6 +17,10 @@ const User = () => {
       url: '/',
       rejectMsg: 'Invalid permissions!',
     };
+    if (!vcontext.vol) {
+      out.url = '/user/register';
+      return out;
+    }
     if (vcontext.roles && !vcontext.roles.includes('Tablet')) {
       out.accepted = true;
     }
