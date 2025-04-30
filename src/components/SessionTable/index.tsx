@@ -12,6 +12,13 @@ import { ISession } from '@/server/models/Session';
 import { parseISOString } from '@/utils/isoParse';
 import lktheme, { cyantable } from '@/types/colors';
 
+function formatHoursAndMinutes(decimalHours: number): string {
+  const totalMinutes = Math.round(decimalHours * 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours}h ${minutes}m`;
+}
+
 interface SessionTableProps {
   sessions: ISession[];
   staff: boolean;
@@ -58,7 +65,6 @@ const SessionTable = (props: SessionTableProps) => {
     setDeleteModalOpen(false);
   };
 
-  // use the map function to fetch the data on the sessions from server
   const rows: SessionRow[] = props.sessions.map((session) => ({
     id: session._id,
     _id: session._id,
@@ -76,18 +82,25 @@ const SessionTable = (props: SessionTableProps) => {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#1976d2', // Primary color for MUI components
+        main: '#1976d2',
       },
       text: {
-        primary: '#000000', // Black text for toolbar
+        primary: '#000000',
       },
     },
   });
 
-  //define the column headers
   const columns: GridColDef[] = [
     { field: 'startTime', headerName: 'Start Time', width: 210 },
-    { field: 'length', headerName: 'Length', width: 70 },
+    {
+      field: 'length',
+      headerName: 'Length',
+      width: 100,
+      renderCell: (params) => {
+        const value = params.value as number;
+        return formatHoursAndMinutes(value);
+      },
+    },
     {
       field: 'id',
       headerName: 'Actions',
@@ -109,7 +122,6 @@ const SessionTable = (props: SessionTableProps) => {
 
   if (!props.staff) columns.pop();
 
-  // Modified handleRowClick function to log row data. logs data to console, which can be accessed with dev tools
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
     const { workedBy, startTime, length } = params.row;
     console.log('Row clicked:', {
