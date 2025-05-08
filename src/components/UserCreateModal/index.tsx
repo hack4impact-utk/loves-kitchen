@@ -39,13 +39,13 @@ const UserCreateModal = (props: UserCreateModalProps) => {
         }
       : {
           is_staff: props.is_staff,
-          firstName: 'Tanguy',
-          lastName: 'Abbott',
-          emergencyContact: '4445556666',
-          email: 'tabbott@gmail.com',
-          phone: '1112223333',
-          address: '111 Drive Dr',
-          password: 'fakeH4Iuser!',
+          firstName: '',
+          lastName: '',
+          emergencyContact: '',
+          email: '',
+          phone: '',
+          address: '',
+          password: '',
         }
   );
   const [loading, setLoading] = useState(false);
@@ -75,13 +75,13 @@ const UserCreateModal = (props: UserCreateModalProps) => {
     if (!props.volunteer) {
       setData({
         is_staff: props.is_staff,
-        firstName: 'Tanguy',
-        lastName: 'Abbott',
-        emergencyContact: '4445556666',
-        email: 'tabbott@gmail.com',
-        phone: '1112223333',
-        address: '111 Drive Dr',
-        password: 'fakeH4Iuser!',
+        firstName: '',
+        lastName: '',
+        emergencyContact: '',
+        email: '',
+        phone: '',
+        address: '',
+        password: '',
       });
     }
     setLoading((prev) => !prev);
@@ -180,12 +180,3 @@ const UserCreateModal = (props: UserCreateModalProps) => {
 };
 
 export default UserCreateModal;
-
-/*
-firstName: string;
-lastName: string;
-age: number;
-email: string;
-phone: string;
-address: string;
-*/

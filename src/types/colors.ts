@@ -72,6 +72,10 @@ export const cyantable = {
   '& .MuiDataGrid-row.Mui-selected:nth-of-type(even):hover': {
     backgroundColor: 'rgb(4,62,61)',
   },
+  '& .MuiDataGrid-overlay': {
+    backgroundColor: 'rgb(4,35,35)',
+    color: 'white',
+  },
 };
 
 export const browntable = {
@@ -118,6 +122,10 @@ export const browntable = {
     fill: 'white',
   },
   '& .MuiButtonBase-root': {
+    color: 'white',
+  },
+  '& .MuiDataGrid-overlay': {
+    backgroundColor: '#421F16',
     color: 'white',
   },
 };
