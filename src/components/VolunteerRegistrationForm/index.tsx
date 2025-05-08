@@ -1,6 +1,7 @@
 'use client';
 import lktheme from '@/types/colors';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 const VolunteerRegistrationForm = () => {
@@ -15,6 +16,7 @@ const VolunteerRegistrationForm = () => {
   });
   const [holdHarmless, setHoldHarmless] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const router = useRouter();
 
   const getDisplayLabel = (rawName: string) => {
     let blah = '';
@@ -95,7 +97,8 @@ const VolunteerRegistrationForm = () => {
       });
 
       if (response.ok) {
-        alert('Registration successful!');
+        router.push('/user');
+        // alert('Registration successful!');
         setFormData({
           firstName: '',
           lastName: '',
