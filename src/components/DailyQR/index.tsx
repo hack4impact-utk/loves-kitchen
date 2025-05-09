@@ -9,15 +9,18 @@ import Image from 'next/image';
 const DailyQR = () => {
   const [qrData, setQrData] = useState<string>('');
 
+  async function resetQR() {
+    // get and encrypt current day
+    const todayStr = new Date().toISOString();
+    const todayCode = await encrypt(todayStr);
+    const checkinURL =
+      (await getBaseURL()) + `/user/checkin/${encodeURIComponent(todayCode)}`;
+    setQrData(checkinURL);
+  }
+
   useEffect(() => {
-    (async () => {
-      // get and encrypt current day
-      const todayStr = new Date().toISOString();
-      const todayCode = await encrypt(todayStr);
-      const checkinURL =
-        (await getBaseURL()) + `/user/checkin/${encodeURIComponent(todayCode)}`;
-      setQrData(checkinURL);
-    })();
+    resetQR();
+    setInterval(resetQR, 60 * 1000);
   }, []);
 
   return (

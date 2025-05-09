@@ -45,30 +45,95 @@ export default function TopDrawer() {
       onClick={toggleDrawer(false)}
     >
       <List>
-        {['user', 'staff', 'home'].map((text) => (
-          <React.Fragment key={text}>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() =>
-                  handleNavigation(text === 'home' ? '/' : `/${text}`)
-                }
-              >
-                <ListItemText
-                  primary={text}
-                  sx={{
-                    textAlign: 'left',
-                    color: '#6F4E44',
-                    fontWeight: 500, // Matches button font-weight
-                    fontSize: '1rem', // Matches button font size
-                    textTransform: 'uppercase', // Similar to default button style
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-            {/* Add a divider between each item, except after the last item */}
-            <Divider sx={{ backgroundColor: '#ccc', margin: '5px 0' }} />
-          </React.Fragment>
-        ))}
+        {/* Home Route */}
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => handleNavigation('/')}>
+            <ListItemText
+              primary={'HOME'}
+              sx={{
+                textAlign: 'left',
+                color: '#6F4E44',
+                fontWeight: 500, // Matches button font-weight
+                fontSize: '1rem', // Matches button font size
+                textTransform: 'uppercase', // Similar to default button style
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        {/* Add a divider between each item, except after the last item */}
+        <Divider sx={{ backgroundColor: '#ccc', margin: '5px 0' }} />
+
+        {/* User Route */}
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => handleNavigation('/user')}>
+            <ListItemText
+              primary={'USER'}
+              sx={{
+                textAlign: 'left',
+                color: '#6F4E44',
+                fontWeight: 500, // Matches button font-weight
+                fontSize: '1rem', // Matches button font size
+                textTransform: 'uppercase', // Similar to default button style
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        {/* Add a divider between each item, except after the last item */}
+        <Divider sx={{ backgroundColor: '#ccc', margin: '5px 0' }} />
+
+        {/* Staff Route */}
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => handleNavigation('/staff')}>
+            <ListItemText
+              primary={'STAFF'}
+              sx={{
+                textAlign: 'left',
+                color: '#6F4E44',
+                fontWeight: 500, // Matches button font-weight
+                fontSize: '1rem', // Matches button font size
+                textTransform: 'uppercase', // Similar to default button style
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        {/* Add a divider between each item, except after the last item */}
+        <Divider sx={{ backgroundColor: '#ccc', margin: '5px 0' }} />
+
+        {/* Staff Checkin Route */}
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => handleNavigation('/staff/checkin')}>
+            <ListItemText
+              primary={'STAFF CHECKIN'}
+              sx={{
+                textAlign: 'left',
+                color: '#6F4E44',
+                fontWeight: 500, // Matches button font-weight
+                fontSize: '1rem', // Matches button font size
+                textTransform: 'uppercase', // Similar to default button style
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        {/* Add a divider between each item, except after the last item */}
+        <Divider sx={{ backgroundColor: '#ccc', margin: '5px 0' }} />
+
+        {/* Admin Route */}
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => handleNavigation('/admin')}>
+            <ListItemText
+              primary={'ADMIN'}
+              sx={{
+                textAlign: 'left',
+                color: '#6F4E44',
+                fontWeight: 500, // Matches button font-weight
+                fontSize: '1rem', // Matches button font size
+                textTransform: 'uppercase', // Similar to default button style
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        {/* Add a divider between each item, except after the last item */}
+        <Divider sx={{ backgroundColor: '#ccc', margin: '5px 0' }} />
 
         {/* login/logout */}
         <ListItem disablePadding>

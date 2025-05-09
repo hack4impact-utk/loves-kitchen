@@ -180,23 +180,26 @@ export default function CheckinTable() {
     updateRows(tmpVol);
   }
 
+  async function resetVols() {
+    const res = await fetch('/api/volunteers', {
+      method: 'GET',
+    });
+    const tmpVols: IVolunteer[] = (await res.json()).volunteers;
+    const tmpRows: UserRow[] = [];
+    tmpVols.forEach((volunteer) =>
+      tmpRows.push({
+        ...volunteer,
+        id: volunteer.authID,
+        createdAt: new Date(volunteer.createdAt).toLocaleDateString('en-US'),
+      })
+    );
+    setRows(tmpRows);
+    setAllRows(tmpRows);
+  }
+
   useEffect(() => {
-    (async () => {
-      const res = await fetch('/api/volunteers', {
-        method: 'GET',
-      });
-      const tmpVols: IVolunteer[] = (await res.json()).volunteers;
-      const tmpRows: UserRow[] = [];
-      tmpVols.forEach((volunteer) =>
-        tmpRows.push({
-          ...volunteer,
-          id: volunteer.authID,
-          createdAt: new Date(volunteer.createdAt).toLocaleDateString('en-US'),
-        })
-      );
-      setRows(tmpRows);
-      setAllRows(tmpRows);
-    })();
+    resetVols();
+    setInterval(resetVols, 30 * 1000);
   }, []);
 
   const columns: GridColDef[] = [

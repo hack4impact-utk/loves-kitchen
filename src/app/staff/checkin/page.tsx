@@ -10,7 +10,7 @@ import VerifyLayout, {
   VerifyContextType,
 } from '@/components/VerifyLayout';
 
-const checkin = () => {
+const Checkin = () => {
   function verify(vcontext: VerifyContextType): PageVerifyType {
     const out: PageVerifyType = {
       accepted: false,
@@ -48,4 +48,4 @@ const checkin = () => {
   );
 };
 
-export default checkin;
+export default Checkin;
